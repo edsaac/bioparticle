@@ -67,6 +67,8 @@ function escPTr_Create()
   escPTr_Create%rate_attachment = 0.d0
   escPTr_Create%rate_detachment = 0.d0
 
+  nullify(escPTr_Create%next)
+
   PRINT *, "Allocation done" ! Edwin debugging    
 
 end function escPTr_Create
@@ -233,7 +235,9 @@ subroutine escPTr_Setup(this,reaction,option)
   class(reaction_sandbox_escPTr_type) :: this
   class(reaction_rt_type) :: reaction
   type(option_type) :: option
-
+  
+  PRINT *, "Entered the Setup block :o" ! Edwin debugging 
+  
   ! 9. Add code to initialize 
   this%species_Vaq_id = &
     GetPrimarySpeciesIDFromName(this%name_aqueous,reaction,option)
@@ -241,7 +245,7 @@ subroutine escPTr_Setup(this,reaction,option)
 
   this%species_Vim_id = &
     GetImmobileSpeciesIDFromName(this%name_immobile,reaction%immobile,option)
-  PRINT *, "Found name of immobile species" ! Edwin debugging    
+  PRINT *, "Found name of immobile species" ! Edwin debugging 
 
 end subroutine escPTr_Setup
 
@@ -254,7 +258,7 @@ subroutine escPTr_React(this,Residual,Jacobian,compute_derivative, &
   ! Author: Edwin
   ! Date: 04/09/2020
   ! 
-
+  
   use Option_module
   use String_module
   use Reaction_Aux_module, only : reaction_rt_type
@@ -267,7 +271,7 @@ subroutine escPTr_React(this,Residual,Jacobian,compute_derivative, &
   type(option_type) :: option
   class(reaction_rt_type) :: reaction
   PetscBool :: compute_derivative
-
+  
   ! the following arrays must be declared after reaction
   PetscReal :: Residual(reaction%ncomp)
   PetscReal :: Jacobian(reaction%ncomp,reaction%ncomp)
@@ -298,7 +302,7 @@ subroutine escPTr_React(this,Residual,Jacobian,compute_derivative, &
 ! Assign concentrations of Vaq and Vim
   Vaq = rt_auxvar%total(this%species_Vaq_id,iphase)
   Vim = rt_auxvar%immobile(this%species_Vim_id)
-  PRINT *, "Assigned Vaq/Vim concentrations" ! Edwin debugging    
+!  PRINT *, "Assigned Vaq/Vim concentrations" ! Edwin debugging    
 
 ! initialize all rates to zero
   Rate = 0.d0
@@ -317,11 +321,11 @@ subroutine escPTr_React(this,Residual,Jacobian,compute_derivative, &
 
   katt = this%rate_attachment
   kdet = this%rate_detachment
-  PRINT *, "Assigned attachment/detachment rates" ! Edwin debugging    
+!  PRINT *, "Assigned attachment/detachment rates" ! Edwin debugging    
 
   decayAq = this%decay_aqueous
   decayIm = this%decay_adsorbed
-  PRINT *, "Assigned decay rates" ! Edwin debugging    
+!  PRINT *, "Assigned decay rates" ! Edwin debugging    
 
   ! Build here for attachment/detachment
   ! first-order forward - reverse (A <-> C)
