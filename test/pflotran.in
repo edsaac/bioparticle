@@ -11,8 +11,8 @@ SIMULATION
     SUBSURFACE_FLOW flow
       MODE RICHARDS
     /
-    SUBSURFACE_TRANSPORT transport
-      MODE GIRT
+   SUBSURFACE_TRANSPORT transport
+     MODE GIRT
     /
   /
 END
@@ -67,7 +67,7 @@ END
 
 ############# FLUID ###############
 FLUID_PROPERTY
-  DIFFUSION_COEFFICIENT 1.d-6
+  DIFFUSION_COEFFICIENT 1.d-9
 END
 
 ############# SOILS ###############
@@ -81,6 +81,7 @@ MATERIAL_PROPERTY soil1
     PERM_Z 1.d-4
   /
   SATURATION_FUNCTION vanGenuchtenMualem1
+  LONGITUDINAL_DISPERSIVITY 0.2d-2
 END
 
 ############# CURVES ###############
@@ -234,10 +235,10 @@ CHEMISTRY
     BIOPARTICLE
       PARTICLE_NAME_AQ Vaq
       PARTICLE_NAME_IM Vim
-      DECAY_AQUEOUS   1.94d-6  !1/s
-      DECAY_ADSORBED  9.72d-6  !1/s
-      RATE_ATTACHMENT 1.11d-5  !1/s
-      RATE_DETACHMENT 7.22d-7  !1/s
+      RATE_ATTACHMENT 1.11d-5
+      RATE_DETACHMENT 7.22d-7
+      DECAY_AQUEOUS 1.94d-6
+      DECAY_ADSORBED 9.72d-6
     /
   /
 
