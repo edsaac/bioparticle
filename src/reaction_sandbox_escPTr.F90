@@ -289,6 +289,7 @@ subroutine escPTr_React(this,Residual,Jacobian,compute_derivative, &
   PetscReal :: Vim  ! mol/m^3
   PetscReal :: Rate
   PetscReal :: RateAtt, RateDet  ! mol/sec
+  PetscReal :: RateDecayAq, RateDecayIm !Check units
   PetscReal :: stoichVaq
   PetscReal :: stoichVim
   PetscReal :: katt, kdet
@@ -308,6 +309,8 @@ subroutine escPTr_React(this,Residual,Jacobian,compute_derivative, &
   Rate = 0.d0
   RateAtt = 0.d0
   RateDet = 0.d0
+  RateDecayAq = 0.d0
+  RateDecayIm = 0.d0
 
   ! stoichiometries
   ! reactants have negative stoichiometry
@@ -320,7 +323,7 @@ subroutine escPTr_React(this,Residual,Jacobian,compute_derivative, &
   kdet = 0.d0
 
   katt = this%rate_attachment
-  kdet = this%rate_detachment
+  kdet = this%rate_detachment / porosity
 !  PRINT *, "Assigned attachment/detachment rates" ! Edwin debugging    
 
   decayAq = this%decay_aqueous
@@ -335,19 +338,22 @@ subroutine escPTr_React(this,Residual,Jacobian,compute_derivative, &
   RateDet = stoichVim * Rate
 
   ! Build here for inactivation reactions
-  ! first-order (A -> C)
-  !Rate = decayAq * Vaq * L_water
-  !RateA = Rate
-  !
-  !Rate = decayIm * Vim * volume
-  !RateA = Rate
+  ! first-order (A -> X)
+  Rate = decayAq * Vaq * L_water
+  RateDecayAq = - Rate 
+  
+  Rate = decayIm * Vim * volume
+  RateDecayIm = - Rate
 
   ! NOTES
   ! 1. Always subtract contribution from residual
   ! 2. Units of residual are moles/second  
-  Residual(this%species_Vaq_id) = Residual(this%species_Vaq_id) - RateAtt
+  Residual(this%species_Vaq_id) = &
+    Residual(this%species_Vaq_id) - RateAtt - RateDecayAq
+  
   Residual(this%species_Vim_id + reaction%offset_immobile) = &
-    Residual(this%species_Vim_id + reaction%offset_immobile) - RateDet
+    Residual(this%species_Vim_id + reaction%offset_immobile) &
+    - RateDet - RateDecayIm
   
 end subroutine escPTr_React
 
