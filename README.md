@@ -14,7 +14,7 @@ PFLOTRAN Reaction Sandbox for virus transport
 ***
 
 ## Conceptual Model
-![virusPaths](/images/virusPaths.png)
+![virusPaths](/images/virusPath.png)
 
 **Mathematical description:**
 
