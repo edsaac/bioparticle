@@ -1,7 +1,7 @@
 # VirusTransport_RxSandbox
 PFLOTRAN Reaction Sandbox for virus transport
 
-![gifBioparticle](/images/virusBlob.gif)
+![gifBioparticle](./images/virusBlob.gif)
 
 
 >Trying to replicate results from this paper: 
@@ -14,11 +14,11 @@ PFLOTRAN Reaction Sandbox for virus transport
 ***
 
 ## Conceptual Model
-![virusPaths](/images/virusPath.png)
+![virusPaths](./images/virusPath.png)
 
 **Mathematical description:**
 
-![Eq.1](/images/Eqn1.png)
+![Eq.1](./images/Eqn1.png)
 
 
 ***
