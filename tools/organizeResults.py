@@ -2,27 +2,30 @@ import numpy as np
 import matplotlib.pyplot as plt
 from pandas import read_csv
 from os import system
+import sys
 
-FILE = "./pflotran-obs-0.tec"
+FILE = str(sys.argv[1])
+CLEAN = "clean" in str(sys.argv[2])
 
-system("sed -i 's/,/  /g' " + FILE)
-system("head -3 " + FILE)
-system("rm -r VTK")
-system("mkdir VTK")
-system("mv *.vtk ./VTK/")
+if CLEAN:
+	system("sed -i 's/,/  /g' " + FILE)
+	system("head -3 " + FILE)
+	system("rm -r VTK")
+	system("mkdir VTK")
+	system("mv *.vtk ./VTK/")
 
-ObservationPoint = read_csv(FILE,sep="  ")
+ObservationPoint = read_csv(FILE,sep="  ",engine="python")
 
-Cmax = 1.66E-16
+Cmax = max(ObservationPoint["\"Total Vaq [M] Obs__PointOutflow (100) (0.025 0.025 0.498)\""])
 Cnorm = ObservationPoint["\"Total Vaq [M] Obs__PointOutflow (100) (0.025 0.025 0.498)\""]/Cmax
 Time = ObservationPoint["\"Time [d]\""]
 
 Legend=["$\\dfrac{[V_{(aq)}]}{[V_{(aq)}]_0}$"]
 
-fig = plt.figure(figsize=(8,5),facecolor="white");
+fig = plt.figure(figsize=(5,4),facecolor="white")
 ax1 = plt.subplot(1,1,1)
 ax1.plot(Time,Cnorm,c="violet",lw=3,label=Legend[0])
-ax1.set_ylim([1.0E-5,1])
+ax1.set_ylim([1.0E-4,1.2])
 ax1.set_xlim([0,10])
 
 ax1.set_yscale("log")
