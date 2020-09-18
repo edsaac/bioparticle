@@ -13,7 +13,7 @@ http://doi.wiley.com/10.1111/j.1745-6584.2010.00767.x
 
 **Mathematical description:**
 
-![img](http://www.sciweavers.org/tex2img.php?eq=%5Cbegin%7Bequation%2A%7D%0A%5Cbegin%7Barray%7D%7Brr%7D%0A%20%20%20%20%5Cdfrac%7B%5Cpartial%20C%7D%7B%5Cpartial%20t%7D%20%2B%20%5Cdfrac%7B1%7D%7B%5Ctheta%7D%5C%3A%5Cvec%7Bq%7D%20%5Ccdot%20%5Cnabla%20C%20%20-%20%5Cnabla%20%5Ccdot%20%28D%5Cnabla%20C%29%20%3D%26%20-%20k_%7B%5Crm%20att%7DC%20%2B%20%5Cdfrac%7B1%7D%7B%5Ctheta%7Dk_%7B%5Crm%20det%7DS%20-%5Clambda_%7B%5Crm%20aq%7D%20C%5C%5C%0A%20%20%20%20%5C%5C%0A%20%20%20%20%5Cdfrac%7B1%7D%7B%5Ctheta%7D%5Cdfrac%7B%5Cpartial%20S%7D%7B%5Cpartial%20t%7D%20%3D%26%20k_%7B%5Crm%20att%7DC%20-%20%5Cdfrac%7B1%7D%7B%5Ctheta%7Dk_%7B%5Crm%20det%7DS%20-%5Clambda_%7B%5Crm%20im%7D%20S%5C%5C%0A%5Cend%7Barray%7D%0A%5Cend%7Bequation%2A%7D&bc=White&fc=Black&im=png&fs=18&ff=ccfonts,eulervm&edit=0)
+![Eq.1](/images/Eqn1.png)
 
 
 ## Instructions
