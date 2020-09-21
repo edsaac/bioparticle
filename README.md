@@ -1,5 +1,12 @@
-# VirusTransport_RxSandbox
-**BIOPARTICLE**: a PFLOTRAN Reaction Sandbox for virus transport
+```
+ _     _                        _   _      _
+| |__ (_) ___  _ __   __ _ _ __| |_(_) ___| | ___
+| '_ \| |/ _ \| '_ \ / _` | '__| __| |/ __| |/ _ \
+| |_) | | (_) | |_) | (_| | |  | |_| | (__| |  __/
+|_.__/|_|\___/| .__/ \__,_|_|   \__|_|\___|_|\___|
+              |_|
+```
+## **a PFLOTRAN Reaction Sandbox for virus transport**
 
 ![gifBioparticle](./images/virusBlob.gif)
 
