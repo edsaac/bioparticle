@@ -1,0 +1,192 @@
+#==============================================================================
+#Description: Toy problem for richards equation
+#Flow: RICHARDS
+#==============================================================================
+
+############# General Configuration ###############
+
+SIMULATION
+  SIMULATION_TYPE SUBSURFACE
+  PROCESS_MODELS
+    SUBSURFACE_TRANSPORT transport
+      MODE GIRT
+    /
+  /
+END
+
+############# FLOW CONFIGURATION ###############
+SUBSURFACE
+
+SPECIFIED_VELOCITY
+  UNIFORM? YES
+  DATASET 0.d0 0.d0 2.05d0 cm/h
+END
+
+############# GRID ###############
+GRID
+  TYPE STRUCTURED CARTESIAN
+  NXYZ 1 1 100
+  BOUNDS
+    0.d0   0.d0   0.d0
+    0.05d0 0.05d0 0.50d0
+  /
+END
+
+############# REGIONS ###############
+REGION Region__all
+  COORDINATES
+    0.d0   0.d0   0.d0
+    0.05d0 0.05d0 0.50d0
+  /
+END
+
+REGION Face__Top
+  COORDINATES
+    0.05d0 0.05d0 0.50d0
+    0.d0 0.d0 0.50d0
+  /
+  FACE TOP
+END
+
+REGION Face__Bottom
+  COORDINATES
+    0.d0 0.d0 0.d0
+    0.05d0 0.05d0 0.d0
+  /
+  FACE BOTTOM
+END
+
+REGION Obs__PointOutflow
+  COORDINATES
+    0.025d0 0.025d0 0.50d0
+  /
+END
+
+############# OBSERVATION ###############
+OBSERVATION
+  REGION Obs__PointOutflow
+END
+
+############# FLUID ###############
+FLUID_PROPERTY
+  DIFFUSION_COEFFICIENT 1.d-9
+END
+
+############# SOILS ###############
+MATERIAL_PROPERTY soil1
+  ID 1
+  POROSITY 0.37d0
+  TORTUOSITY 0.5d0
+END
+
+########### TRANSPORT CONDITIONS #############
+TRANSPORT_CONDITION ic__initial_t
+  TYPE DIRICHLET_ZERO_GRADIENT
+  CONSTRAINT_LIST
+    0.d0 initial_constraint
+  /
+END
+
+TRANSPORT_CONDITION bc__inflow_t
+  TYPE DIRICHLET_ZERO_GRADIENT
+  CONSTRAINT_LIST
+    0.0d0 inlet_constraint
+    1.7d5 clean_inlet
+  /
+END
+
+TRANSPORT_CONDITION bc__outflow_t
+  TYPE ZERO_GRADIENT
+  CONSTRAINT_LIST
+    0.d0 initial_constraint
+  /
+END
+
+############## CONSTRAINTS #################
+CONSTRAINT initial_constraint
+  CONCENTRATIONS
+    Vaq   1.d-30      T
+  /
+  IMMOBILE
+    Vim   1.d-30
+  /
+END
+
+CONSTRAINT inlet_constraint
+  CONCENTRATIONS
+    Vaq   1.66d-16      T
+  /
+END
+
+CONSTRAINT clean_inlet
+  CONCENTRATIONS
+    Vaq   1.d-30      T
+  /
+END
+
+############# COUPLERS ###############
+# initial condition
+INITIAL_CONDITION
+  REGION Region__all
+  TRANSPORT_CONDITION ic__initial_t
+END
+
+# boundary conditions
+BOUNDARY_CONDITION
+  REGION Face__Bottom
+  TRANSPORT_CONDITION bc__inflow_t
+END
+
+BOUNDARY_CONDITION
+  REGION Face__Top
+  TRANSPORT_CONDITION bc__outflow_t
+END
+
+############# STRATAS ###############
+STRATA
+  REGION Region__all
+  MATERIAL soil1
+END
+
+############# OUTPUT ###############
+OUTPUT
+  SNAPSHOT_FILE
+  	PERIODIC TIME 2.5d-1 d
+  /
+  
+  OBSERVATION_FILE
+    PERIODIC TIME 6.d1 s
+  /
+  FORMAT VTK
+  VELOCITY_AT_CENTER
+/
+
+############# TIME ###############
+TIME
+  FINAL_TIME 10.d0 d
+  INITIAL_TIMESTEP_SIZE 1.d-2 d
+  MAXIMUM_TIMESTEP_SIZE 5.d-1 d
+/
+
+############# CHEMISTRY MAGIC ###############
+CHEMISTRY
+  PRIMARY_SPECIES
+    Vaq
+  /
+  
+  IMMOBILE_SPECIES
+    Vim
+  /
+
+  DATABASE ../miscellaneous/rxn_database.dat
+  OUTPUT
+    TOTAL
+    ALL
+  /
+END
+
+############# REFERENCE VALUES ###############
+
+REFERENCE_PRESSURE 101325.
+
+END_SUBSURFACE
