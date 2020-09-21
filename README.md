@@ -15,7 +15,7 @@
 ***
 
 ## Tests
-- Breakthrough curves from a column experiment: [Click me](/tests/)
+- Breakthrough curves from a column experiment: [Click me](https://github.com/edsaac/VirusTransport_RxSandbox/tree/master/test)
 
 ***
 
