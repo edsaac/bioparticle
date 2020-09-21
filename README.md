@@ -15,7 +15,11 @@
 ***
 
 ## Tests
-- Breakthrough curves from a column experiment: [Click me](https://github.com/edsaac/VirusTransport_RxSandbox/tree/master/test)
+
+|Test|Link|
+|---|---|
+|Breakthrough curves from a column experiment | [![Badges](https://img.shields.io/badge/Test-PFLOTRAN-9cf.svg)](https://github.com/edsaac/VirusTransport_RxSandbox/tree/master/test)|
+
 
 ***
 
@@ -47,6 +51,5 @@ Details at https://bitbucket.org/pflotran/pflotran/wiki/Documentation/ReactionSa
 
 >Trying to replicate results from this paper: 
 >
->Sadeghi, G., Schijven, J.F., Behrends, T., Hassanizadeh, S.M., Gerritse, J. and Kleingeld, P.J. (2011), Systematic Study of Effects of pH and Ionic Strength on >Attachment of Phage PRD1. Groundwater, 49: 12-19. doi:10.1111/j.1745-6584.2010.00767.x
+>Sadeghi, G., Schijven, J.F., Behrends, T., Hassanizadeh, S.M., Gerritse, J. and Kleingeld, P.J. (2011), Systematic Study of Effects of pH and Ionic Strength on >Attachment of Phage PRD1. Groundwater, 49: 12-19. [![DOI:10.1111/j.1745-6584.2010.00767.x](https://zenodo.org/badge/DOI/10.1111/j.1745-6584.2010.00767.x.svg)](https://doi.org/10.1111/j.1745-6584.2010.00767.x)
 >
->http://doi.wiley.com/10.1111/j.1745-6584.2010.00767.x
