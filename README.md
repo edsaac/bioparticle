@@ -8,16 +8,17 @@
 ```
 ## **a PFLOTRAN Reaction Sandbox for virus transport**
 
-![gifBioparticle](./images/virusBlob.gif)
+<img src="./images/virusBlob.gif" alt="gifBiopartcile" width="600"/>
 
 ***
 
 ## Conceptual Mode
-![virusPaths](./images/virusPath.png)
+
+<img src="./images/virusPath.png" alt="virusPaths" width="600"/>
 
 **Mathematical description:**
 
-![Eq.1](./images/Eqn1.png)
+<img src="./images/Eqn1.png" alt="Math framework" width="600"/>
 
 ***
 
