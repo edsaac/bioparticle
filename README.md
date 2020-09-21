@@ -5,13 +5,17 @@
 
 ***
 
-## Conceptual Model
+## Conceptual Mode
 ![virusPaths](./images/virusPath.png)
 
 **Mathematical description:**
 
 ![Eq.1](./images/Eqn1.png)
 
+***
+
+## Tests
+- Breakthrough curves from a column experiment: [Click me](/tests/)
 
 ***
 
