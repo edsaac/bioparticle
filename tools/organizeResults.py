@@ -5,6 +5,7 @@ from os import system
 import sys
 
 FILE = str(sys.argv[1])
+Cmax = 1.66E-16
 
 try:
 	CLEAN = "clean" in str(sys.argv[2])
@@ -21,7 +22,7 @@ if CLEAN:
 
 ObservationPoint = read_csv(FILE,sep="  ",engine="python")
 
-Cmax = max(ObservationPoint["\"Total Vaq [M] Obs__PointOutflow (100) (0.025 0.025 0.498)\""])
+
 Cnorm = ObservationPoint["\"Total Vaq [M] Obs__PointOutflow (100) (0.025 0.025 0.498)\""]/Cmax
 Time = ObservationPoint["\"Time [d]\""]
 

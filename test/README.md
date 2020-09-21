@@ -4,7 +4,7 @@
 
 ![plugFlow](./plugFlow/breakthrough.png)
 
-## Only longitudinal dispersion
+## With longitudinal dispersion
 
 ![plugFlow](./longitudinalDispersion/breakthrough.png)
 
@@ -14,7 +14,7 @@
 
 ## Attachment & detachment (source + sink)
 
-![plugFlow](./attachmentDetachment/breakthrough.png)
+![plugFlow](./attachDetachment/breakthrough.png)
 
 ## Attachment, detachment & decay
 

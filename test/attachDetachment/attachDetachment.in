@@ -204,7 +204,7 @@ END
 ############# OUTPUT ###############
 OUTPUT
   SNAPSHOT_FILE
-  	PERIODIC TIME 1.d0 d
+  	PERIODIC TIME 2.5d-1 d
   /
   
   OBSERVATION_FILE
@@ -218,7 +218,7 @@ OUTPUT
 TIME
   FINAL_TIME 10.d0 d
   INITIAL_TIMESTEP_SIZE 1.d-2 d
-  MAXIMUM_TIMESTEP_SIZE 1.d0 d
+  MAXIMUM_TIMESTEP_SIZE 5.d-1 d
 /
 
 ############# CHEMISTRY MAGIC ###############
@@ -237,12 +237,12 @@ CHEMISTRY
       PARTICLE_NAME_IM Vim
       RATE_ATTACHMENT 1.11d-5
       RATE_DETACHMENT 7.22d-7
-      DECAY_AQUEOUS 1.94d-6
-      DECAY_ADSORBED 9.72d-6
+      DECAY_AQUEOUS 0.d0
+      DECAY_ADSORBED 0.d0
     /
   /
 
-  DATABASE ./rxn_database2.dat
+  DATABASE ../miscellaneous/rxn_database.dat
   OUTPUT
     TOTAL
     ALL
