@@ -26,7 +26,7 @@
 
 |Test|Link|
 |---|---|
-|Breakthrough curves from a column experiment | [![Badges](https://img.shields.io/badge/Test-PFLOTRAN-9cf.svg)](https://github.com/edsaac/VirusTransport_RxSandbox/tree/master/test)|
+|Breakthrough curves from a column experiment | [![Badges](https://img.shields.io/badge/Test-PFLOTRAN-9cf.svg)](https://github.com/edsaac/VirusTransport_RxSandbox/tree/master/test/breakthroughCurves/)|
 
 
 ***
