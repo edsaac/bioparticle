@@ -61,3 +61,6 @@ Details at https://bitbucket.org/pflotran/pflotran/wiki/Documentation/ReactionSa
 >
 >Sadeghi, G., Schijven, J.F., Behrends, T., Hassanizadeh, S.M., Gerritse, J. and Kleingeld, P.J. (2011), Systematic Study of Effects of pH and Ionic Strength on >Attachment of Phage PRD1. Groundwater, 49: 12-19. [![DOI:10.1111/j.1745-6584.2010.00767.x](https://zenodo.org/badge/DOI/10.1111/j.1745-6584.2010.00767.x.svg)](https://doi.org/10.1111/j.1745-6584.2010.00767.x)
 >
+_______
+
+[![OS<3](https://badges.frapsoft.com/os/v1/open-source.png?v=103)](https://github.com/ellerbrock/open-source-badges/)
