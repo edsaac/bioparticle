@@ -4,35 +4,105 @@
 
 1D saturated flow.
 
-|Parameter | | Value | Unit |
+|Column parameters | | Value | Unit |
 |---|---|--:|:--|
 |Lenght| *L* |50|cm|
-|Diameter| *D* | 5|cm|
-|Flow rate| *Q* |XX|cm/s|
-|Porosity| *φ* |0.36|-|
-|Inlet concentration | *C₀*| 1.66E-6 | mol/L |
+|Diameter| *Ø* | 5|cm|
+|Darcy flow| *q* |2.05|cm/h|
+|Porosity| *φ* |0.37|-|
+|Grain size| *d<sub>50</sub>*|0.44|mm|
 
-[//]: # (<img src="http://www.sciweavers.org/tex2img.php?eq=%5Cvarphi&bc=Transparent&fc=Black&im=png&fs=12&ff=arev&edit=0" align="center" border="0" alt="\varphi" width="17" height="15" />
-![plugFlow](http://www.sciweavers.org/tex2img.php?eq=%5Cvarphi&bc=Transparent&fc=Black&im=png&fs=12&ff=arev&edit=0) 
+<p>&nbsp;</p>
 
-## Results
+|Particle parameters | | Value | Unit |
+|---|---|--:|:--|
+|Size | *d<sub>p</sub>*| 62 | nm |
+|Isoelectric point| *IEP*| ~3.5| - |
+|Initial concentration| *C<sub>0</sub>*| 10<sup>5</sup>	| pfp/mL|
+| | |1.7 × 10<sup>-16</sup>|mol/L|
 
-### Plug flow
+***
+
+## **Plug flow case**
+
+|Parameter | | Value | Unit |
+|---|---|--:|:--|
+|Dispersion coef.| *α<sub>L</sub>* |0 |cm|
+|Attachment rate| *k<sub>att</sub>* |0|1/s|
+|Detachment rate| *k<sub>det</sub>* |0|1/s|
+|Decay while in aqueous phase| *λ<sub>aq</sub>* |0|1/s|
+|Decay while adsorbed to solid phase| *λ<sub>im</sub>* |0|1/s|
+<p>&nbsp;</p>
+
+**Results**
 
 ![plugFlow](./plugFlow/breakthrough.png)
 
-### With longitudinal dispersion
+***
+
+## **With longitudinal dispersion**
+
+|Parameter | | Value | Unit |
+|---|---|--:|:--|
+|Dispersion coef.| *α<sub>L</sub>* |0.2 |cm|
+|Attachment rate| *k<sub>att</sub>* |0|1/s|
+|Detachment rate| *k<sub>det</sub>* |0|1/s|
+|Decay while in aqueous phase| *λ<sub>aq</sub>* |0|1/s|
+|Decay while adsorbed to solid phase| *λ<sub>im</sub>* |0|1/s|
+<p>&nbsp;</p>
+
+**Results**
 
 ![plugFlow](./longitudinalDispersion/breakthrough.png)
 
-### Only attachment (sink)
+***
+
+## **Only attachment (sink)**
+|Parameter | | Value | Unit |
+|---|---|--:|:--|
+|Dispersion coef.| *α<sub>L</sub>* |0.2 |cm|
+|Attachment rate| *k<sub>att</sub>* |1.11 × 10<sup>-5</sup>|1/s|
+|Detachment rate| *k<sub>det</sub>* |0|1/s|
+|Decay while in aqueous phase| *λ<sub>aq</sub>* |0|1/s|
+|Decay while adsorbed to solid phase| *λ<sub>im</sub>* |0|1/s|
+<p>&nbsp;</p>
+
+**Results**
 
 ![plugFlow](./onlyAttachment/breakthrough.png)
 
-### Attachment & detachment (source + sink)
+***
+
+## **Attachment & detachment (source + sink)**
+|Parameter | | Value | Unit |
+|---|---|--:|:--|
+|Dispersion coef.| *α<sub>L</sub>* |0 |cm|
+|Attachment rate| *k<sub>att</sub>* |1.11 × 10<sup>-5</sup>|1/s|
+|Detachment rate| *k<sub>det</sub>* |7.22 × 10<sup>-7</sup>|1/s|
+|Decay while in aqueous phase| *λ<sub>aq</sub>* |0|1/s|
+|Decay while adsorbed to solid phase| *λ<sub>im</sub>* |0|1/s|
+<p>&nbsp;</p>
+
+**Results**
 
 ![plugFlow](./attachDetachment/breakthrough.png)
 
-### Attachment, detachment & decay
+***
+
+## **Attachment, detachment & decay**
+|Parameter | | Value | Unit |
+|---|---|--:|:--|
+|Dispersion coef.| *α<sub>L</sub>* |0 |cm|
+|Attachment rate| *k<sub>att</sub>* |1.11 × 10<sup>-5</sup>0|1/s|
+|Detachment rate| *k<sub>det</sub>* |7.22 × 10<sup>-7</sup>|1/s|
+|Decay while in aqueous phase| *λ<sub>aq</sub>* |1.94 × 10<sup>-6</sup>|1/s|
+|Decay while adsorbed to solid phase| *λ<sub>im</sub>* |9.72 × 10<sup>-6</sup>|1/s|
+<p>&nbsp;</p>
+
+**Results**
 
 ![plugFlow](./allProcesses/breakthrough.png)
+
+_______
+
+[![OS<3](https://badges.frapsoft.com/os/v1/open-source.png?v=103)]()
