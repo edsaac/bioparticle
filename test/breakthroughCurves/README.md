@@ -17,9 +17,8 @@
 |Particle parameters | | Value | Unit |
 |---|---|--:|:--|
 |Size | *d<sub>p</sub>*| 62 | nm |
-|Isoelectric point| *IEP*| ~3.5| - |
-|Initial concentration| *C<sub>0</sub>*| 10<sup>5</sup>	| pfp/mL|
-| | |1.7 × 10<sup>-16</sup>|mol/L|
+|Isoelectric point| *IEP*| ~ 3.5| - |
+|Initial concentration| *C<sub>0</sub>*| 1.66 × 10<sup>-16</sup>|mol/L|
 
 ***
 
@@ -27,7 +26,7 @@
 
 |Parameter | | Value | Unit |
 |---|---|--:|:--|
-|Dispersion coef.| *α<sub>L</sub>* |0 |cm|
+|Long. dispersion coefficient| *α<sub>L</sub>* |0 |cm|
 |Attachment rate| *k<sub>att</sub>* |0|1/s|
 |Detachment rate| *k<sub>det</sub>* |0|1/s|
 |Decay while in aqueous phase| *λ<sub>aq</sub>* |0|1/s|
@@ -44,7 +43,7 @@
 
 |Parameter | | Value | Unit |
 |---|---|--:|:--|
-|Dispersion coef.| *α<sub>L</sub>* |0.2 |cm|
+|Long. dispersion coefficient| *α<sub>L</sub>* |0.2 |cm|
 |Attachment rate| *k<sub>att</sub>* |0|1/s|
 |Detachment rate| *k<sub>det</sub>* |0|1/s|
 |Decay while in aqueous phase| *λ<sub>aq</sub>* |0|1/s|
@@ -53,14 +52,15 @@
 
 **Results**
 
-![plugFlow](./longitudinalDispersion/breakthrough.png)
+|<img src="./longitudinalDispersion/breakthrough.png" alt="Breakthrough curve" height=400>|<img src="./miscellaneous/gifs/onlyDispersion.gif" alt="Column flow" height=400>|
+
 
 ***
 
 ## **Only attachment (sink)**
 |Parameter | | Value | Unit |
 |---|---|--:|:--|
-|Dispersion coef.| *α<sub>L</sub>* |0.2 |cm|
+|Long. dispersion coefficient| *α<sub>L</sub>* |0.2 |cm|
 |Attachment rate| *k<sub>att</sub>* |1.11 × 10<sup>-5</sup>|1/s|
 |Detachment rate| *k<sub>det</sub>* |0|1/s|
 |Decay while in aqueous phase| *λ<sub>aq</sub>* |0|1/s|
@@ -69,14 +69,15 @@
 
 **Results**
 
-![plugFlow](./onlyAttachment/breakthrough.png)
+|<img src="./onlyAttachment/breakthrough.png" alt="Breakthrough curve" height=400>|<img src="./miscellaneous/gifs/onlyAttachment.gif" alt="Column flow" height=400>|
+
 
 ***
 
 ## **Attachment & detachment (source + sink)**
 |Parameter | | Value | Unit |
 |---|---|--:|:--|
-|Dispersion coef.| *α<sub>L</sub>* |0 |cm|
+|Long. dispersion coefficient| *α<sub>L</sub>* |0 |cm|
 |Attachment rate| *k<sub>att</sub>* |1.11 × 10<sup>-5</sup>|1/s|
 |Detachment rate| *k<sub>det</sub>* |7.22 × 10<sup>-7</sup>|1/s|
 |Decay while in aqueous phase| *λ<sub>aq</sub>* |0|1/s|
@@ -85,14 +86,14 @@
 
 **Results**
 
-![plugFlow](./attachDetachment/breakthrough.png)
+|<img src="./attachDetachment/breakthrough.png" alt="Breakthrough curve" height=300>|<img src="./miscellaneous/gifs/attachmentDetachment.gif" alt="Column flow" height=300>|
 
 ***
 
 ## **Attachment, detachment & decay**
 |Parameter | | Value | Unit |
 |---|---|--:|:--|
-|Dispersion coef.| *α<sub>L</sub>* |0 |cm|
+|Long. dispersion coefficient| *α<sub>L</sub>* |0 |cm|
 |Attachment rate| *k<sub>att</sub>* |1.11 × 10<sup>-5</sup>0|1/s|
 |Detachment rate| *k<sub>det</sub>* |7.22 × 10<sup>-7</sup>|1/s|
 |Decay while in aqueous phase| *λ<sub>aq</sub>* |1.94 × 10<sup>-6</sup>|1/s|
