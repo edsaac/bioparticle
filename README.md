@@ -64,7 +64,7 @@ Details at https://bitbucket.org/pflotran/pflotran/wiki/Documentation/ReactionSa
 
 ***
 
-### **Tree of this repository:***
+### ***Tree of this repository:***
 ```
 .
 ├── images
@@ -83,13 +83,13 @@ Details at https://bitbucket.org/pflotran/pflotran/wiki/Documentation/ReactionSa
 
 ### ***Compilation details***
 
-|Program|Version|Link|
-|---|--:|--:|
-|`PFLOTRAN`|v3.0|[![PFLOTRAN](https://img.shields.io/badge/Link-PFLOTRAN-9cf.svg)](https://www.pflotran.org/)|
-|`PETSc`|v3.13|[![PETSc](https://img.shields.io/badge/Link-PETSc-9cf.svg)](https://www.mcs.anl.gov/petsc/)|
-|`gfortran`|7.5.0|[![GNU Fortran](https://img.shields.io/badge/Link-GNU%20Fortran-9cf.svg)](https://gcc.gnu.org/fortran/)|
-|`make`|4.1|[![GNU Make](https://img.shields.io/badge/Link-GNU%20Make-9cf.svg)](https://www.gnu.org/software/make/)|
-|`Ubuntu`|v18.04|[![forthebadge](https://forthebadge.com/images/badges/works-on-my-machine.svg)](https://forthebadge.com)|
+|Using|version|Link|
+|--:|--:|--:|
+|`PFLOTRAN`|`v3.0`|[![PFLOTRAN](https://img.shields.io/badge/&#x1f4a7;-pflotran-blue?style=for-the-badge)](https://www.pflotran.org/)|
+|`PETSc`|`v3.13`|[![PETSc](https://img.shields.io/badge/&#x1f4a7;-petsc-blue?style=for-the-badge)](https://www.mcs.anl.gov/petsc/)|
+|`gfortran`|`7.5.0`|[![gfortran](https://img.shields.io/badge/-GNU%20Fortran-A42E2B?style=for-the-badge&logo=GNU)](https://gcc.gnu.org/fortran/)|
+|`make`|`4.1`|[![make](https://img.shields.io/badge/-GNU%20Make-A42E2B?style=for-the-badge&logo=GNU)](https://www.gnu.org/software/make/)|
+|`Ubuntu`|`v18.04`|[![myPC](https://forthebadge.com/images/badges/works-on-my-machine.svg)](https://forthebadge.com)|
 
 
 <p align="right">
