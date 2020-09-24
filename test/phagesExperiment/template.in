@@ -203,15 +203,15 @@ END
 
 ############# OUTPUT ###############
 OUTPUT
-  SNAPSHOT_FILE
-  	PERIODIC TIME 2.5d-1 d
-  /
+  # SNAPSHOT_FILE
+  # 	PERIODIC TIME 2.5d-1 d
+  # /
   
   OBSERVATION_FILE
     PERIODIC TIME 6.d1 s
   /
-  FORMAT VTK
-  VELOCITY_AT_CENTER
+#  FORMAT VTK
+#  VELOCITY_AT_CENTER
 /
 
 ############# TIME ###############
