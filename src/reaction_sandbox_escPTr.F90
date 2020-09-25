@@ -323,7 +323,7 @@ subroutine escPTr_React(this,Residual,Jacobian,compute_derivative, &
   kdet = 0.d0
 
   katt = this%rate_attachment
-  kdet = this%rate_detachment / porosity
+  kdet = this%rate_detachment
 !  PRINT *, "Assigned attachment/detachment rates" ! Edwin debugging    
 
   decayAq = this%decay_aqueous
