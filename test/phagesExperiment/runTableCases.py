@@ -50,7 +50,7 @@ def plotResults(U,pH,IS,PV,kATT,kDET,dAq,dIm):
   ax2.text(9.0,0.6,textBoxpH,\
     bbox=dict(boxstyle='round', facecolor='wheat', alpha=0.5),\
     horizontalalignment='right')
-
+  plt.tight_layout()
   plt.savefig(current_folder + "/breakthrough.png",transparent=False)
 
 ## Global variables
