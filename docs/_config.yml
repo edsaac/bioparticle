@@ -1,6 +1,7 @@
 theme: jekyll-theme-minimal
 title: bioparticle
 description: a PFLOTRAN reaction sandbox for particle transport.
+logo: /images/virusBlob.gif
 ---
 permalink: /instructions.html
 permalink: /theory.html
