@@ -4,4 +4,7 @@ description: a PFLOTRAN reaction sandbox for particle transport.
 ---
 permalink: /instructions.html
 permalink: /theory.html
+permalink: /listTests.html
 ---
+permalink: /test/breakthroughCol.html
+permalink: /test/phagesPRD1.html

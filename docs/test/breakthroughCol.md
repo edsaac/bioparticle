@@ -14,7 +14,7 @@ A fluid with some solute concentration is injected at one end of a cilyndrical s
 
 ## Description
 <p align="center">
-	<img src="./miscellaneous/gifs/descriptionProblem.png" alt="Breakthrough curve" height=400>
+	<img src="./gifs/descriptionProblem.png" alt="Breakthrough curve" height=400>
 </p>
 
 <p>
@@ -54,7 +54,7 @@ An injection of some bioparticle (e.g. a virus) concentration is set at the inle
 
 **Results**
 
-![plugFlow](./plugFlow/breakthrough.png)
+![plugFlow](../../test/breakthroughCurves/plugFlow/breakthrough.png)
 
 ***
 
@@ -71,7 +71,7 @@ An injection of some bioparticle (e.g. a virus) concentration is set at the inle
 
 **Results**
 
-<img src="./longitudinalDispersion/breakthrough.png" alt="Breakthrough curve" height=400><img src="./miscellaneous/gifs/onlyDispersion.gif" alt="Column flow" height=400>
+<img src="../../test/breakthroughCurves/longitudinalDispersion/breakthrough.png" alt="Breakthrough curve" height=400><img src="./gifs/onlyDispersion.gif" alt="Column flow" height=400>
 
 
 ***
@@ -88,7 +88,7 @@ An injection of some bioparticle (e.g. a virus) concentration is set at the inle
 
 **Results**
 
-<img src="./onlyAttachment/breakthrough.png" alt="Breakthrough curve" height=400> <img src="./miscellaneous/gifs/onlyAttachment.gif" alt="Column flow" height=400>
+<img src="../../test/breakthroughCurves/onlyAttachment/breakthrough.png" alt="Breakthrough curve" height=400> <img src="./gifs/onlyAttachment.gif" alt="Column flow" height=400>
 
 ***
 
@@ -104,7 +104,7 @@ An injection of some bioparticle (e.g. a virus) concentration is set at the inle
 
 **Results**
 
-<img src="./attachDetachment/breakthrough.png" alt="Breakthrough curve" height=300><img src="./miscellaneous/gifs/attachmentDetachment.gif" alt="Column flow" height=300>
+<img src="../../test/breakthroughCurves/attachDetachment/breakthrough.png" alt="Breakthrough curve" height=300><img src="./gifs/attachmentDetachment.gif" alt="Column flow" height=300>
 
 ***
 
@@ -120,7 +120,7 @@ An injection of some bioparticle (e.g. a virus) concentration is set at the inle
 
 **Results**
 
-![plugFlow](./allProcesses/breakthrough.png)
+![plugFlow](../../test/breakthroughCurves/allProcesses/breakthrough.png)
 
 _______
 
