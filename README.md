@@ -8,7 +8,7 @@
 ```
 ## **a PFLOTRAN Reaction Sandbox for virus transport**
 
-<img src="../images/virusBlob.gif" alt="gifBiopartcile" width="600"/>
+<img src="./images/virusBlob.gif" alt="gifBiopartcile" width="600"/>
 
 ***
 
