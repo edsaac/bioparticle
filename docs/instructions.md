@@ -1,4 +1,4 @@
-Compilation instructions
+## Compilation instructions
 
 1. Add this new reaction sandbox (*BIOPARTICLE*) to PFLOTRAN's source folder.
 ```
@@ -18,4 +18,7 @@ cd $PFLOTRAN_DIR/src/pflotran/
 make pflotran
 ```
 
-Details at https://bitbucket.org/pflotran/pflotran/wiki/Documentation/ReactionSandbox
+***
+[&#128279;](https://bitbucket.org/pflotran/pflotran/wiki/Documentation/ReactionSandbox) << More details about compiling a new PFLOTRAN's reaction sandbox. 
+
+[&#128281;](https://edsaac.github.io/VirusTransport_RxSandbox/) << Go back.

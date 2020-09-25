@@ -13,17 +13,11 @@
 
 ***
 
-## Conceptual Mode
+|Content|Link|
+|---|--:|
+|**Theory**|[&#128211;](https://edsaac.github.io/VirusTransport_RxSandbox/theory.html)|
+|**Compilation instructions**|[&#128296;](https://edsaac.github.io/VirusTransport_RxSandbox/instructions.html)|
 
-<img src="./images/virusPath.png" alt="virusPaths" width="600"/>
-
-**Mathematical description:**
-
-<img src="./images/Eqn1.png" alt="Math framework" width="600"/>
-
-***
-
-### Compilation instructions: [HERE](https://edsaac.github.io/VirusTransport_RxSandbox/instructions.html)
 
 ## Tests
 
