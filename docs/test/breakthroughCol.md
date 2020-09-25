@@ -50,6 +50,7 @@ An injection of some bioparticle (e.g. a virus) concentration is set at the inle
 |Detachment rate| *k<sub>det</sub>* |0|1/s|
 |Decay while in aqueous phase| *λ<sub>aq</sub>* |0|1/s|
 |Decay while adsorbed to solid phase| *λ<sub>im</sub>* |0|1/s|
+
 <p>&nbsp;</p>
 
 **Results**
@@ -67,6 +68,7 @@ An injection of some bioparticle (e.g. a virus) concentration is set at the inle
 |Detachment rate| *k<sub>det</sub>* |0|1/s|
 |Decay while in aqueous phase| *λ<sub>aq</sub>* |0|1/s|
 |Decay while adsorbed to solid phase| *λ<sub>im</sub>* |0|1/s|
+
 <p>&nbsp;</p>
 
 **Results**
@@ -84,6 +86,7 @@ An injection of some bioparticle (e.g. a virus) concentration is set at the inle
 |Detachment rate| *k<sub>det</sub>* |0|1/s|
 |Decay while in aqueous phase| *λ<sub>aq</sub>* |0|1/s|
 |Decay while adsorbed to solid phase| *λ<sub>im</sub>* |0|1/s|
+
 <p>&nbsp;</p>
 
 **Results**
@@ -100,6 +103,7 @@ An injection of some bioparticle (e.g. a virus) concentration is set at the inle
 |Detachment rate| *k<sub>det</sub>* |7.22 × 10<sup>-7</sup>|1/s|
 |Decay while in aqueous phase| *λ<sub>aq</sub>* |0|1/s|
 |Decay while adsorbed to solid phase| *λ<sub>im</sub>* |0|1/s|
+
 <p>&nbsp;</p>
 
 **Results**
@@ -116,6 +120,7 @@ An injection of some bioparticle (e.g. a virus) concentration is set at the inle
 |Detachment rate| *k<sub>det</sub>* |7.22 × 10<sup>-7</sup>|1/s|
 |Decay while in aqueous phase| *λ<sub>aq</sub>* |1.94 × 10<sup>-6</sup>|1/s|
 |Decay while adsorbed to solid phase| *λ<sub>im</sub>* |9.72 × 10<sup>-6</sup>|1/s|
+
 <p>&nbsp;</p>
 
 **Results**

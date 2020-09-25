@@ -54,7 +54,6 @@ An injection of an infective virus (PRD1) at a given concentration is set at the
 ***
 
 ## **List of parameters**
-> k and λ units in [h<sup>-1</sup>]
 
 <table>
 <tbody>
@@ -168,6 +167,9 @@ An injection of an infective virus (PRD1) at a given concentration is set at the
 </tr>
 </tbody>
 </table>
+
+> k and λ units in [h<sup>-1</sup>]
+
 <p>&nbsp;</p>
 
 
