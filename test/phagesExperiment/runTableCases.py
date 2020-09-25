@@ -10,11 +10,11 @@ def plotResults(U,pH,IS,PV,kATT,kDET,dAq,dIm):
   textBoxpH = "pH = {:n}".format(pH)\
     + "\nIS = {:n}".format(IS)
 
-  textBoxKin = "$k_{\\rm att}$"+" = {:.4f}".format(kATT)\
-    + "\n$k_{\\rm det}$"+" = {:.4f}".format(kDET)\
-    + "\n$\lambda_{\\rm aq}$"+" = {:.4f}".format(dAq)\
-    + "\n$\lambda_{\\rm im}$"+" = {:.4f}".format(dIm)
-
+  textBoxKin = \
+    "$k_{\\rm att}$"+" = {:.4f}".format(kATT) + " $h^{-1}$"\
+    +"\n$k_{\\rm det}$"+" = {:.4f}".format(kDET) + " $h^{-1}$"\
+    +"\n$\lambda_{\\rm aq}$"+" = {:.4f}".format(dAq)+ " $h^{-1}$"\
+    +"\n$\lambda_{\\rm im}$"+" = {:.4f}".format(dIm)+ " $h^{-1}$"
 
   system("sed -i 's/,/  /g' " + FILE)
   system("rm " + current_folder +"/*.out")
@@ -35,7 +35,7 @@ def plotResults(U,pH,IS,PV,kATT,kDET,dAq,dIm):
   ax1.set_xlim([0,10])
   ax1.set_xlabel("Pore Volume [$-$]",fontsize="large")
   ax1.axvline(x=PV,ls="dotted",c="gray",lw=1)
-  ax1.text(9.0,1.0E-3,textBoxKin,\
+  ax1.text(9.5,5.0E-3,textBoxKin,\
     bbox=dict(boxstyle='round', facecolor='wheat', alpha=0.5),\
     horizontalalignment='right')
 
