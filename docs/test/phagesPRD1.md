@@ -21,7 +21,8 @@ python3 runTableCases.py [CSV_PARAMETERS] [TEMPLATE_FILE] -run
 ```
 
 **More details of the real experiment:** <br>
-[![DOI:10.1111/j.1745-6584.2010.00767.x](https://zenodo.org/badge/DOI/10.1111/j.1745-6584.2010.00767.x.svg)](http://doi.wiley.com/10.1111/j.1745-6584.2010.00767.x)
+> Sadeghi, G., Schijven, J.F., Behrends, T., Hassanizadeh, S.M., Gerritse, J. and Kleingeld, P.J. (2011), Systematic Study of Effects of pH and Ionic Strength on >Attachment of Phage PRD1. Groundwater, 49: 12-19. [![DOI:10.1111/j.1745-6584.2010.00767.x](https://zenodo.org/badge/DOI/10.1111/j.1745-6584.2010.00767.x.svg)](https://doi.org/10.1111/j.1745-6584.2010.00767.x)
+>
 
 <p>&nbsp;</p>
 
@@ -30,9 +31,6 @@ python3 runTableCases.py [CSV_PARAMETERS] [TEMPLATE_FILE] -run
 ## Description
 
 [Picture for the experiment with dimensions]
-<p align="center">
-	<img src="" alt="Experimental setup" height=400>
-</p>
 
 <p>
 An injection of an infective virus (PRD1) at a given concentration is set at the inlet of a column experiment. The virus can either attach to the quartz matrix, dettach and re-enter the aqueous phase, and decay and lose infectivity. After some time, the bioparticle injection is stopped and only clean water keeps runing through the column. 
@@ -56,7 +54,6 @@ An injection of an infective virus (PRD1) at a given concentration is set at the
 ***
 
 ## **List of parameters**
-> k and λ units in [h<sup>-1</sup>]
 
 <table>
 <tbody>
@@ -170,6 +167,9 @@ An injection of an infective virus (PRD1) at a given concentration is set at the
 </tr>
 </tbody>
 </table>
+
+> k and λ units in [h<sup>-1</sup>]
+
 <p>&nbsp;</p>
 
 
@@ -184,18 +184,30 @@ An injection of an infective virus (PRD1) at a given concentration is set at the
 
 ## **PFLOTRAN Simulation**
 
-<img src="./CASE_001/breakthrough.png" alt="Column flow" width=600>
-<img src="./CASE_002/breakthrough.png" alt="Column flow" width=600>
-<img src="./CASE_003/breakthrough.png" alt="Column flow" width=600>
-<img src="./CASE_004/breakthrough.png" alt="Column flow" width=600>
-<img src="./CASE_005/breakthrough.png" alt="Column flow" width=600>
-<img src="./CASE_006/breakthrough.png" alt="Column flow" width=600>
-<img src="./CASE_007/breakthrough.png" alt="Column flow" width=600>
-<img src="./CASE_008/breakthrough.png" alt="Column flow" width=600>
-<img src="./CASE_009/breakthrough.png" alt="Column flow" width=600>
-<img src="./CASE_010/breakthrough.png" alt="Column flow" width=600>
-<img src="./CASE_011/breakthrough.png" alt="Column flow" width=600>
-<img src="./CASE_012/breakthrough.png" alt="Column flow" width=600>
+<img src="../../test/phagesExperiment/CASE_001/breakthrough.png" alt="Column flow" width=600>
+
+<img src="../../test/phagesExperiment/CASE_002/breakthrough.png" alt="Column flow" width=600>
+
+<img src="../../test/phagesExperiment/CASE_003/breakthrough.png" alt="Column flow" width=600>
+
+<img src="../../test/phagesExperiment/CASE_004/breakthrough.png" alt="Column flow" width=600>
+
+<img src="../../test/phagesExperiment/CASE_005/breakthrough.png" alt="Column flow" width=600>
+
+<img src="../../test/phagesExperiment/CASE_006/breakthrough.png" alt="Column flow" width=600>
+
+<img src="../../test/phagesExperiment/CASE_007/breakthrough.png" alt="Column flow" width=600>
+
+<img src="../../test/phagesExperiment/CASE_008/breakthrough.png" alt="Column flow" width=600>
+
+<img src="../../test/phagesExperiment/CASE_009/breakthrough.png" alt="Column flow" width=600>
+
+<img src="../../test/phagesExperiment/CASE_010/breakthrough.png" alt="Column flow" width=600>
+
+<img src="../../test/phagesExperiment/CASE_011/breakthrough.png" alt="Column flow" width=600>
+
+<img src="../../test/phagesExperiment/CASE_012/breakthrough.png" alt="Column flow" width=600>
+
 _______
 
 [![OS<3](https://badges.frapsoft.com/os/v1/open-source.png?v=103)]()
