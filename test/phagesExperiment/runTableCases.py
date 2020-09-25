@@ -35,6 +35,7 @@ def plotResults(U,pH,IS,PV,kATT,kDET,dAq,dIm):
   ax1.set_xlim([0,10])
   ax1.set_xlabel("Pore Volume [$-$]",fontsize="large")
   ax1.axvline(x=PV,ls="dotted",c="gray",lw=1)
+  ax1.axhspan(ymin=-1.0E-7,ymax=1.0E-6,facecolor="pink",alpha=0.2)
   ax1.text(9.5,5.0E-3,textBoxKin,\
     bbox=dict(boxstyle='round', facecolor='wheat', alpha=0.5),\
     horizontalalignment='right')
@@ -45,10 +46,10 @@ def plotResults(U,pH,IS,PV,kATT,kDET,dAq,dIm):
   ax2.set_ylim([-1.0E-2,1.02])
   ax2.set_xlim([0,10])
   ax2.set_xlabel("Pore Volume [$-$]",fontsize="large")
-  ax1.axvline(x=PV,ls="dotted",c="gray",lw=1)
+  ax2.axvline(x=PV,ls="dotted",c="gray",lw=1)
   ax2.legend(fontsize="large",loc="upper right")
   ax2.text(9.0,0.6,textBoxpH,\
-    bbox=dict(boxstyle='round', facecolor='wheat', alpha=0.5),\
+    bbox=dict(boxstyle='round', facecolor='purple', alpha=0.15),\
     horizontalalignment='right')
   plt.tight_layout()
   plt.savefig(current_folder + "/breakthrough.png",transparent=False)
