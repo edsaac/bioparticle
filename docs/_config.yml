@@ -1,3 +1,6 @@
 theme: jekyll-theme-minimal
-title: Welcome to bioparticle's homepage!
+title: bioparticle
 description: a PFLOTRAN reaction sandbox for particle transport.
+---
+permalink: /instructions.html
+---
