@@ -13,7 +13,7 @@ def plotResults(U,pH,IS,PV,kATT,kDET,dAq,dIm):
   textBoxKin = "$k_{\\rm att}$"+" = {:.4f}".format(kATT)\
     + "\n$k_{\\rm det}$"+" = {:.4f}".format(kDET)\
     + "\n$\lambda_{\\rm aq}$"+" = {:.4f}".format(dAq)\
-    + "\n$\lambda_{\\rm im}$"+" = {:.4f}".format(dIm)\
+    + "\n$\lambda_{\\rm im}$"+" = {:.4f}".format(dIm)
 
 
   system("sed -i 's/,/  /g' " + FILE)
@@ -24,7 +24,7 @@ def plotResults(U,pH,IS,PV,kATT,kDET,dAq,dIm):
   TimeInPoreVolumes = ObservationPoint["\"Time [d]\""] * (U*24.)/ColumnLenght
   
   Legend=["$\\dfrac{[V_{(aq)}]}{[V_{(aq)}]_0}$"]
-  fig = plt.figure(figsize=(10,4),facecolor="white")
+  plt.figure(figsize=(10,4),facecolor="white")
   
   ## Plot log-scale
   ax1 = plt.subplot(1,2,1)
@@ -143,5 +143,5 @@ for i in range(total_rows):
       setParameters.loc[i,tagsReplaceable["DetachRate"]],\
       setParameters.loc[i,tagsReplaceable["DecayAq"]],\
       setParameters.loc[i,tagsReplaceable["DecayIm"]])
-    input("Press Enter to continue...")
+    #input("Press Enter to continue...")
   
