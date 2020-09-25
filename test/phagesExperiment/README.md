@@ -24,6 +24,7 @@ python3 runTableCases.py [CSV_PARAMETERS] [TEMPLATE_FILE] -run
 [![DOI:10.1111/j.1745-6584.2010.00767.x](https://zenodo.org/badge/DOI/10.1111/j.1745-6584.2010.00767.x.svg)](http://doi.wiley.com/10.1111/j.1745-6584.2010.00767.x)
 
 <p>&nbsp;</p>
+
 ***
 
 ## Description
@@ -34,7 +35,7 @@ python3 runTableCases.py [CSV_PARAMETERS] [TEMPLATE_FILE] -run
 </p>
 
 <p>
-An injection of an infective virus (PRD1) at a known concentration is set at the inlet of a column experiment. The virus can either attach to the quartz matrix, dettach and reenter the aqueous phase, and decay and lose infectivity. After some time, the bioparticle injection is stopped and only clean water keeps runing through the column. 
+An injection of an infective virus (PRD1) at a given concentration is set at the inlet of a column experiment. The virus can either attach to the quartz matrix, dettach and re-enter the aqueous phase, and decay and lose infectivity. After some time, the bioparticle injection is stopped and only clean water keeps runing through the column. 
 </p>
 
 |Column parameters | | Value | Unit |
