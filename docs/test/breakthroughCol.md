@@ -79,6 +79,7 @@ An injection of some bioparticle (e.g. a virus) concentration is set at the inle
 ***
 
 ## **Only attachment (sink)**
+
 |Parameter | | Value | Unit |
 |---|---|--:|:--|
 |Long. dispersion coefficient| *α<sub>L</sub>* |0.2 |cm|
@@ -96,6 +97,7 @@ An injection of some bioparticle (e.g. a virus) concentration is set at the inle
 ***
 
 ## **Attachment & detachment (source + sink)**
+
 |Parameter | | Value | Unit |
 |---|---|--:|:--|
 |Long. dispersion coefficient| *α<sub>L</sub>* |0.2 |cm|
@@ -113,6 +115,7 @@ An injection of some bioparticle (e.g. a virus) concentration is set at the inle
 ***
 
 ## **Attachment, detachment & decay**
+
 |Parameter | | Value | Unit |
 |---|---|--:|:--|
 |Long. dispersion coefficient| *α<sub>L</sub>* |0.2 |cm|
