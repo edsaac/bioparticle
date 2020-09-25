@@ -125,7 +125,7 @@ An injection of some bioparticle (e.g. a virus) concentration is set at the inle
 
 **Results**
 
-![plugFlow](../../test/breakthroughCurves/allProcesses/breakthrough.png)
+![plugFlow](./breakthroughCol_images/allProcessesBTC.png)
 
 _______
 

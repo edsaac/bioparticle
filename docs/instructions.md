@@ -19,6 +19,19 @@ make pflotran
 ```
 
 ***
-[&#128279;](https://bitbucket.org/pflotran/pflotran/wiki/Documentation/ReactionSandbox) << More details about compiling a new PFLOTRAN's reaction sandbox. 
+
+### ***Compilation details***
+
+|Using|version|Link|
+|--:|--:|--:|
+|`PFLOTRAN`|`v3.0`|[![PFLOTRAN](https://img.shields.io/badge/&#x1f4a7;-PFLOTRAN-blue?style=flat)](https://www.pflotran.org/)|
+|`PETSc`|`v3.13`|[![PETSc](https://img.shields.io/badge/&#129518;-PETSc-blue?style=flat)](https://www.mcs.anl.gov/petsc/)|
+|`gfortran`|`7.5.0`|[![gfortran](https://img.shields.io/badge/-GNU%20Fortran-A42E2B?style=flat&logo=GNU)](https://gcc.gnu.org/fortran/)|
+|`make`|`4.1`|[![make](https://img.shields.io/badge/-GNU%20Make-A42E2B?style=flat&logo=GNU)](https://www.gnu.org/software/make/)|
+|`Ubuntu`|`v18.04`|[![ubuntu](https://img.shields.io/badge/-Ubuntu-black?style=flat&logo=ubuntu)](https://ubuntu.com/)|
+
+***
+
+More details about compiling a new PFLOTRAN's reaction sandbox. >> [&#128279;](https://bitbucket.org/pflotran/pflotran/wiki/Documentation/ReactionSandbox)
 
 [&#128281;](https://edsaac.github.io/VirusTransport_RxSandbox/) << Go back.
