@@ -55,8 +55,120 @@ An injection of an infective virus (PRD1) at a known concentration is set at the
 ***
 
 ## **List of parameters**
+> k and λ units in [h<sup>-1</sup>]
 
-[Insert table with list of 12 cases]
+<table>
+<tbody>
+<tr>
+<td style="text-align: right;">IS</td>
+<td>pH</td>
+<td>Folder</td>
+<td>k<sub>att</sub></td>
+<td>k<sub>det</sub></td>
+<td>λ<sub>aq</sub></td>
+<td>λ<sub>im</sub></td>
+</tr>
+<tr>
+<td rowspan="4">1</td>
+<td>8</td>
+<td><code>./CASE_001</code></td>
+<td>0.0045</td>
+<td>0.2000</td>
+<td>0.003</td>
+<td>0.015</td>
+</tr>
+<tr>
+<td>7</td>
+<td><code>./CASE_002</code></td>
+<td>0.0410</td>
+<td>0.0019</td>
+<td>0.005</td>
+<td>0.025</td>
+</tr>
+<tr>
+<td>6</td>
+<td><code>./CASE_003</code></td>
+<td>0.0700</td>
+<td>0.0009</td>
+<td>0.004</td>
+<td>0.025</td>
+</tr>
+<tr>
+<td>5</td>
+<td><code>./CASE_004</code></td>
+<td>0.1100</td>
+<td>0.0031</td>
+<td>0.006</td>
+<td>0.035</td>
+</tr>
+<tr>
+<td rowspan="4">10</td>
+<td>8</td>
+<td><code>./CASE_005</code></td>
+<td>0.0380</td>
+<td>0.0036</td>
+<td>0.007</td>
+<td>0.040</td>
+</tr>
+<tr>
+<td>7</td>
+<td><code>./CASE_006</code></td>
+<td>0.0400</td>
+<td>0.0026</td>
+<td>0.007</td>
+<td>0.035</td>
+</tr>
+<tr>
+<td>6</td>
+<td><code>./CASE_007</code></td>
+<td>0.1400</td>
+<td>0.0030</td>
+<td>0.007</td>
+<td>0.035</td>
+</tr>
+<tr>
+<td>5</td>
+<td><code>./CASE_008</code></td>
+<td>0.8000</td>
+<td>0.0070</td>
+<td>0.007</td>
+<td>0.035</td>
+</tr>
+<tr>
+<td rowspan="4">20</td>
+<td>8</td>
+<td><code>./CASE_009</code></td>
+<td>0.1100</td>
+<td>0.0045</td>
+<td>0.007</td>
+<td>0.027</td>
+</tr>
+<tr>
+<td>7</td>
+<td><code>./CASE_010</code></td>
+<td>0.2100</td>
+<td>0.0140</td>
+<td>0.007</td>
+<td>0.027</td>
+</tr>
+<tr>
+<td>6</td>
+<td><code>./CASE_011</code></td>
+<td>0.5500</td>
+<td>0.0036</td>
+<td>0.007</td>
+<td>0.027</td>
+</tr>
+<tr>
+<td>5</td>
+<td><code>./CASE_012</code></td>
+<td>2.0800</td>
+<td>0.0000</td>
+<td>0.007</td>
+<td>0.035</td>
+</tr>
+</tbody>
+</table>
 <p>&nbsp;</p>
 
 
