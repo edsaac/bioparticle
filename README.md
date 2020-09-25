@@ -14,4 +14,4 @@
 
 ## Documentation
 
-Check github page.
+ https://edsaac.github.io/VirusTransport_RxSandbox/

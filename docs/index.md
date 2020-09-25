@@ -23,6 +23,8 @@
 
 ***
 
+### Compilation instructions: [HERE](https://edsaac.github.io/VirusTransport_RxSandbox/instructions.md)
+
 ## Tests
 
 |Test|Link|
