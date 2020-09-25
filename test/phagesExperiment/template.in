@@ -103,7 +103,7 @@ FLOW_CONDITION bc__inflow
  TYPE
    FLUX NEUMANN
  END
- FLUX <flow>
+ FLUX <darcyVel> cm/h
 END
 
 FLOW_CONDITION bc__outflow
@@ -141,7 +141,7 @@ TRANSPORT_CONDITION bc__inflow_t
   TYPE DIRICHLET_ZERO_GRADIENT
   CONSTRAINT_LIST
     0.0d0 inlet_constraint
-    <poreVol> clean_inlet
+    <elutionTime> clean_inlet
   /
 END
 
@@ -208,7 +208,7 @@ OUTPUT
   # /
   
   OBSERVATION_FILE
-    PERIODIC TIME 6.d1 s
+    PERIODIC TIME 1.d-1 d
   /
 #  FORMAT VTK
 #  VELOCITY_AT_CENTER
@@ -216,7 +216,7 @@ OUTPUT
 
 ############# TIME ###############
 TIME
-  FINAL_TIME 10.d0 d
+  FINAL_TIME <endTime> d
   INITIAL_TIMESTEP_SIZE 1.d-2 d
   MAXIMUM_TIMESTEP_SIZE 5.d-1 d
 /
@@ -235,13 +235,13 @@ CHEMISTRY
     BIOPARTICLE
       PARTICLE_NAME_AQ Vaq
       PARTICLE_NAME_IM Vim
-      RATE_ATTACHMENT <katt>
-      RATE_DETACHMENT <kdet>
-      DECAY_AQUEOUS <decayAq>
-      DECAY_ADSORBED <decayIm>
+      RATE_ATTACHMENT <katt> 1/h
+      RATE_DETACHMENT <kdet> 1/h
+      DECAY_AQUEOUS <decayAq> 1/h
+      DECAY_ADSORBED <decayIm> 1/h
     /
   /
-
+  LOG_FORMULATION
   DATABASE ../miscellaneous/rxn_database.dat
   OUTPUT
     TOTAL
