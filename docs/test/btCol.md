@@ -55,8 +55,8 @@ An injection of some bioparticle (e.g. a virus) concentration is set at the inle
 
 **Results**
 
-<p align="left">
-	<img src="./btCol_media/plots/bt_plugFlow.png" alt="Breakthrough curve" height=400>
+<p align="center">
+	<img src="./btCol_media/plots/bt_plugFlow.png" alt="Breakthrough curve" width=500>
 </p>
 
 ***
@@ -75,8 +75,8 @@ An injection of some bioparticle (e.g. a virus) concentration is set at the inle
 
 **Results**
 
-<p align="left">
-	<img src="./btCol_media/plots/bt_longDispersion.png" alt="Breakthrough curve" height=400><img src="./btCol_media/gifs/onlyDispersion.gif" alt="Breakthrough curve" height=400>
+<p align="center">
+	<img src="./btCol_media/plots/bt_longDispersion.png" alt="Breakthrough curve" width=500><img src="./btCol_media/gifs/onlyDispersion.gif" alt="Breakthrough curve" width=100>
 </p>
 
 ***
@@ -95,8 +95,8 @@ An injection of some bioparticle (e.g. a virus) concentration is set at the inle
 
 **Results**
 
-<p align="left">
-	<img src="./btCol_media/plots/bt_onlyAttachment.png" alt="Breakthrough curve" height=400><img src="./btCol_media/gifs/onlyAttachment.gif" alt="Breakthrough curve" height=400>
+<p align="center">
+	<img src="./btCol_media/plots/bt_onlyAttachment.png" alt="Breakthrough curve" width=500><img src="./btCol_media/gifs/onlyAttachment.gif" alt="Breakthrough curve" width=100>
 </p>
 
 ***
@@ -115,8 +115,8 @@ An injection of some bioparticle (e.g. a virus) concentration is set at the inle
 
 **Results**
 
-<p align="left">
-	<img src="./btCol_media/plots/bt_attachDetachment.png" alt="Breakthrough curve" height=300><img src="./btCol_media/gifs/attachDetachment.gif" alt="Breakthrough curve" height=300>
+<p align="center">
+	<img src="./btCol_media/plots/bt_attachDetachment.png" alt="Breakthrough curve" width=400><img src="./btCol_media/gifs/attachDetachment.gif" alt="Breakthrough curve" width=200>
 </p>
 
 ***
@@ -135,13 +135,13 @@ An injection of some bioparticle (e.g. a virus) concentration is set at the inle
 
 **Results**
 
-<p align="left">
-	<img src="./btCol_media/plots/bt_allProcesses.png" alt="Breakthrough curve" height=400>
+<p align="center">
+	<img src="./btCol_media/plots/bt_allProcesses.png" alt="Breakthrough curve" height=500>
 </p>
 
 _______
 
-[&#128281;](https://edsaac.github.io/bioparticle/) << Go back.
+[&#128281;](https://edsaac.github.io/bioparticle/listTests.html) << Go back.
 
 <p align="right">
 	<img src="https://badges.frapsoft.com/os/v1/open-source.png?v=103" alt="OS<3">
