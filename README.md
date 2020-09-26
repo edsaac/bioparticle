@@ -8,10 +8,10 @@
 ```
 ## **a PFLOTRAN Reaction Sandbox for virus transport**
 
-<img src="./images/virusBlob.gif" alt="gifBiopartcile" width="600"/>
+<img src="./docs/images/virusBlob.gif" alt="gifBiopartcile" width="600"/>
 
 ***
 
 ## Documentation
 
- https://edsaac.github.io/VirusTransport_RxSandbox/
+ [&#128213;](https://edsaac.github.io/bioparticle/) >> https://edsaac.github.io/bioparticle/

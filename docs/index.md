@@ -11,9 +11,9 @@
 
 | |Link|
 |---|--:|
-|**Theory**|[&#128211;](https://edsaac.github.io/VirusTransport_RxSandbox/theory.html)|
-|**Compilation instructions**|[&#128296;](https://edsaac.github.io/VirusTransport_RxSandbox/instructions.html)|
-|**List of tests**|[&#128300;](https://edsaac.github.io/VirusTransport_RxSandbox/listTests.html)|
+|**Theory**|[&#128211;](https://edsaac.github.io/bioparticle/theory.html)|
+|**Compilation instructions**|[&#128296;](https://edsaac.github.io/bioparticle/instructions.html)|
+|**List of tests**|[&#128300;](https://edsaac.github.io/bioparticle/listTests.html)|
 
 
 ***
