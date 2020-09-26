@@ -14,7 +14,7 @@ A fluid with some solute concentration is injected at one end of a cilyndrical s
 
 ## Description
 <p align="center">
-	<img src="./gifs/descriptionProblem.png" alt="Breakthrough curve" height=400>
+	<img src="./btCol_media/gifs/descriptionProblem.png" alt="Breakthrough curve" height=400>
 </p>
 
 <p>
@@ -55,7 +55,9 @@ An injection of some bioparticle (e.g. a virus) concentration is set at the inle
 
 **Results**
 
-![plugFlow](../../test/breakthroughCurves/plugFlow/breakthrough.png)
+<p align="left">
+	<img src="./btCol_media/plots/bt_plugFlow.png" alt="Breakthrough curve" height=400>
+</p>
 
 ***
 
@@ -73,8 +75,9 @@ An injection of some bioparticle (e.g. a virus) concentration is set at the inle
 
 **Results**
 
-<img src="../../test/breakthroughCurves/longitudinalDispersion/breakthrough.png" alt="Breakthrough curve" height=400><img src="./gifs/onlyDispersion.gif" alt="Column flow" height=400>
-
+<p align="left">
+	<img src="./btCol_media/plots/bt_longDispersion.png" alt="Breakthrough curve" height=400><img src="./btCol_media/gifs/onlyDispersion.gif" alt="Breakthrough curve" height=400>
+</p>
 
 ***
 
@@ -92,7 +95,9 @@ An injection of some bioparticle (e.g. a virus) concentration is set at the inle
 
 **Results**
 
-<img src="../../test/breakthroughCurves/onlyAttachment/breakthrough.png" alt="Breakthrough curve" height=400> <img src="./gifs/onlyAttachment.gif" alt="Column flow" height=400>
+<p align="left">
+	<img src="./btCol_media/plots/bt_onlyAttachment.png" alt="Breakthrough curve" height=400><img src="./btCol_media/gifs/onlyAttachment.gif" alt="Breakthrough curve" height=400>
+</p>
 
 ***
 
@@ -110,7 +115,9 @@ An injection of some bioparticle (e.g. a virus) concentration is set at the inle
 
 **Results**
 
-<img src="../../test/breakthroughCurves/attachDetachment/breakthrough.png" alt="Breakthrough curve" height=300><img src="./gifs/attachmentDetachment.gif" alt="Column flow" height=300>
+<p align="left">
+	<img src="./btCol_media/plots/bt_attachDetachment.png" alt="Breakthrough curve" height=300><img src="./btCol_media/gifs/attachDetachment.gif" alt="Breakthrough curve" height=300>
+</p>
 
 ***
 
@@ -128,8 +135,15 @@ An injection of some bioparticle (e.g. a virus) concentration is set at the inle
 
 **Results**
 
-![plugFlow](./breakthroughCol_images/allProcessesBTC.png)
+<p align="left">
+	<img src="./btCol_media/plots/bt_allProcesses.png" alt="Breakthrough curve" height=400>
+</p>
 
 _______
 
-[![OS<3](https://badges.frapsoft.com/os/v1/open-source.png?v=103)]()
+[&#128281;](https://edsaac.github.io/bioparticle/) << Go back.
+
+<p align="right">
+	<img src="https://badges.frapsoft.com/os/v1/open-source.png?v=103" alt="OS<3">
+</p>
+

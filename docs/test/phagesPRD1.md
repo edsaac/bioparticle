@@ -184,30 +184,34 @@ An injection of an infective virus (PRD1) at a given concentration is set at the
 
 ## **PFLOTRAN Simulation**
 
-<img src="../../test/phagesExperiment/CASE_001/breakthrough.png" alt="Column flow" width=600>
+<img src="./phagesPRD1_media/plot/CASE_1.png" alt="Column flow" width=600>
 
-<img src="../../test/phagesExperiment/CASE_002/breakthrough.png" alt="Column flow" width=600>
+<img src="./phagesPRD1_media/plot/CASE_2.png" alt="Column flow" width=600>
 
-<img src="../../test/phagesExperiment/CASE_003/breakthrough.png" alt="Column flow" width=600>
+<img src="./phagesPRD1_media/plot/CASE_3.png" alt="Column flow" width=600>
 
-<img src="../../test/phagesExperiment/CASE_004/breakthrough.png" alt="Column flow" width=600>
+<img src="./phagesPRD1_media/plot/CASE_4.png" alt="Column flow" width=600>
 
-<img src="../../test/phagesExperiment/CASE_005/breakthrough.png" alt="Column flow" width=600>
+<img src="./phagesPRD1_media/plot/CASE_5.png" alt="Column flow" width=600>
 
-<img src="../../test/phagesExperiment/CASE_006/breakthrough.png" alt="Column flow" width=600>
+<img src="./phagesPRD1_media/plot/CASE_6.png" alt="Column flow" width=600>
 
-<img src="../../test/phagesExperiment/CASE_007/breakthrough.png" alt="Column flow" width=600>
+<img src="./phagesPRD1_media/plot/CASE_7.png" alt="Column flow" width=600>
 
-<img src="../../test/phagesExperiment/CASE_008/breakthrough.png" alt="Column flow" width=600>
+<img src="./phagesPRD1_media/plot/CASE_8.png" alt="Column flow" width=600>
 
-<img src="../../test/phagesExperiment/CASE_009/breakthrough.png" alt="Column flow" width=600>
+<img src="./phagesPRD1_media/plot/CASE_9.png" alt="Column flow" width=600>
 
-<img src="../../test/phagesExperiment/CASE_010/breakthrough.png" alt="Column flow" width=600>
+<img src="./phagesPRD1_media/plot/CASE_10.png" alt="Column flow" width=600>
 
-<img src="../../test/phagesExperiment/CASE_011/breakthrough.png" alt="Column flow" width=600>
+<img src="./phagesPRD1_media/plot/CASE_11.png" alt="Column flow" width=600>
 
-<img src="../../test/phagesExperiment/CASE_012/breakthrough.png" alt="Column flow" width=600>
+<img src="./phagesPRD1_media/plot/CASE_12.png" alt="Column flow" width=600>
 
 _______
 
-[![OS<3](https://badges.frapsoft.com/os/v1/open-source.png?v=103)]()
+[&#128281;](https://edsaac.github.io/bioparticle/) << Go back.
+
+<p align="right">
+	<img src="https://badges.frapsoft.com/os/v1/open-source.png?v=103" alt="OS<3">
+</p>
