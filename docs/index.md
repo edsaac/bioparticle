@@ -38,8 +38,6 @@
 ***
 
 <p align="right">
-<img src="https://forthebadge.com/images/badges/works-on-my-machine.svg" alt="works on my machine"/>
-
-<img src="https://badges.frapsoft.com/os/v1/open-source.png?v=103" alt="os<3"/>
+    <img src="https://img.shields.io/badge/Works on-my machine-purple?style=for-the-badge">
+    <img src="https://img.shields.io/badge/-&#127802;-purple?style=for-the-badge">
 </p>
-

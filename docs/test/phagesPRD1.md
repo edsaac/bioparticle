@@ -210,10 +210,11 @@ An injection of an infective virus (PRD1) at a given concentration is set at the
 
 _______
 
-[&#128281;](https://edsaac.github.io/bioparticle/) << Go back.
+<a href="https://edsaac.github.io/bioparticle/listTests.html">
+	<img alt="Back" src="https://img.shields.io/badge/&#11013;-Go back-purple?style=for-the-badge">
+</a>
 
 <p align="right">
-
-  [![Open Source Love png1](https://badges.frapsoft.com/os/v1/open-source.png?v=103)](https://edsaac.github.io/bioparticle)
-
+    <img src="https://img.shields.io/badge/Works on-my machine-purple?style=for-the-badge">
+    <img src="https://img.shields.io/badge/-&#127802;-purple?style=for-the-badge">
 </p>

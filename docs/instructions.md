@@ -32,6 +32,13 @@ make pflotran
 
 ***
 
-More details about compiling a new PFLOTRAN's reaction sandbox. >> [&#128279;](https://bitbucket.org/pflotran/pflotran/wiki/Documentation/ReactionSandbox)
+**More details about compiling a new PFLOTRAN's reaction sandbox. >>** [&#128279;](https://bitbucket.org/pflotran/pflotran/wiki/Documentation/ReactionSandbox)
 
-[&#128281;](https://edsaac.github.io/bioparticle/) << Go back.
+<a href="https://edsaac.github.io/bioparticle/">
+	<img alt="Back" src="https://img.shields.io/badge/&#11013;-Go back-purple?style=for-the-badge">
+</a>
+
+<p align="right">
+    <img src="https://img.shields.io/badge/Works on-my machine-purple?style=for-the-badge">
+    <img src="https://img.shields.io/badge/-&#127802;-purple?style=for-the-badge">
+</p>

@@ -136,14 +136,16 @@ An injection of some bioparticle (e.g. a virus) concentration is set at the inle
 **Results**
 
 <p align="center">
-	<img src="./btCol_media/plots/bt_allProcesses.png" alt="Breakthrough curve" height=500>
+	<img src="./btCol_media/plots/bt_allProcesses.png" alt="Breakthrough curve" width=500>
 </p>
 
 _______
 
-[&#128281;](https://edsaac.github.io/bioparticle/listTests.html) << Go back.
+<a href="https://edsaac.github.io/bioparticle/listTests.html">
+	<img alt="Back" src="https://img.shields.io/badge/&#11013;-Go back-purple?style=for-the-badge">
+</a>
 
 <p align="right">
-	<img src="https://badges.frapsoft.com/os/v1/open-source.png?v=103" alt="OS<3">
+    <img src="https://img.shields.io/badge/Works on-my machine-purple?style=for-the-badge">
+    <img src="https://img.shields.io/badge/-&#127802;-purple?style=for-the-badge">
 </p>
-
