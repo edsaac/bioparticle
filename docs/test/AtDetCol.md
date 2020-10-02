@@ -64,7 +64,7 @@ An injection of nanoparticles at a given concentration is set at the inlet of a 
 
 <p>&nbsp;</p>
 
-<table class="demo">
+<table>
 	<thead>
 	<tr>
 		<th>Set<br></th>
@@ -102,8 +102,8 @@ An injection of nanoparticles at a given concentration is set at the inlet of a 
 	</tr>
 	<tbody>
 </table>
-<p>&nbsp;</p>
-<table class="demo">
+
+<table>
 	<thead>
 	<tr>
 		<th>Set<br></th>
@@ -142,10 +142,7 @@ An injection of nanoparticles at a given concentration is set at the inlet of a 
 	<tbody>
 </table>
 
-> k and λ units in [s<sup>-1</sup>]
-
-<p>&nbsp;</p>
-
+<p>k and λ units in [s<sup>-1</sup>]</p>
 
 ***
 
@@ -158,9 +155,9 @@ An injection of nanoparticles at a given concentration is set at the inlet of a 
 
 ## **PFLOTRAN Simulation**
 
-<img src="./AtDetCol_media/plot/OnlyAttachment.png" alt="Column flow" width=600>
+<img src="./AtDetCol_media/plot/OnlyAttachment.png" alt="Column flow" width=800>
 
-<img src="./AtDetCol_media/plot/VariableDetachment.png" alt="Column flow" width=600>
+<img src="./AtDetCol_media/plot/VariableDetachment.png" alt="Column flow" width=800>
 
 <p>&nbsp;</p>
 
