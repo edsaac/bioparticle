@@ -1,10 +1,17 @@
 ## List of tests
 
-### Breakthrough curves from column a experiment
+### Basic breakthrough curves from column a experiment
 
 | Link | Reference |
 |--:|:--|
 |[&#128208;](https://edsaac.github.io/bioparticle/test/btCol.html) | [![DOI:10.1016/B978-0-12-420022-7.00014-8](https://zenodo.org/badge/DOI/10.1016/B978-0-12-420022-7.00014-8.svg)](https://linkinghub.elsevier.com/retrieve/pii/B9780124200227000148) |
+
+### Figures for attachment and detachment (no decay)
+
+| Link | Reference |
+|--:|:--|
+|[&#128208;](https://edsaac.github.io/bioparticle/test/AtDetCol.html) | [![DOI:10.1016/j.cis.2017.06.002](https://zenodo.org/badge/DOI/10.1016/j.cis.2017.06.002.svg)](http://dx.doi.org/10.1016/j.cis.2017.06.002) |
+
 
 ### PRD1 column experiments
 
