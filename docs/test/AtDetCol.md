@@ -1,10 +1,10 @@
-# Continuum-based models 
+# Kinetic attachment/detachment continuum-based models for nanoparticles transport in porous media
 
 **What is this experiment?**<br>
-
+It simulates breakthrough curves of nanoparticles for attachment and detachment rates that span several orders of magnitude.
 
 **What does the code do?**<br>
-`runMultipleCases.py` raza
+`runMultipleCases.py` reads a CSV file with a list of cases to run in PFLOTRAN, allowing the variation of parameters that are pointed out in the template .IN file as follows:
 
 ```
   REACTION_SANDBOX
@@ -14,12 +14,16 @@
     /
   /
 ```
-the tag `<katt>` is replaced for the list of values indicated in the csv-file, in the column with the same header. 
+the tags `<katt>` and `<kdet>` are replaced for the list of values indicated in the csv-file, in the column with the same header. 
 
 **How to run this test?**<br>
 ```
-python3 runTableCases.py [CSV_PARAMETERS] [TEMPLATE_FILE] -run
+$ python3 runTableCases.py [CSV_PARAMETERS] [TEMPLATE_FILE] -run
 ```
+Where:
+- `[CASES.CSV]`: path to csv file with the list of parameters and the corresponding tags
+- `[TEMPLATE.IN]`: input file template for PFLOTRAN and the corresponding tags
+
 
 **More details of this experiment:** <br>
 - Babakhani, P., Bridge, J., Doong, R., & Phenrat, T. (2017). Continuum-based models and concepts for the transport of nanoparticles in saturated porous media: A state-of-the-science review. Advances in Colloid and Interface Science, 246, 75–104.  [![DOI:10.1016/j.cis.2017.06.002](https://zenodo.org/badge/DOI/10.1016/j.cis.2017.06.002.svg)](http://dx.doi.org/10.1016/j.cis.2017.06.002)
@@ -156,7 +160,7 @@ An injection of nanoparticles at a given concentration is set at the inlet of a 
 
 <img src="./AtDetCol_media/plot/OnlyAttachment.png" alt="Column flow" width=600>
 
-<img src="./AtDetCol_media/plot/OnlyAttachment.png" alt="Column flow" width=600>
+<img src="./AtDetCol_media/plot/VariableDetachment.png" alt="Column flow" width=600>
 
 <p>&nbsp;</p>
 
