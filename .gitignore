@@ -1,4 +1,6 @@
 # Ignore results from tests
-**/.vtk
-**/.out
-**/.txt
+**/*.vtk
+**/*.out
+**/*.txt
+**/*.tec
+**/CASE*/
