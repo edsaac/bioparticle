@@ -1,13 +1,33 @@
+###############################################################
+#  _     _                        _   _      _
+# | |__ (_) ___  _ __   __ _ _ __| |_(_) ___| | ___
+# | '_ \| |/ _ \| '_ \ / _` | '__| __| |/ __| |/ _ \
+# | |_) | | (_) | |_) | (_| | |  | |_| | (__| |  __/
+# |_.__/|_|\___/| .__/ \__,_|_|   \__|_|\___|_|\___|
+#               |_|
+# 
+###############################################################
+#
+# $ python3 runMultipleCases.py <CASES.CSV> <TEMPLATE.IN> -run
+# 
+# Where:
+#   - <CASES.CSV> path to csv file with the list of 
+#     parameters and the corresponding tags
+#   - <TEMPLATE.IN> input file template for PFLOTRAN and 
+#     the corresponding tags
+#
+###############################################################
+
 import numpy as np
 import matplotlib.pyplot as plt
 from pandas import read_csv
 from os import system
 import sys
 
-def get_cmap(n, name='Dark2'):
+def get_cmap(n, name='Dark2'): ## Color map for plots 
   return plt.cm.get_cmap(name, n)
 
-def build_label(L1,L2):
+def build_label(L1,L2): ## Build text block for label plots
   return "$k_{\\rm att}$"+" = {:.1E}".format(L1) + " $s^{-1}$" +\
     "\n$k_{\\rm det}$"+" = {:.1E}".format(L2) + " $s^{-1}$"
 
@@ -36,6 +56,29 @@ def plotResults(label,counter):
   ax2.plot(TimeInPoreVolumes,Cnorm,\
     c=cmap(counter),lw=2,alpha=0.9,\
     label=label) 
+
+def finishPlot():
+  #General plot configuration
+  ax1.set_yscale("symlog",\
+    linthreshy=1.0E-6,subsy=[1,2,3,4,5,6,7,8,9])
+  ax1.set_ylim([-1.0E-7,1.15])
+  ax1.set_xlim([0,5])
+  ax1.set_xlabel("Pore Volume [$-$]",\
+    fontsize="large")
+  ax1.set_ylabel("$\\dfrac{[V_{(aq)}]}{[V_{(aq)}]_0}$",\
+    fontsize="large")
+  ax1.axhspan(ymin=-1.0E-7,ymax=1.0E-6,facecolor="pink",alpha=0.2)
+  ax1.axvline(x=1.0,ls="dotted",c="gray",lw=0.6)
+
+  ax2.set_ylim([-1.0E-2,1.02])
+  ax2.set_xlim([0,5])
+  ax2.set_xlabel("Pore Volume [$-$]",\
+    fontsize="large")
+  ax2.legend(fontsize="small",loc="upper right")
+  ax2.axvline(x=1.0,ls="dotted",c="gray",lw=0.6)
+
+  plt.tight_layout()
+  plt.savefig(parameters_file[:-4]+".png",transparent=False)
 
 ## Global variables
 ColumnLenght = 25.5
@@ -135,25 +178,5 @@ for i in range(total_rows):
     U = setParameters.loc[i,tagsAccesory["FlowVel"]]
     plotResults(label,i)
 
-#General plot configuration
-ax1.set_yscale("symlog",\
-  linthreshy=1.0E-6,subsy=[1,2,3,4,5,6,7,8,9])
-ax1.set_ylim([-1.0E-7,1.15])
-ax1.set_xlim([0,5])
-ax1.set_xlabel("Pore Volume [$-$]",\
-  fontsize="large")
-ax1.set_ylabel("$\\dfrac{[V_{(aq)}]}{[V_{(aq)}]_0}$",\
-  fontsize="large")
-ax1.axhspan(ymin=-1.0E-7,ymax=1.0E-6,facecolor="pink",alpha=0.2)
-ax1.axvline(x=1.0,ls="dotted",c="gray",lw=0.6)
-
-ax2.set_ylim([-1.0E-2,1.02])
-ax2.set_xlim([0,5])
-ax2.set_xlabel("Pore Volume [$-$]",\
-  fontsize="large")
-ax2.legend(fontsize="small",loc="upper right")
-ax2.axvline(x=1.0,ls="dotted",c="gray",lw=0.6)
-
-plt.tight_layout()
-plt.savefig(parameters_file[:-4]+".png",transparent=False)
+finishPlot()
 
