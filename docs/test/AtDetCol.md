@@ -64,7 +64,7 @@ An injection of nanoparticles at a given concentration is set at the inlet of a 
 
 <p>&nbsp;</p>
 
-<table class="demo">
+<table>
 	<thead>
 	<tr>
 		<th>Set<br></th>
@@ -75,77 +75,61 @@ An injection of nanoparticles at a given concentration is set at the inlet of a 
 	</thead>
 	<tbody>
 	<tr>
-		<td rowspan=5>Only Attachment <br></td>
-    <td>&nbsp;1</td>
-		<td>&nbsp;0</td>
-		<td>&nbsp;0</td>
+		<td rowspan=5>Only Attachment</td>
+    <td>1A</td>
+		<td>0</td>
+		<td>0</td>
 	</tr>
 	<tr>
-		<td>&nbsp;2</td>
+		<td>2A</td>
 		<td>1.0 × 10<sup>-4</sup></td>
-		<td>&nbsp;0</td>
+		<td>0</td>
 	</tr>
 	<tr>
-		<td>&nbsp;3</td>
+		<td>3A</td>
 		<td>5.0 × 10<sup>-4</sup></td>
 		<td>&nbsp;0</td>
 	</tr>
 	<tr>
-		<td>&nbsp;4</td>
+		<td>4A</td>
 		<td>1.0 × 10<sup>-3</sup></td>
-		<td>&nbsp;0</td>
+		<td>0</td>
 	</tr>
 	<tr>
-		<td>&nbsp;5</td>
+		<td>5A</td>
 		<td>1.0 × 10<sup>-2</sup></td>
-		<td>&nbsp;0</td>
+		<td>0</td>
 	</tr>
-	<tbody>
-</table>
-<p>&nbsp;</p>
-<table class="demo">
-	<thead>
 	<tr>
-		<th>Set<br></th>
-		<th>Case</th>
-	  <th>k<sub>att</sub></th>
-    <th>k<sub>det</sub></th>
-	</tr>
-	</thead>
-	<tbody>
-	<tr>
-		<td rowspan=5>Vary detachment <br></td>
-    <td>&nbsp;1</td>
+    <td rowspan=5>Vary Detachment</td>
+    <td>1B</td>
 		<td>1.0 × 10<sup>-3</sup></td>
-    <td>&nbsp;0</td>
+    <td>0</td>
 	</tr>
 	<tr>
-		<td>&nbsp;2</td>
+		<td>2B</td>
 		<td>1.0 × 10<sup>-3</sup></td>
 		<td>1.0 × 10<sup>-4</sup></td>
 	</tr>
 	<tr>
-		<td>&nbsp;3</td>
+		<td>3B</td>
 		<td>1.0 × 10<sup>-3</sup></td>
 		<td>1.0 × 10<sup>-3</sup></td>
 	</tr>
 	<tr>
-		<td>&nbsp;4</td>
+		<td>4B</td>
 		<td>1.0 × 10<sup>-3</sup></td>
 		<td>1.0 × 10<sup>-2</sup></td>
 	</tr>
 	<tr>
-		<td>&nbsp;5</td>
+		<td>5B</td>
 		<td>1.0 × 10<sup>-3</sup></td>
 		<td>1.0 × 10<sup>-1</sup></td>
 	</tr>
-	<tbody>
+	</tbody>
 </table>
 
-> k and λ units in [s<sup>-1</sup>]
-
-<p>&nbsp;</p>
-
+<p>k and λ units in [s<sup>-1</sup>]</p>
 
 ***
 
@@ -158,9 +142,9 @@ An injection of nanoparticles at a given concentration is set at the inlet of a 
 
 ## **PFLOTRAN Simulation**
 
-<img src="./AtDetCol_media/plot/OnlyAttachment.png" alt="Column flow" width=600>
+<img src="./AtDetCol_media/plot/OnlyAttachment.png" alt="Column flow" width=800>
 
-<img src="./AtDetCol_media/plot/VariableDetachment.png" alt="Column flow" width=600>
+<img src="./AtDetCol_media/plot/VariableDetachment.png" alt="Column flow" width=800>
 
 <p>&nbsp;</p>
 
