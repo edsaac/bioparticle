@@ -75,7 +75,7 @@ An injection of nanoparticles at a given concentration is set at the inlet of a 
 	</thead>
 	<tbody>
 	<tr>
-		<td rowspan=5>Only Attachment <br></td>
+		<td rowspan=5>Only Attachment</td>
     <td>1A</td>
 		<td>0</td>
 		<td>0</td>
@@ -101,7 +101,7 @@ An injection of nanoparticles at a given concentration is set at the inlet of a 
 		<td>0</td>
 	</tr>
 	<tr>
-		<td rowspan=5>Vary detachment <br></td>
+    <td rowspan=5>Vary Detachment</td>
     <td>1B</td>
 		<td>1.0 × 10<sup>-3</sup></td>
     <td>0</td>
