@@ -7,7 +7,7 @@ It's a plot of concentration at some point over time
 A fluid with some solute concentration is injected at one end of a cilyndrical soil sample and its concentration is registered at the other end. 
 
 **More details at:** <br>
-[![DOI:10.1016/B978-0-12-420022-7.00014-8](https://zenodo.org/badge/DOI/10.1016/B978-0-12-420022-7.00014-8.svg)](https://linkinghub.elsevier.com/retrieve/pii/B9780124200227000148)
+- Kirkham, M. B. (2014). Pore Volume. In Principles of Soil and Plant Water Relations (pp. 229–241). Elsevier. [![DOI:10.1016/B978-0-12-420022-7.00014-8](https://zenodo.org/badge/DOI/10.1016/B978-0-12-420022-7.00014-8.svg)](https://linkinghub.elsevier.com/retrieve/pii/B9780124200227000148)
 
 <p>&nbsp;</p>
 ***

@@ -1,9 +1,11 @@
 # Kinetic attachment/detachment continuum-based models for nanoparticles transport in porous media
 
-**What is this experiment?**<br>
+<p align="right"> <b>Source code <a href="https://github.com/edsaac/bioparticle/tree/master/test/curvesBabakhani2017"><img src="https://raw.githubusercontent.com/tabler/tabler-icons/master/icons/code.svg"></a></b></p>
+
+### What is this experiment?
 It simulates breakthrough curves of nanoparticles for attachment and detachment rates that span several orders of magnitude.
 
-**What does the code do?**<br>
+### What does the code do?
 `runMultipleCases.py` reads a CSV file with a list of cases to run in PFLOTRAN, allowing the variation of parameters that are pointed out in the template .IN file as follows:
 
 ```
@@ -16,16 +18,15 @@ It simulates breakthrough curves of nanoparticles for attachment and detachment 
 ```
 the tags `<katt>` and `<kdet>` are replaced for the list of values indicated in the csv-file, in the column with the same header. 
 
-**How to run this test?**<br>
+### How to run this test?
 ```
-$ python3 runTableCases.py [CSV_PARAMETERS] [TEMPLATE_FILE] -run
+$ python3 runMultipleCases.py [CSV_PARAMETERS] [TEMPLATE_FILE] -run
 ```
 Where:
 - `[CASES.CSV]`: path to csv file with the list of parameters and the corresponding tags
 - `[TEMPLATE.IN]`: input file template for PFLOTRAN and the corresponding tags
 
-
-**More details of this experiment:** <br>
+### References for this experiment:
 - Babakhani, P., Bridge, J., Doong, R., & Phenrat, T. (2017). Continuum-based models and concepts for the transport of nanoparticles in saturated porous media: A state-of-the-science review. Advances in Colloid and Interface Science, 246, 75–104.  [![DOI:10.1016/j.cis.2017.06.002](https://zenodo.org/badge/DOI/10.1016/j.cis.2017.06.002.svg)](http://dx.doi.org/10.1016/j.cis.2017.06.002)
 
 - Babakhani, P., Fagerlund, F., Shamsai, A., Lowry, G. V., & Phenrat, T. (2015). Modified MODFLOW-based model for simulating the agglomeration and transport of polymer-modified Fe0 nanoparticles in saturated porous media. Environmental Science and Pollution Research, 25(8), 7180–7199. [![DOI:10.1007/s11356-015-5193-0](https://zenodo.org/badge/DOI/10.1007/s11356-015-5193-0.svg)](http://link.springer.com/10.1007/s11356-015-5193-0)
@@ -34,8 +35,6 @@ Where:
 ***
 
 ## Description
-
-[Picture for the experiment with dimensions]
 
 <p>
 An injection of nanoparticles at a given concentration is set at the inlet of a column experiment. After some time, the nanoparticle injection is stopped and only clean water keeps runing through the column. 
@@ -129,14 +128,7 @@ An injection of nanoparticles at a given concentration is set at the inlet of a 
 	</tbody>
 </table>
 
-<p>k and λ units in [s<sup>-1</sup>]</p>
-
-***
-
-## **Published results**
-
-[Insert citation here]
-<p>&nbsp;</p>
+<p align="right">k and λ units in [s<sup>-1</sup>]</p>
 
 ***
 
