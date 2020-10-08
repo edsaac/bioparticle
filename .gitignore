@@ -4,3 +4,5 @@
 **/*.txt
 **/*.tec
 **/CASE*/
+
+*/.vscode/
