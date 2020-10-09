@@ -1,0 +1,2 @@
+"<AquiferThickness>","<zTop>","<zBottom>","<AquiferLen>","<setbackDist>","<setbackPlusLeak>","<porosity>","<permeability>","<anisotropyRatio>","<longDisp>","<dummyY>","<rateLeaking>","<rateExtraction>"
+116,83.52,33.64,580,100,120,0.33,1.16E-09,1.6,0.001,10,10,-100
