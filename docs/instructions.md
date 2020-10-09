@@ -2,19 +2,25 @@
 
 1. Add this new reaction sandbox (*BIOPARTICLE*) to PFLOTRAN's source folder.
 ```
-cp src/reaction_sandbox_escPTr.F90  $PFLOTRAN_DIR/src/pflotran/reaction_sandbox_escPTr.F90
+$ cp src/reaction_sandbox_escPTr.F90  $PFLOTRAN_DIR/src/pflotran/reaction_sandbox_escPTr.F90
 ```
 2. Replace the main reaction sandbox fortran file to include *BIOPARTICLE* as one of the options.
 ```
-cp src/reaction_sandbox.F90  $PFLOTRAN_DIR/src/pflotran/reaction_sandbox.F90
+$ cp src/reaction_sandbox.F90  $PFLOTRAN_DIR/src/pflotran/reaction_sandbox.F90
 ```
-3. Update dependencies.
+3. Add the reaction sandbox to the list of objects to compile
 ```
-python3 $PFLOTRAN_DIR/python/src/python/pflotran_depedencies.py
+$ cd $PFLOTRAN_DIR/src/pflotran/
+$ sed -i '/reaction_sandbox_simple.o/a \ \ \ \ \${common_src}reaction_sandbox_escPTr.o \\' pflotran_object_files.txt
 ```
-4. Compile PFLOTRAN code.
+4. Update dependencies.
 ```
-cd $PFLOTRAN_DIR/src/pflotran/
+$ cd $PFLOTRAN_DIR/src/pflotran/
+$ python3 ../python/pflotran_depedencies.py
+```
+5. Compile PFLOTRAN code.
+```
+$ cd $PFLOTRAN_DIR/src/pflotran/
 make pflotran
 ```
 
