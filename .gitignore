@@ -3,6 +3,8 @@
 **/*.out
 **/*.txt
 **/*.tec
+**/*.h5
 **/CASE*/
+**/*.chk
 
 */.vscode/

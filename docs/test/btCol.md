@@ -1,5 +1,11 @@
 # Breakthrough curves from a column experiment
 
+<p align="right" style="font-size:10px;">
+<a href="https://github.com/edsaac/bioparticle/tree/master/test/breakthroughCurves">
+	<img src="https://img.shields.io/badge/Find me -in the repo-purple?style=for-the-badge&logo=github">
+</a>
+</p>
+
 **What is a breakthrough curve?**<br>
 It's a plot of concentration at some point over time
 
@@ -10,6 +16,7 @@ A fluid with some solute concentration is injected at one end of a cilyndrical s
 - Kirkham, M. B. (2014). Pore Volume. In Principles of Soil and Plant Water Relations (pp. 229–241). Elsevier. [![DOI:10.1016/B978-0-12-420022-7.00014-8](https://zenodo.org/badge/DOI/10.1016/B978-0-12-420022-7.00014-8.svg)](https://linkinghub.elsevier.com/retrieve/pii/B9780124200227000148)
 
 <p>&nbsp;</p>
+
 ***
 
 ## Description

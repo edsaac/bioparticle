@@ -1,6 +1,17 @@
 # Setback distance for a well 
 
-<p align="right"> <b>Source code <a href="https://github.com/edsaac/bioparticle/tree/master/test/setbackDistanceWell"><img src="https://raw.githubusercontent.com/tabler/tabler-icons/master/icons/code.svg"></a></b></p>
+<p align="right" style="font-size:10px;">
+<a href="https://github.com/edsaac/bioparticle/tree/master/test/setbackDistanceWell">
+	<img src="https://img.shields.io/badge/Find me -in the repo-purple?style=for-the-badge&logo=github">
+</a>
+</p>
+
+<p align="center" style="font-size:10px;">
+<a href="https://github.com/edsaac/bioparticle/tree/master/test/setbackDistanceWell">
+	<img src="https://img.shields.io/badge/IsThisWorking&#10067; -NO :(-red ?style=for-the-badge">
+</a>
+</p>
+
 
 ### What is this experiment?
 Flow towards a well with a leaking source at some distance. 

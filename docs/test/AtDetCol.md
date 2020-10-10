@@ -1,6 +1,10 @@
-# Kinetic attachment/detachment continuum-based models for nanoparticles transport in porous media
+# Kinetic attachment/detachment continuum-based model for nanoparticles transport in porous media
 
-<p align="right"> <b>Source code <a href="https://github.com/edsaac/bioparticle/tree/master/test/curvesBabakhani2017"><img src="https://raw.githubusercontent.com/tabler/tabler-icons/master/icons/code.svg"></a></b></p>
+<p align="right" style="font-size:10px;">
+<a href="https://github.com/edsaac/bioparticle/tree/master/test/curvesBabakhani2017">
+	<img src="https://img.shields.io/badge/Find me -in the repo-purple?style=for-the-badge&logo=github">
+</a>
+</p>
 
 ### What is this experiment?
 It simulates breakthrough curves of nanoparticles for attachment and detachment rates that span several orders of magnitude.

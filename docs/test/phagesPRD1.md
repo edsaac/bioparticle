@@ -1,5 +1,11 @@
 # One-site kinetic attachment of Phage PRD1
 
+<p align="right" style="font-size:10px;">
+<a href="https://github.com/edsaac/bioparticle/tree/master/test/phagesExperiment">
+	<img src="https://img.shields.io/badge/Find me -in the repo-purple?style=for-the-badge&logo=github">
+</a>
+</p>
+
 **What is this experiment?**<br>
 Column experiment for the transport (adsorption/decay) of a non-enveloped virus in a saturated porous media.
 

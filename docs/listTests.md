@@ -19,11 +19,11 @@
 |--:|:--|
 |[![Go](https://raw.githubusercontent.com/tabler/tabler-icons/master/icons/atom.svg)](https://edsaac.github.io/bioparticle/test/phagesPRD1.html) | [![DOI:10.1111/j.1745-6584.2010.00767.x](https://zenodo.org/badge/DOI/10.1111/j.1745-6584.2010.00767.x.svg)](https://doi.org/10.1111/j.1745-6584.2010.00767.x) |
 
-### Risk for wells
+### Setback distance for wells
 
 | Link | Reference |
 |--:|:--|
-|[&#128208;](https://edsaac.github.io/bioparticle/) | DOI badge|
+|[![Go](https://raw.githubusercontent.com/tabler/tabler-icons/master/icons/atom.svg)](https://edsaac.github.io/bioparticle/test/setbackWell.html)  | [![DOI:10.1016/j.watres.2010.01.002](https://zenodo.org/badge/DOI/10.1016/j.watres.2010.01.002.svg)](https://linkinghub.elsevier.com/retrieve/pii/S0043135410000126)|
 
 ***
 
