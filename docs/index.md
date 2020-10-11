@@ -1,3 +1,5 @@
+<link rel="shortcut icon" type="image/x-icon" href="https://raw.githubusercontent.com/tabler/tabler-icons/master/icons-png/planet.png">
+
 ```
  _     _                        _   _      _
 | |__ (_) ___  _ __   __ _ _ __| |_(_) ___| | ___
