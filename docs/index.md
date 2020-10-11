@@ -1,4 +1,4 @@
-<link rel="shortcut icon" type="image/x-icon" href="https://raw.githubusercontent.com/tabler/tabler-icons/master/icons-png/planet.png">
+<link rel="shortcut icon" type="image/x-icon" href="./images/favicon.png">
 
 ```
  _     _                        _   _      _
