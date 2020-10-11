@@ -22,17 +22,15 @@
 ```
 .
 ├── docs
+│   ├── images
+│   └── test
 ├── src
 └── test
     ├── breakthroughCurves
-    │   ├── allProcesses
-    │   ├── attachDetachment
-    │   ├── longitudinalDispersion
-    │   ├── miscellaneous
-    │   ├── onlyAttachment
-    │   └── plugFlow
-    └── phagesExperiment
-        └── miscellaneous
+    ├── curvesBabakhani2017
+    ├── phagesExperiment
+    ├── regionalDoublet
+    └── setbackDistanceWell
 ```
 
 ***

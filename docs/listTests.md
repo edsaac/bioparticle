@@ -26,6 +26,11 @@
     <td><a href="https://edsaac.github.io/bioparticle/test/setbackWell.html"><img alt="Link" src="https://raw.githubusercontent.com/tabler/tabler-icons/master/icons/atom.svg"></a></td>
     <td><a href="https://linkinghub.elsevier.com/retrieve/pii/S0043135410000126"><img alt="DOI:10.1016/j.watres.2010.01.002" src="https://zenodo.org/badge/DOI/10.1016/j.watres.2010.01.002.svg"></a></td>
   </tr>
+  <tr>
+    <td>Regional flow</td>
+    <td><a href="https://edsaac.github.io/bioparticle/test/regDoublet.html"><img alt="Link" src="https://raw.githubusercontent.com/tabler/tabler-icons/master/icons/atom.svg"></a></td>
+    <td><a href="https://doi.org/10.1002/2012WR013483"><img alt="10.1002/2012WR013483" src="https://zenodo.org/badge/DOI/10.1002/2012WR013483.svg"></a></td>
+  </tr>
 </table> 
 
 ***

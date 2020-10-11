@@ -52,18 +52,12 @@ A leaking pipe at some distance from an extraction well.
 
 |Aquifer geometry | | Value | Unit |
 |---|---|--:|:--|
-|Lenght| *L* |25.5|cm|
-|Diameter| *Ø* | 1.27|cm|
-|Grain size| *d<sub>50</sub>*|0.300|mm|
-|Porosity| *φ*|0.33|-|
-|Long. Dispersivity| *α<sub>L</sub>*|0.015|cm|
+
 
 <p>&nbsp;</p>
 
 |Particle parameters | | Value | Unit |
 |---|---|--:|:--|
-|Size | *d<sub>p</sub>*| ?? | nm |
-|Initial concentration| *C<sub>0</sub>*| 1.0 × 10<sup>-5</sup>|mol/L|
 
 <p>&nbsp;</p>
 
@@ -71,82 +65,10 @@ A leaking pipe at some distance from an extraction well.
 
 ## **List of parameters**
 
-<p>&nbsp;</p>
-
-<table>
-	<thead>
-	<tr>
-		<th>Set<br></th>
-		<th>Case</th>
-	  <th>k<sub>att</sub></th>
-    <th>k<sub>det</sub></th>
-	</tr>
-	</thead>
-	<tbody>
-	<tr>
-		<td rowspan=5>Only Attachment</td>
-    <td>1A</td>
-		<td>0</td>
-		<td>0</td>
-	</tr>
-	<tr>
-		<td>2A</td>
-		<td>1.0 × 10<sup>-4</sup></td>
-		<td>0</td>
-	</tr>
-	<tr>
-		<td>3A</td>
-		<td>5.0 × 10<sup>-4</sup></td>
-		<td>&nbsp;0</td>
-	</tr>
-	<tr>
-		<td>4A</td>
-		<td>1.0 × 10<sup>-3</sup></td>
-		<td>0</td>
-	</tr>
-	<tr>
-		<td>5A</td>
-		<td>1.0 × 10<sup>-2</sup></td>
-		<td>0</td>
-	</tr>
-	<tr>
-    <td rowspan=5>Vary Detachment</td>
-    <td>1B</td>
-		<td>1.0 × 10<sup>-3</sup></td>
-    <td>0</td>
-	</tr>
-	<tr>
-		<td>2B</td>
-		<td>1.0 × 10<sup>-3</sup></td>
-		<td>1.0 × 10<sup>-4</sup></td>
-	</tr>
-	<tr>
-		<td>3B</td>
-		<td>1.0 × 10<sup>-3</sup></td>
-		<td>1.0 × 10<sup>-3</sup></td>
-	</tr>
-	<tr>
-		<td>4B</td>
-		<td>1.0 × 10<sup>-3</sup></td>
-		<td>1.0 × 10<sup>-2</sup></td>
-	</tr>
-	<tr>
-		<td>5B</td>
-		<td>1.0 × 10<sup>-3</sup></td>
-		<td>1.0 × 10<sup>-1</sup></td>
-	</tr>
-	</tbody>
-</table>
-
-<p align="right">k and λ units in [s<sup>-1</sup>]</p>
 
 ***
 
 ## **PFLOTRAN Simulation**
-
-<img src="./AtDetCol_media/plot/OnlyAttachment.png" alt="Column flow" width=800>
-
-<img src="./AtDetCol_media/plot/VariableDetachment.png" alt="Column flow" width=800>
 
 <p>&nbsp;</p>
 

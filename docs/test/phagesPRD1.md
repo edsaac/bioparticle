@@ -36,8 +36,6 @@ python3 runTableCases.py [CSV_PARAMETERS] [TEMPLATE_FILE] -run
 
 ## Description
 
-[Picture for the experiment with dimensions]
-
 <p>
 An injection of an infective virus (PRD1) at a given concentration is set at the inlet of a column experiment. The virus can either attach to the quartz matrix, dettach and re-enter the aqueous phase, and decay and lose infectivity. After some time, the bioparticle injection is stopped and only clean water keeps runing through the column. 
 </p>
@@ -174,16 +172,8 @@ An injection of an infective virus (PRD1) at a given concentration is set at the
 </tbody>
 </table>
 
-> k and λ units in [h<sup>-1</sup>]
+<p align="right">k and λ units in [h<sup>-1</sup>] </p>
 
-<p>&nbsp;</p>
-
-
-***
-
-## **Published results**
-
-[Insert citation here]
 <p>&nbsp;</p>
 
 ***
