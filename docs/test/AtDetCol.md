@@ -1,3 +1,5 @@
+<link rel="shortcut icon" type="image/x-icon" href="../images/favicon.png">
+
 # Kinetic attachment/detachment continuum-based model for nanoparticles transport in porous media
 
 <p align="right" style="font-size:10px;">

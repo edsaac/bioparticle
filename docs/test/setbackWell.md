@@ -1,3 +1,5 @@
+<link rel="shortcut icon" type="image/x-icon" href="../images/favicon.png">
+
 # Setback distance for a well 
 
 <p align="right" style="font-size:10px;">

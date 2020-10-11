@@ -1,3 +1,5 @@
+<link rel="shortcut icon" type="image/x-icon" href="./images/favicon.png">
+
 ## Compilation instructions
 
 1. Add this new reaction sandbox (*BIOPARTICLE*) to PFLOTRAN's source folder.

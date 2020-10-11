@@ -1,3 +1,5 @@
+<link rel="shortcut icon" type="image/x-icon" href="../images/favicon.png">
+
 # Breakthrough curves from a column experiment
 
 <p align="right" style="font-size:10px;">

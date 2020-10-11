@@ -1,3 +1,5 @@
+<link rel="shortcut icon" type="image/x-icon" href="./images/favicon.png">
+
 ## Conceptual Mode
 
 <img src="./images/virusPath.png" alt="virusPaths" width="600"/>
