@@ -109,6 +109,9 @@ FLOW_CONDITION ic__initial
   INTERPOLATION LINEAR
   DATUM 0.d0 0.d0 <AquiferThickness>
   PRESSURE 101325.d0
+  GRADIENT
+    PRESSURE 0. 0. 0.
+  /
 END
 
 FLOW_CONDITION BC1__inflow
@@ -242,7 +245,7 @@ OUTPUT
   #   PERIODIC TIME <obsTimeStep> s
   # /
   #
-  FORMAT VTK
+  FORMAT HDF5
   VELOCITY_AT_CENTER
 /
 
@@ -250,7 +253,7 @@ OUTPUT
 TIME
   FINAL_TIME 5.0d1 d
   INITIAL_TIMESTEP_SIZE 1.0d-2 d
-  MAXIMUM_TIMESTEP_SIZE 2.0d-0 d
+  MAXIMUM_TIMESTEP_SIZE 1.0d-0 d
 /
 
 ############# CHEMISTRY MAGIC ###############
@@ -273,6 +276,7 @@ CHEMISTRY
   #     DECAY_ADSORBED <decayIm> 1/s
   #   /
   # /
+  
   LOG_FORMULATION
   DATABASE ../miscellaneous/rxn_database.dat
   OUTPUT

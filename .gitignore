@@ -6,5 +6,7 @@
 **/*.h5
 **/CASE*/
 **/*.chk
-
+**/*.ogv
+**/*.pvsm
+**/*.pft
 */.vscode/
