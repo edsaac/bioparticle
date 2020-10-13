@@ -1,3 +1,5 @@
+<link rel="shortcut icon" type="image/x-icon" href="./images/favicon.png">
+
 ```
  _     _                        _   _      _
 | |__ (_) ___  _ __   __ _ _ __| |_(_) ___| | ___
