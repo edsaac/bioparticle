@@ -38,6 +38,22 @@ REGION Region__all
   /
 END
 
+REGION Face__BC0_Top1
+  COORDINATES
+    0.d0 0.d0 <AquiferThickness>
+    <setbackDist> <dummyY> <AquiferThickness>
+  /
+  FACE TOP
+END
+
+REGION Face__BC0_Top2
+  COORDINATES
+    <setbackPlusLeak> 0.d0 <AquiferThickness>
+    <AquiferLen> <dummyY> <AquiferThickness>
+  /
+  FACE TOP
+END
+
 REGION Face__BC1_Right
   COORDINATES
     <AquiferLen> 0.d0 <AquiferThickness>
@@ -80,10 +96,11 @@ MATERIAL_PROPERTY soil1
   TORTUOSITY 0.2d0
   PERMEABILITY
     ANISOTROPIC
-    PERM_ISO <permeability>
-    VERTICAL_ANISOTROPY_RATIO <anisotropyRatio>
+    PERM_X <permeabilityX>
+    PERM_Y <permeabilityY>
+    PERM_Z <permeabilityZ>
   /
-  SATURATION_FUNCTION vanGenuchtenMualem1
+  SATURATION_FUNCTION cc1
   LONGITUDINAL_DISPERSIVITY <longDisp>
 END
 
@@ -101,6 +118,19 @@ CHARACTERISTIC_CURVES vanGenuchtenMualem1
   /
 END
 
+CHARACTERISTIC_CURVES cc1
+  SATURATION_FUNCTION VAN_GENUCHTEN
+    ALPHA  1.d-4
+    M 0.5d0
+    LIQUID_RESIDUAL_SATURATION 0.1d0
+    MAX_CAPILLARY_PRESSURE 1.d8
+  /
+  PERMEABILITY_FUNCTION MUALEM_VG_LIQ
+    M 0.5d0
+    LIQUID_RESIDUAL_SATURATION 0.1d0
+  /
+END
+
 ############# FLOW CONDITIONS ###############
 FLOW_CONDITION ic__initial
   TYPE
@@ -110,8 +140,15 @@ FLOW_CONDITION ic__initial
   DATUM 0.d0 0.d0 <AquiferThickness>
   PRESSURE 101325.d0
   GRADIENT
-    PRESSURE 0. 0. 0.
+    PRESSURE 0.001 0. 0.
   /
+END
+
+FLOW_CONDITION BC0__topSoil
+ TYPE
+   FLUX NEUMANN
+ /
+  FLUX 0.0d0
 END
 
 FLOW_CONDITION BC1__inflow
@@ -155,6 +192,7 @@ TRANSPORT_CONDITION BC2__leaking_t
   TYPE DIRICHLET_ZERO_GRADIENT
   CONSTRAINT_LIST
     0.0d0 leaking_inlet
+    5.0d0 clean_inlet
   /
 END
 
@@ -202,6 +240,18 @@ INITIAL_CONDITION
 END
 
 BOUNDARY_CONDITION
+  REGION Face__BC0_Top1
+  FLOW_CONDITION BC0__topSoil
+  TRANSPORT_CONDITION ic__initial_t
+END
+
+BOUNDARY_CONDITION
+  REGION Face__BC0_Top2
+  FLOW_CONDITION BC0__topSoil
+  TRANSPORT_CONDITION ic__initial_t
+END
+
+BOUNDARY_CONDITION
   REGION Face__BC1_Right
   FLOW_CONDITION BC1__inflow
   TRANSPORT_CONDITION BC1__inflow_t
@@ -228,7 +278,9 @@ END
 ############# OUTPUT ###############
 OUTPUT
   SNAPSHOT_FILE
-    PERIODIC TIME 2.0d0 d
+    PERIODIC TIME 0.5 d between 0. d and 5. d
+    PERIODIC TIME 2.0 d between 5. d and 100. d
+
     VARIABLES
       LIQUID_PRESSURE
       LIQUID_SATURATION
@@ -251,7 +303,7 @@ OUTPUT
 
 ############# TIME ###############
 TIME
-  FINAL_TIME 5.0d1 d
+  FINAL_TIME 1.0d2 d
   INITIAL_TIMESTEP_SIZE 1.0d-2 d
   MAXIMUM_TIMESTEP_SIZE 1.0d-0 d
 /
@@ -266,16 +318,16 @@ CHEMISTRY
     Vim
   /
 
-  # REACTION_SANDBOX
-  #   BIOPARTICLE
-  #     PARTICLE_NAME_AQ Vaq
-  #     PARTICLE_NAME_IM Vim
-  #     RATE_ATTACHMENT <katt> 1/s
-  #     RATE_DETACHMENT <kdet> 1/s
-  #     DECAY_AQUEOUS <decayAq> 1/s
-  #     DECAY_ADSORBED <decayIm> 1/s
-  #   /
-  # /
+  REACTION_SANDBOX
+    BIOPARTICLE
+      PARTICLE_NAME_AQ Vaq
+      PARTICLE_NAME_IM Vim
+      RATE_ATTACHMENT <katt> 1/d
+      RATE_DETACHMENT <kdet> 1/d
+      DECAY_AQUEOUS <decayAq> 1/d
+      DECAY_ADSORBED <decayIm> 1/d
+    /
+  /
   
   LOG_FORMULATION
   DATABASE ../miscellaneous/rxn_database.dat

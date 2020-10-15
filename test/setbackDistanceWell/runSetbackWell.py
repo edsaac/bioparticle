@@ -33,12 +33,17 @@ tagsReplaceable =	{
   "r_s"	      	: "<setbackDist>",
   "r_s+l_s"   	: "<setbackPlusLeak>",
   "Porosity"  	: "<porosity>",
-  "k_r"       	: "<permeability>",
-  "m"         	: "<anisotropyRatio>",
+  "k_x"       	: "<permeabilityX>",
+  "k_y"       	: "<permeabilityY>",
+  "k_z"       	: "<permeabilityZ>",
   "LongDisp"  	: "<longDisp>",
   "ySpan"     	: "<dummyY>",
   "rateLeaking" : "<rateLeaking>",
-  "rateExtract" : "<rateExtraction>"
+  "rateExtract" : "<rateExtraction>",
+  "AttachRate"  : "<katt>",
+  "DetachRate"  : "<kdet>",
+  "DecayAq"     : "<decayAq>",
+  "DecayIm"     : "<decayIm>"
 }
 
 ## Path to PFLOTRAN executable
