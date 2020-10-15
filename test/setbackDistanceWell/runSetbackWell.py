@@ -85,4 +85,5 @@ for i in range(total_rows):
       + "/g' " + current_file
     system(COMM)
   
-  system(PFLOTRAN_path + "-pflotranin " + current_file)
+  ## Run case
+  system(PFLOTRAN_path + "-pflotranin " + current_file + " &")

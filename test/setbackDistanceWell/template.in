@@ -279,7 +279,7 @@ END
 OUTPUT
   SNAPSHOT_FILE
     PERIODIC TIME 0.5 d between 0. d and 5. d
-    PERIODIC TIME 2.0 d between 5. d and 100. d
+    PERIODIC TIME 2.0 d between 5. d and 150. d
 
     VARIABLES
       LIQUID_PRESSURE
@@ -303,7 +303,7 @@ OUTPUT
 
 ############# TIME ###############
 TIME
-  FINAL_TIME 1.0d2 d
+  FINAL_TIME 1.5d2 d
   INITIAL_TIMESTEP_SIZE 1.0d-2 d
   MAXIMUM_TIMESTEP_SIZE 1.0d-0 d
 /
