@@ -176,24 +176,24 @@ END
 ########### TRANSPORT CONDITIONS #############
 TRANSPORT_CONDITION ic__initial_t
   TYPE DIRICHLET_ZERO_GRADIENT
+  TIME_UNITS d
   CONSTRAINT_LIST
-    TIME_UNITS d
     0.d0 initial_constraint
   /
 END
 
 TRANSPORT_CONDITION BC1__inflow_t
   TYPE DIRICHLET_ZERO_GRADIENT
+  TIME_UNITS d
   CONSTRAINT_LIST
-    TIME_UNITS d
     0.0d0 clean_inlet
   /
 END
 
 TRANSPORT_CONDITION BC2__leaking_t
   TYPE DIRICHLET_ZERO_GRADIENT
+  TIME_UNITS d
   CONSTRAINT_LIST
-    TIME_UNITS d
     0.0d0 leaking_inlet
     5.0d0 clean_inlet
   /
@@ -201,8 +201,8 @@ END
 
 TRANSPORT_CONDITION BC3__extraction_t
   TYPE ZERO_GRADIENT
+  TIME_UNITS d
   CONSTRAINT_LIST
-    TIME_UNITS d
     0.d0 zeroGrad_outflow
   /
 END
