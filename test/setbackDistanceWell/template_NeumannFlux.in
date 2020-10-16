@@ -1,0 +1,344 @@
+#==============================================================================
+#Description: Toy problem for richards equation
+#Flow: RICHARDS
+#==============================================================================
+
+############# General Configuration ###############
+
+SIMULATION
+  SIMULATION_TYPE SUBSURFACE
+  PROCESS_MODELS
+    SUBSURFACE_FLOW flow
+      MODE RICHARDS
+    /
+   SUBSURFACE_TRANSPORT transport
+     MODE GIRT
+    /
+  /
+END
+
+############# FLOW CONFIGURATION ###############
+SUBSURFACE
+
+############# GRID ###############
+GRID
+  TYPE STRUCTURED CARTESIAN
+  NXYZ 290 1 116
+  BOUNDS
+    0.d0   0.d0   0.d0
+    <AquiferLen> <dummyY> <AquiferThickness>
+  /
+END
+
+############# REGIONS ###############
+REGION Region__all
+  COORDINATES
+    0.d0  0.d0 0.d0
+    <AquiferLen> <dummyY> <AquiferThickness> 
+  /
+END
+
+REGION Face__BC0_Top1
+  COORDINATES
+    0.d0 0.d0 <AquiferThickness>
+    <setbackDist> <dummyY> <AquiferThickness>
+  /
+  FACE TOP
+END
+
+REGION Face__BC0_Top2
+  COORDINATES
+    <setbackPlusLeak> 0.d0 <AquiferThickness>
+    <AquiferLen> <dummyY> <AquiferThickness>
+  /
+  FACE TOP
+END
+
+REGION Face__BC1_Right
+  COORDINATES
+    <AquiferLen> 0.d0 <AquiferThickness>
+    <AquiferLen> <dummyY> 0.d0
+  /
+  FACE EAST
+END
+
+REGION Face__BC2_Top
+  COORDINATES
+    <setbackDist> 0.d0 <AquiferThickness>
+    <setbackPlusLeak> <dummyY> <AquiferThickness>
+  /
+  FACE TOP
+END
+
+REGION Face__BC3_Left
+  COORDINATES
+    0.d0 0.d0 <zBottom>
+    0.d0 <dummyY> <zTop>
+  /
+  FACE WEST
+END
+
+############# OBSERVATION ###############
+# OBSERVATION
+#   REGION Obs__PointOutflow
+# END
+
+############# FLUID ###############
+FLUID_PROPERTY
+  DIFFUSION_COEFFICIENT 1.d-9
+  PHASE LIQUID
+END
+
+############# SOILS ###############
+MATERIAL_PROPERTY soil1
+  ID 1
+  POROSITY <porosity>
+  TORTUOSITY 0.2d0
+  PERMEABILITY
+    ANISOTROPIC
+    PERM_X <permeabilityX>
+    PERM_Y <permeabilityY>
+    PERM_Z <permeabilityZ>
+  /
+  SATURATION_FUNCTION cc1
+  LONGITUDINAL_DISPERSIVITY <longDisp>
+END
+
+############# CURVES ###############
+CHARACTERISTIC_CURVES vanGenuchtenMualem1
+  SATURATION_FUNCTION VAN_GENUCHTEN
+    LIQUID_RESIDUAL_SATURATION 0.115
+    ALPHA  1.9401d-4
+    M 0.286d0 
+  /
+
+  PERMEABILITY_FUNCTION MUALEM_VG_LIQ
+    LIQUID_RESIDUAL_SATURATION 0.115
+    M 0.286d0
+  /
+END
+
+CHARACTERISTIC_CURVES cc1
+  SATURATION_FUNCTION VAN_GENUCHTEN
+    ALPHA  1.d-4
+    M 0.5d0
+    LIQUID_RESIDUAL_SATURATION 0.1d0
+    MAX_CAPILLARY_PRESSURE 1.d8
+  /
+  PERMEABILITY_FUNCTION MUALEM_VG_LIQ
+    M 0.5d0
+    LIQUID_RESIDUAL_SATURATION 0.1d0
+  /
+END
+
+############# FLOW CONDITIONS ###############
+FLOW_CONDITION ic__initial
+  TYPE
+    FLUX HYDROSTATIC
+  END
+  INTERPOLATION LINEAR
+  DATUM 0.d0 0.d0 <AquiferThickness>
+  PRESSURE 101325.d0
+  GRADIENT
+    PRESSURE 0.001 0. 0.
+  /
+END
+
+FLOW_CONDITION BC0__topSoil
+ TYPE
+   FLUX NEUMANN
+ /
+  FLUX 0.0d0
+END
+
+FLOW_CONDITION BC1__inflow
+ TYPE
+   PRESSURE HYDROSTATIC
+ END
+  DATUM 0.d0 0.d0 <AquiferThickness>
+  PRESSURE 101325.d0
+END
+
+FLOW_CONDITION BC2__leaking
+ TYPE
+   FLUX NEUMANN
+ /
+  FLUX <rateLeaking> m/d
+END
+
+FLOW_CONDITION BC3__extraction
+ TYPE
+   RATE SCALED_VOLUMETRIC_RATE NEIGHBOR_PERM
+ END
+  RATE <rateExtraction> m^3/day
+END
+
+########### TRANSPORT CONDITIONS #############
+TRANSPORT_CONDITION ic__initial_t
+  TYPE DIRICHLET_ZERO_GRADIENT
+  CONSTRAINT_LIST
+    0.d0 initial_constraint
+  /
+END
+
+TRANSPORT_CONDITION BC1__inflow_t
+  TYPE DIRICHLET_ZERO_GRADIENT
+  CONSTRAINT_LIST
+    0.0d0 clean_inlet
+  /
+END
+
+TRANSPORT_CONDITION BC2__leaking_t
+  TYPE DIRICHLET_ZERO_GRADIENT
+  CONSTRAINT_LIST
+    0.0d0 leaking_inlet
+    5.0d0 clean_inlet
+  /
+END
+
+TRANSPORT_CONDITION BC3__extraction_t
+  TYPE ZERO_GRADIENT
+  CONSTRAINT_LIST
+    0.d0 zeroGrad_outflow
+  /
+END
+
+############## CONSTRAINTS #################
+CONSTRAINT initial_constraint
+  CONCENTRATIONS
+    Vaq   1.d-30      T
+  /
+  IMMOBILE
+    Vim   1.d-30
+  /
+END
+
+CONSTRAINT clean_inlet
+  CONCENTRATIONS
+    Vaq   1.d-30      T
+  /
+END
+
+CONSTRAINT leaking_inlet
+  CONCENTRATIONS
+    Vaq   1.d-5      T
+  /
+END
+
+CONSTRAINT zeroGrad_outflow
+  CONCENTRATIONS
+    Vaq   1.d-30      T
+  /
+END
+
+############# COUPLERS ###############
+# initial condition
+INITIAL_CONDITION
+  REGION Region__all
+  FLOW_CONDITION ic__initial
+  TRANSPORT_CONDITION ic__initial_t
+END
+
+BOUNDARY_CONDITION
+  REGION Face__BC0_Top1
+  FLOW_CONDITION BC0__topSoil
+  TRANSPORT_CONDITION ic__initial_t
+END
+
+BOUNDARY_CONDITION
+  REGION Face__BC0_Top2
+  FLOW_CONDITION BC0__topSoil
+  TRANSPORT_CONDITION ic__initial_t
+END
+
+BOUNDARY_CONDITION
+  REGION Face__BC1_Right
+  FLOW_CONDITION BC1__inflow
+  TRANSPORT_CONDITION BC1__inflow_t
+END
+
+SOURCE_SINK
+  REGION Face__BC2_Top
+  FLOW_CONDITION BC2__leaking
+  TRANSPORT_CONDITION BC2__leaking_t
+END
+
+SOURCE_SINK
+  REGION Face__BC3_Left
+  FLOW_CONDITION BC3__extraction
+  TRANSPORT_CONDITION BC3__extraction_t
+END
+
+############# STRATAS ###############
+STRATA
+  REGION Region__all
+  MATERIAL soil1
+END
+
+############# OUTPUT ###############
+OUTPUT
+  SNAPSHOT_FILE
+    PERIODIC TIME 0.5 d between 0. d and 5. d
+    PERIODIC TIME 2.0 d between 5. d and 150. d
+
+    VARIABLES
+      LIQUID_PRESSURE
+      LIQUID_SATURATION
+    /
+  /
+  
+  MASS_BALANCE_FILE
+    PERIODIC TIME 2.0d0 d
+    TOTAL_MASS_REGIONS
+      Region__all
+    /
+  /  
+  # OBSERVATION_FILE
+  #   PERIODIC TIME <obsTimeStep> s
+  # /
+  #
+  FORMAT HDF5
+  VELOCITY_AT_CENTER
+/
+
+############# TIME ###############
+TIME
+  FINAL_TIME 1.5d2 d
+  INITIAL_TIMESTEP_SIZE 1.0d-2 d
+  MAXIMUM_TIMESTEP_SIZE 1.0d-0 d
+/
+
+############# CHEMISTRY MAGIC ###############
+CHEMISTRY
+  PRIMARY_SPECIES
+    Vaq
+  /
+  
+  IMMOBILE_SPECIES
+    Vim
+  /
+
+  REACTION_SANDBOX
+    BIOPARTICLE
+      PARTICLE_NAME_AQ Vaq
+      PARTICLE_NAME_IM Vim
+      RATE_ATTACHMENT <katt> 1/d
+      RATE_DETACHMENT <kdet> 1/d
+      DECAY_AQUEOUS <decayAq> 1/d
+      DECAY_ADSORBED <decayIm> 1/d
+    /
+  /
+  
+  LOG_FORMULATION
+  DATABASE ../miscellaneous/rxn_database.dat
+  OUTPUT
+    TOTAL
+    ALL
+  /
+END
+
+############# REFERENCE VALUES ###############
+
+REFERENCE_PRESSURE 101325.
+
+END_SUBSURFACE
