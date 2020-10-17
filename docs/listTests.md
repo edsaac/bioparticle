@@ -24,8 +24,8 @@
     <td><a href="https://doi.org/10.1111/j.1745-6584.2010.00767.x"><img alt="DOI:10.1111/j.1745-6584.2010.00767.x" src="https://zenodo.org/badge/DOI/10.1111/j.1745-6584.2010.00767.x.svg"></a></td>
   </tr>
   <tr>
-    <td>Setback distance for wells</td>
-    <td><a href="https://edsaac.github.io/bioparticle/test/setbackWell.html"><img alt="Link" src="https://raw.githubusercontent.com/tabler/tabler-icons/master/icons/atom.svg"></a></td>
+    <td>Setback distance for a well</td>
+    <td><a href="https://edsaac.github.io/bioparticle/test/2DWell.html"><img alt="Link" src="https://raw.githubusercontent.com/tabler/tabler-icons/master/icons/atom.svg"></a></td>
     <td><a href="https://linkinghub.elsevier.com/retrieve/pii/S0043135410000126"><img alt="DOI:10.1016/j.watres.2010.01.002" src="https://zenodo.org/badge/DOI/10.1016/j.watres.2010.01.002.svg"></a></td>
   </tr>
   <tr>
