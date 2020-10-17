@@ -1,0 +1,5 @@
+<AquiferThickness>,<zTop>,<zBottom>,<AquiferLen>,<setbackDist>,<setbackPlusLeak>,<porosity>,<permeabilityX>,<permeabilityY>,<permeabilityZ>,<longDisp>,<dummyY>,<rateLeaking>,<rateExtraction>,<katt>,<kdet>,<decayAq>,<decayIm>
+116,32.48,82.36,580,435,450,0.33,1E-10,1E-10,1E-10,0.001,1,1.5,-83.3,0.00E+00,0.00E+00,0.00E+00,0.00E+00
+116,32.48,82.36,580,435,450,0.33,1E-10,1E-10,1E-10,0.001,1,1.5,-83.3,0.00E+00,0.00E+00,5.00E-03,0.00E+00
+116,32.48,82.36,580,435,450,0.33,1E-10,1E-10,1E-10,0.001,1,1.5,-83.3,5.00E-02,1.00E-02,0.00E+00,0.00E+00
+116,32.48,82.36,580,435,450,0.33,1E-10,1E-10,1E-10,0.001,1,1.5,-83.3,5.00E-02,1.00E-02,5.00E-03,1.00E-02
