@@ -65,7 +65,7 @@ At the left-side of the domain there is an extraction well extracting water at a
 |---|---|--:|:--|
 |Distance to well| *r<sub>s</sub>* |435|m|
 |Leaking distance| *l<sub>s</sub>* |15|m|
-|Leaking rate| *q<sub>l</sub>* |X|m/s|
+|Leaking rate| *q<sub>l</sub>* |1.5|m/day|
 
 <p>&nbsp;</p>
 
@@ -73,7 +73,7 @@ At the left-side of the domain there is an extraction well extracting water at a
 |---|---|--:|:--|
 |Top elevation| *r<sub>s</sub>* |82.4|m|
 |Bottom elevation | *H* |32.5|m|
-|Flow rate| *Q<sub>e</sub>*|0.300|m<sup>3</sup>/d|
+|Flow rate| *Q<sub>e</sub>*|83.3|m<sup>3</sup>/d|
 
 <p>&nbsp;</p>
 
