@@ -89,7 +89,7 @@ total_rows = setParameters.shape[0]
 # Check that tags in CSV are in dictionary
 
 ## Delete previous cases
-system("rm -rf Case*")
+system("rm -rf CASE*")
 
 for i in range(total_rows):
   
