@@ -269,6 +269,7 @@ END
 TRANSPORT_CONDITION BC2__leaking_t
   TYPE DIRICHLET_ZERO_GRADIENT
   TIME_UNITS d
+  INTERPOLATION linear
   CONSTRAINT_LIST
     0.0d0 clean_inlet
     5.0d0 leaking_inlet
@@ -408,7 +409,7 @@ OUTPUT
 
 ############# TIME ###############
 TIME
-  FINAL_TIME 1.0d2 d
+  FINAL_TIME 3.0d1 d
   INITIAL_TIMESTEP_SIZE <desiredTimeStep> s
   MAXIMUM_TIMESTEP_SIZE 1.0d-0 d
 /
