@@ -115,4 +115,5 @@ for i in range(total_rows):
     system(COMM)
   
   ## Run case
-  system(PFLOTRAN_path + "-pflotranin " + current_file + " &")
+  #system(PFLOTRAN_path + "-pflotranin " + current_file + " &")
+  system(PFLOTRAN_path + "-pflotranin " + current_file)

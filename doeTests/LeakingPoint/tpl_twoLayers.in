@@ -20,6 +20,14 @@ END
 ############# FLOW CONFIGURATION ###############
 SUBSURFACE
 
+# NUMERICAL_METHODS flow
+#   # NEWTON_SOLVER
+#   #   USE_INFINITY_NORM_CONVERGENCE
+#   # /
+#   # TIMESTEPPER
+#   #   CFL_GOVERNOR 1.0
+#   # /
+# /
 ############# GRID ###############
 GRID
   TYPE STRUCTURED CARTESIAN
@@ -201,10 +209,35 @@ FLOW_CONDITION BC2__leaking
 END
 
 FLOW_CONDITION BC3__extraction
- TYPE
-   FLUX NEUMANN
- END
-  FLUX -<rateExtraction> #always in [m/s] 
+  TYPE
+    FLUX NEUMANN
+  END
+  FLUX LIST
+    TIME_UNITS d
+    DATA_UNITS m/s
+    0.00  0.00E+00
+    0.05  -8.18E-05
+    0.10  -1.64E-04
+    0.15  -2.45E-04
+    0.20  -3.27E-04
+    0.25  -4.09E-04
+    0.30  -4.91E-04
+    0.35  -5.72E-04
+    0.40  -6.54E-04
+    0.45  -7.36E-04
+    0.50  -8.18E-04
+    0.55  -8.99E-04
+    0.60  -9.81E-04
+    0.65  -1.06E-03
+    0.70  -1.14E-03
+    0.75  -1.23E-03
+    0.80  -1.31E-03
+    0.85  -1.39E-03
+    0.90  -1.47E-03
+    0.95  -1.55E-03
+    1.00  -1.64E-03
+    1.d2 -<rateExtraction> #always in [m/s] 
+  /
 END
 
 ########### TRANSPORT CONDITIONS #############
