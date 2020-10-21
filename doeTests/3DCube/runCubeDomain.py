@@ -15,6 +15,9 @@
 #     parameters and the corresponding tags
 #   - [TEMPLATE.IN] input file template for PFLOTRAN and 
 #     the corresponding tags
+#   - [RUNOPTION]:
+#       - debugLaptop (default)
+#       - deployWorkStation
 #
 ###############################################################
 
@@ -68,7 +71,19 @@ tagsReplaceable =	{
 }
 
 ## Path to PFLOTRAN executable
-PFLOTRAN_path = "mpirun -n 4 $PFLOTRAN_DIR/src/pflotran/pflotran "
+try:
+  runMode = str(sys.argv[3])
+except IndexError:
+  print("Runmode not specified, debug assumed")
+  runMode = "debugLaptop"
+
+if "debugLaptop" in runMode:
+  PFLOTRAN_path = "$PFLOTRAN_DIR/src/pflotran/pflotran "
+elif "deployWorkStation" in runMode:
+  PFLOTRAN_path = "mpirun -n 8 $PFLOTRAN_DIR/src/pflotran/pflotran "
+else:
+  print("Run mode not recognized. Defaulted to debug in laptop")
+  PFLOTRAN_path = "$PFLOTRAN_DIR/src/pflotran/pflotran "
 
 ## Table with the set of parameters
 try:
