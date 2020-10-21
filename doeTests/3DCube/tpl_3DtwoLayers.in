@@ -269,7 +269,6 @@ END
 TRANSPORT_CONDITION BC2__leaking_t
   TYPE DIRICHLET_ZERO_GRADIENT
   TIME_UNITS d
-  INTERPOLATION linear
   CONSTRAINT_LIST
     0.0d0 clean_inlet
     5.0d0 leaking_inlet

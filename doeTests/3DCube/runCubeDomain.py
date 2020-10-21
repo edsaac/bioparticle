@@ -77,10 +77,10 @@ except IndexError:
   print("Runmode not specified, debug assumed")
   runMode = "debugLaptop"
 
-if "debugLaptop" in runMode:
+if "debug" in runMode:
   PFLOTRAN_path = "$PFLOTRAN_DIR/src/pflotran/pflotran "
-elif "deployWorkStation" in runMode:
-  PFLOTRAN_path = "mpirun -n 8 $PFLOTRAN_DIR/src/pflotran/pflotran "
+elif "deploy" in runMode:
+  PFLOTRAN_path = "mpirun -n 4 $PFLOTRAN_DIR/src/pflotran/pflotran "
 else:
   print("Run mode not recognized. Defaulted to debug in laptop")
   PFLOTRAN_path = "$PFLOTRAN_DIR/src/pflotran/pflotran "
@@ -132,4 +132,6 @@ for i in range(total_rows):
   
   ## Run case
   #system(PFLOTRAN_path + "-pflotranin " + current_file + " &")
+  
+  #sys.exit("Got Here!")
   system(PFLOTRAN_path + "-pflotranin " + current_file)
