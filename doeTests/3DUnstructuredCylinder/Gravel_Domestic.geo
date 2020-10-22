@@ -9,8 +9,8 @@ Mesh.MshFileVersion = 2.2;
 // Dimensions of the column
 lenghtColumn = 2.00E+01;
 diameterColumn = 2.00E+02;
-meshSizeZ = 2.89E-01;
-meshSizeR = 2.89E+00;
+meshSizeZ = 2.50E-01;
+meshSizeR = 4.00E+00;
 
 // Conversion factor to SI (m)
 convertToMeters = 1./1.;
@@ -22,6 +22,11 @@ meshSizeR *= convertToMeters;
 
 // Calculate number of elements
 nElementsArc = Ceil(Fabs(diameterColumn*Pi/4)/meshSizeR);
+
+If (nElementsArc%2 == 0)
+  nElementsArc -= 1;  // Guarantees a node in the middle
+EndIf
+
 nElementsRad = Ceil(nElementsArc/2);
 nElementsZ = Ceil(Fabs(lenghtColumn)/(meshSizeZ));
 
@@ -44,6 +49,7 @@ Point(9) = {0,-rsq,0,meshSize};
 
 // Build lines
 b = 1;
+prog = 1.1;
 Circle(1) = {2,1,3};
 Circle(2) = {3,1,4};
 Circle(3) = {4,1,5};
@@ -68,7 +74,7 @@ Line(11) = {8,4};
 Line(12) = {9,5};
 
 For i In {9:12}
-  Transfinite Line{i} = nElementsRad Using Bump b;
+  Transfinite Line{i} = nElementsRad Using Progression prog;
 EndFor
 
 // Build loops
@@ -118,4 +124,4 @@ Q5[] = Extrude {0, 0, lenghtColumn} {
 Physical Volume("wholeDomain") = {Q1[1],Q2[1],Q3[1],Q4[1],Q5[1]};
 Physical Surface("bottom") = {1,2,3,4,5};
 Physical Surface("top") = {Q1[0],Q2[0],Q3[0],Q4[0],Q5[0]};
-Physical Surface("sides") = {Q1[3],Q2[3],Q3[3],Q4[3]};
+Physical Surface("sides") = {Q1[2],Q2[2],Q3[2],Q4[2]};
