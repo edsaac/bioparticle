@@ -133,5 +133,5 @@ for i in range(total_rows):
   ## Run case
   #system(PFLOTRAN_path + "-pflotranin " + current_file + " &")
   
-  #sys.exit("Got Here!")
+  sys.exit("Got Here!")
   system(PFLOTRAN_path + "-pflotranin " + current_file)

@@ -223,17 +223,24 @@ FLOW_CONDITION BC1__inflow
   PRESSURE 101325.d0
 END
 
+# FLOW_CONDITION BC2__leaking
+#  TYPE
+#    FLUX NEUMANN
+#  /
+#   FLUX LIST
+#     INTERPOLATION linear
+#     TIME_UNITS d
+#     DATA_UNITS m/s
+#     0.00 0.00E+00
+#     5.00 <rateLeaking> #always in [m/s] 
+#   /
+# END
+
 FLOW_CONDITION BC2__leaking
  TYPE
-   FLUX NEUMANN
+   PRESSURE dirichlet
  /
-  FLUX LIST
-    INTERPOLATION linear
-    TIME_UNITS d
-    DATA_UNITS m/s
-    0.00 0.00E+00
-    5.00 <rateLeaking> #always in [m/s] 
-  /
+  PRESSURE 101325.0
 END
 
 FLOW_CONDITION BC3__extraction
