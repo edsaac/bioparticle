@@ -117,7 +117,8 @@ tagsReplaceable =	{
   "IOdT"        : "<obsTimeStep>",
   "IOObsZ"      : "<observationAtWell>",
   ## TIMESTEPPING
-  "deltaT"      : "<desiredTimeStep>"
+  "deltaT"      : "<desiredTimeStep>",
+  "warmUpT"     : "<warmUpTime>"
 }
 
 ## Path to PFLOTRAN executable
@@ -202,4 +203,4 @@ for i in range(total_rows):
   #system(PFLOTRAN_path + "-pflotranin " + current_file + " &")
   
   #sys.exit("Got Here!")
-  #system(PFLOTRAN_path + "-pflotranin " + current_file)
+  system(PFLOTRAN_path + "-pflotranin " + current_file)
