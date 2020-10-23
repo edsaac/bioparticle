@@ -27,9 +27,54 @@ from pandas import read_csv
 from os import system
 import sys
 
-tagsCaseName =	{  
+def buildDXYZ(L,R,N,bump=False):
+  if abs(R) < 1e-10:
+    R = 1
+  
+  if bump:
+    L = L/2.0
+    N = int(N/2.0)
+  
+  # Cell-to-cell ratio
+  K = np.power(np.abs(R),1/(N-1))
+  KPow = np.power(np.ones(N)*K,np.arange(0,N,1,dtype="int16"))
+
+  # Smallest element
+  D1 = L/(np.sum(KPow))
+
+  # Array of distances
+  Distances = np.zeros(N)
+  Distances[0] = D1
+  for i in range(1,N-1):
+    Distances[i] = Distances[i-1] * K
+  Distances[N-1] = L - np.sum(Distances)
+  
+  if R < 0:
+    Distances = np.flip(Distances)
+  if bump:
+    Definitive = np.concatenate((Distances,np.flip(Distances)))
+  else:
+    Definitive = Distances
+  
+  Formatted = ""
+  for i in range(len(Definitive)):
+    Formatted+="{:.8E} ".format(Definitive[i])
+    if i == len(Definitive):
+      Formatted+=" \\n    "
+    elif i % 2 == 1 and i+1 < len(Definitive):
+      Formatted+="\\\\ \\n    "
+  
+  return Formatted
+
+tagsCaseName =  {  
   "Title"	   	  : "<Name>"
 }
+
+tagsGridding = {
+  "CellRatioX"  : "<CellRatioX>",
+  "CellRatioY"  : "<CellRatioY>",
+  "CellRatioZ"  : "<CellRatioZ>"
+} 
 
 ## Tags dictionary for variables in input file
 tagsReplaceable =	{
@@ -43,6 +88,13 @@ tagsReplaceable =	{
   "z_t"       	: "<wellZTop>",
   "z_b"	      	: "<wellZBottom>",
   "xyWell"	   	: "<wellXY>",
+  ## GRID
+  "nX"          : "<nX>",
+  "nY"          : "<nY>",
+  "nZ"          : "<nZ>",
+  "dX"          : "<dX>",
+  "dY"          : "<dY>",
+  "dZ"          : "<dZ>",
   ## MATERIALS
   ### Layer(1) | Top
   "theta1"    	: "<porosity1>",
@@ -65,8 +117,6 @@ tagsReplaceable =	{
   "IOdT"        : "<obsTimeStep>",
   "IOObsZ"      : "<observationAtWell>",
   ## TIMESTEPPING
-  "nX"          : "<nX>",
-  "nZ"          : "<nZ>",
   "deltaT"      : "<desiredTimeStep>"
 }
 
@@ -117,11 +167,29 @@ for i in range(total_rows):
   system("cp " + template_file + " " + current_folder+"/" + fileName + ".in")
   
   current_file = current_folder + "/" + fileName +".in"
- 
+  
   ## Replace tags for values in case
   for current_tag in tagsReplaceable:
     if "nX" in current_tag or "nZ" in current_tag:
       Value2Text = '{:}'.format(setParameters.loc[i,tagsReplaceable[current_tag]])
+    elif "dX" in current_tag:
+      Value2Text = buildDXYZ(\
+      setParameters.loc[i,tagsReplaceable["L"]],\
+      setParameters.loc[i,tagsGridding["CellRatioX"]],\
+      setParameters.loc[i,tagsReplaceable["nX"]],\
+      bump=True)
+    elif "dY" in current_tag:
+      Value2Text = buildDXYZ(\
+      setParameters.loc[i,tagsReplaceable["L"]],\
+      setParameters.loc[i,tagsGridding["CellRatioY"]],\
+      setParameters.loc[i,tagsReplaceable["nY"]],\
+      bump=True)
+    elif "dZ" in current_tag:
+      Value2Text = buildDXYZ(\
+      setParameters.loc[i,tagsReplaceable["H"]],\
+      setParameters.loc[i,tagsGridding["CellRatioZ"]],\
+      setParameters.loc[i,tagsReplaceable["nZ"]],\
+      bump=False)
     else:
       Value2Text = '{:.3E}'.format(setParameters.loc[i,tagsReplaceable[current_tag]])
     
@@ -133,5 +201,5 @@ for i in range(total_rows):
   ## Run case
   #system(PFLOTRAN_path + "-pflotranin " + current_file + " &")
   
-  sys.exit("Got Here!")
-  system(PFLOTRAN_path + "-pflotranin " + current_file)
+  #sys.exit("Got Here!")
+  #system(PFLOTRAN_path + "-pflotranin " + current_file)

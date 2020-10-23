@@ -32,10 +32,16 @@ SUBSURFACE
 GRID
   TYPE STRUCTURED CARTESIAN
   NXYZ <nX> <nX> <nZ>
-  BOUNDS
-    0.d0 0.d0 0.d0
-    <AquiferLen> <AquiferLen> <DomainDepth>
+  DXYZ 
+    <dX>
+    <dY>
+    <dZ>
   /
+
+  # BOUNDS
+  #   0.d0 0.d0 0.d0
+  #   <AquiferLen> <AquiferLen> <DomainDepth>
+  # /
 END
 
 ############# REGIONS ###############
