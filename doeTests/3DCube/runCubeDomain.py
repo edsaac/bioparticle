@@ -131,7 +131,7 @@ except IndexError:
 if "debug" in runMode:
   PFLOTRAN_path = "$PFLOTRAN_DIR/src/pflotran/pflotran "
 elif "deploy" in runMode:
-  PFLOTRAN_path = "mpirun -n 4 $PFLOTRAN_DIR/src/pflotran/pflotran "
+  PFLOTRAN_path = "mpirun -n 1 $PFLOTRAN_DIR/src/pflotran/pflotran "
 else:
   print("Run mode not recognized. Defaulted to debug in laptop")
   PFLOTRAN_path = "$PFLOTRAN_DIR/src/pflotran/pflotran "
@@ -201,6 +201,12 @@ for i in range(total_rows):
   
   ## Run case
   #system(PFLOTRAN_path + "-pflotranin " + current_file + " &")
-  
+  if "debug" in runMode:
+    system(PFLOTRAN_path + "-pflotranin " + current_file)
+  elif "deploy" in runMode:
+    system(PFLOTRAN_path + "-pflotranin " + current_file + " &")
+  else:
+    print("Run mode not recognized. Defaulted to debug in laptop")
+
   #sys.exit("Got Here!")
-  system(PFLOTRAN_path + "-pflotranin " + current_file)
+  #system(PFLOTRAN_path + "-pflotranin " + current_file)
