@@ -85,6 +85,8 @@ tagsReplaceable =	{
   "H_1"         : "<zInBetweenLayers>",
   "r_s"	      	: "<setbackDist>",
   "r_s+l_s"   	: "<setbackPlusLeak>",
+  "LeakingYN"   : "<leakingYNorth>",
+  "LeakingYS"   : "<leakingYSouth>",
   "z_t"       	: "<wellZTop>",
   "z_b"	      	: "<wellZBottom>",
   "xyWell"	   	: "<wellXY>",
@@ -98,13 +100,16 @@ tagsReplaceable =	{
   ## MATERIALS
   ### Layer(1) | Top
   "theta1"    	: "<porosity1>",
-  "k_xy1"       : "<permX1>",
-  "m1"         	: "<anisotropyRatio1>",
+  "k_x1"       : "<permX1>",
+  "k_y1"       : "<permY1>",
+  "k_z1"       : "<permZ1>",
   ### Layer(2) | Bottom
   "theta2"    	: "<porosity2>",
-  "k_xy2"       : "<permX2>",
-  "m2"         	: "<anisotropyRatio2>",
+  "k_x2"        : "<permX2>",
+  "k_y2"        : "<permY2>",
+  "k_z2"        : "<permZ2>",
   ## FLOW CONDITIONS 
+  "WaterTable"  : "<boundaryWaterTable>",
   "q_in"        : "<rateLeaking>",
   "Q_out"       : "<rateExtraction>",
   "C0"          : "<initialConcentration>",

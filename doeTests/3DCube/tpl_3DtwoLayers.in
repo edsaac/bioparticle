@@ -117,8 +117,8 @@ END
 
 REGION Face__BC2_TopLeak
   COORDINATES
-    <setbackDist> 0.d0 <DomainDepth>
-    <setbackPlusLeak> <AquiferLen> <DomainDepth>
+    <setbackDist> <leakingYNorth> <DomainDepth>
+    <setbackPlusLeak> <leakingYSouth> <DomainDepth>
   /
   FACE TOP
 END
@@ -153,9 +153,9 @@ MATERIAL_PROPERTY soil__topLayer
   POROSITY <porosity1>
   TORTUOSITY 0.25d0
   PERMEABILITY
-    ANISOTROPIC
-    PERM_ISO <permX1>
-    VERTICAL_ANISOTROPY_RATIO <anisotropyRatio1>
+    PERM_X <permX1>
+    PERM_Y <permY1>
+    PERM_Z <permZ1>
   /
   SATURATION_FUNCTION cc1
   #LONGITUDINAL_DISPERSIVITY <longDisp1>
@@ -166,9 +166,9 @@ MATERIAL_PROPERTY soil__bottomLayer
   POROSITY <porosity2>
   TORTUOSITY 0.25d0
   PERMEABILITY
-    ANISOTROPIC
-    PERM_ISO <permX2>
-    VERTICAL_ANISOTROPY_RATIO <anisotropyRatio2>
+    PERM_X <permX2>
+    PERM_Y <permY2>
+    PERM_Z <permZ2>
   /
   SATURATION_FUNCTION cc1
   #LONGITUDINAL_DISPERSIVITY <longDisp2>
@@ -204,10 +204,10 @@ END
 ############# FLOW CONDITIONS ###############
 FLOW_CONDITION ic__initial
   TYPE
-    FLUX HYDROSTATIC
+    PRESSURE HYDROSTATIC
   END
   INTERPOLATION LINEAR
-  DATUM 0.d0 0.d0 <DomainDepth>
+  DATUM 0.d0 0.d0 <boundaryWaterTable>
   PRESSURE 101325.d0
   GRADIENT
     PRESSURE 0. 0. 0.
@@ -225,7 +225,7 @@ FLOW_CONDITION BC1__inflow
  TYPE
    PRESSURE HYDROSTATIC
  END
-  DATUM 0.d0 0.d0 <DomainDepth>
+  DATUM 0.d0 0.d0 <boundaryWaterTable>
   PRESSURE 101325.d0
 END
 
@@ -285,7 +285,7 @@ TRANSPORT_CONDITION BC2__leaking_t
   CONSTRAINT_LIST
     0.0d0 clean_inlet
     <warmUpTime> leaking_inlet
-    1.5d10 clean_inlet
+    #1.5d10 clean_inlet
   /
 END
 
@@ -341,7 +341,7 @@ END
 
 BOUNDARY_CONDITION
   REGION Face__BC0_Top2
-  FLOW_CONDITION BC2__leaking
+  FLOW_CONDITION BC0__topSoil
   TRANSPORT_CONDITION ic__initial_t
 END
 
@@ -399,11 +399,13 @@ OUTPUT
     PERIODIC TIME 0.5 d between <warmUpTime> d and 10. y
 
     VARIABLES
-      LIQUID_HEAD
+      # LIQUID_HEAD #[DONT USE THIS LOL]
+      LIQUID_PRESSURE
       LIQUID_SATURATION
       PERMEABILITY_X
       PERMEABILITY_Y
       PERMEABILITY_Z
+      MATERIAL_ID_KLUDGE_FOR_VISIT
       POROSITY
     /
   /
