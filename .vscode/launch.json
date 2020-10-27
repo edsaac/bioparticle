@@ -12,7 +12,7 @@
 			"console": "integratedTerminal",
 			"cwd": "/home/edwin/VirusPFLOTRAN/bioparticle/doeTests/3DCube",
 			"args": ["Test.csv","tpl_3DtwoLayers.in","debug"]
-		}
+		},
 		{
 			"name": "Python: Workstation Deploy",
 			"type": "python",
