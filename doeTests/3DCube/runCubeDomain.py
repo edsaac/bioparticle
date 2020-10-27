@@ -80,7 +80,6 @@ tagsGridding = {
 tagsReplaceable =	{
   ## GEOMETRY  
   "L"	      	  : "<AquiferLen>",
-  "ySpan"     	: "<dummyY>",
   "H"         	: "<DomainDepth>",
   "H_1"         : "<zInBetweenLayers>",
   "r_s"	      	: "<setbackDist>",
