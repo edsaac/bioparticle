@@ -14,13 +14,13 @@
 			"args": ["Test.csv","tpl_3DtwoLayers.in","debug"]
 		}
 		{
-			"name": "Python: Workstation Deply",
+			"name": "Python: Workstation Deploy",
 			"type": "python",
 			"request": "launch",
 			"program": "${file}",
 			"console": "integratedTerminal",
 			"cwd": "/home/edsaa/virusFlow/bioparticle/doeTests/3DCube",
-			"args": ["Test.csv","tpl_3DtwoLayers.in","deploy"]
+			"args": ["Deploy.csv","tpl_3DtwoLayers.in","deploy"]
 		}
 	]
 }
