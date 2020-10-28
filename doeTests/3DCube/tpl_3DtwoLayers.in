@@ -396,7 +396,8 @@ END
 OUTPUT
   SNAPSHOT_FILE
     PERIODIC TIME <warmUpTime> d between 0. d and <warmUpTime> d
-    PERIODIC TIME 0.5 d between <warmUpTime> d and 10. y
+    PERIODIC TIME 0.5 d between <warmUpTime> d and 30. d
+    PERIODIC TIME 1.0 d between <warmUpTime> d and 100. d
 
     VARIABLES
       # LIQUID_HEAD #[DONT USE THIS LOL]
@@ -427,7 +428,7 @@ OUTPUT
 
 ############# TIME ###############
 TIME
-  FINAL_TIME 3.0d1 d
+  FINAL_TIME 7.5d1 d
   INITIAL_TIMESTEP_SIZE <desiredTimeStep> s
   MAXIMUM_TIMESTEP_SIZE 1.0d-0 d
 /
