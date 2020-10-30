@@ -21,6 +21,15 @@
 			"console": "integratedTerminal",
 			"cwd": "/home/edsaa/virusFlow/bioparticle/doeTests/3DCube",
 			"args": ["Deploy.csv","tpl_3DtwoLayers.in","deploy"]
+		},
+    {
+			"name": "Python: Laptop Stochastic",
+			"type": "python",
+			"request": "launch",
+			"program": "${file}",
+			"console": "integratedTerminal",
+			"cwd": "/home/edwin/VirusPFLOTRAN/bioparticle/doeTests/3DCube",
+			"args": ["Test.csv","tpl_3DtwoLayers_Stochastic.in","debug"]
 		}
 	]
 }
