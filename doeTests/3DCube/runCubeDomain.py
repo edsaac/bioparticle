@@ -205,9 +205,9 @@ for i in range(total_rows):
   
   ## Run case
   #system(PFLOTRAN_path + "-pflotranin " + current_file + " &")
-  if "debug" in runMode:
-    system(PFLOTRAN_path + "-pflotranin " + current_file)  ##This will onlt run the last one
-  elif "deploy" in runMode:
-    system("./miscellaneous/handlePIDS.sh")
-  else:
-    print("Run mode not recognized. Defaulted to debug in laptop")
+if "debug" in runMode:
+  system(PFLOTRAN_path + "-pflotranin " + current_file)  ##This will onlt run the last one
+elif "deploy" in runMode:
+  system("./miscellaneous/handlePIDS.sh")
+else:
+  print("Run mode not recognized. Defaulted to debug in laptop")
