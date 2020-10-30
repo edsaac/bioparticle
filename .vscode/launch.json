@@ -5,13 +5,40 @@
 	"version": "0.2.0",
 	"configurations": [
 		{
-			"name": "Python: Current File",
+			"name": "Python: Laptop Debug",
 			"type": "python",
 			"request": "launch",
 			"program": "${file}",
 			"console": "integratedTerminal",
-			"cwd": "/home/edwin/VirusPFLOTRAN/bioparticle/test/setbackDistanceWell",
-			"args": ["WellGeometry.csv","template.in"]
-		}
+			"cwd": "/home/edwin/VirusPFLOTRAN/bioparticle/doeTests/3DCube",
+			"args": ["Test.csv","tpl_3DtwoLayers.in","debug"]
+		},
+		{
+			"name": "Python: Workstation Deploy",
+			"type": "python",
+			"request": "launch",
+			"program": "${file}",
+			"console": "integratedTerminal",
+			"cwd": "/home/edsaa/virusFlow/bioparticle/doeTests/3DCube",
+			"args": ["Deploy.csv","tpl_3DtwoLayers.in","deploy"]
+		},
+    	{
+			"name": "Python: Laptop Stochastic",
+			"type": "python",
+			"request": "launch",
+			"program": "${file}",
+			"console": "integratedTerminal",
+			"cwd": "/home/edwin/VirusPFLOTRAN/bioparticle/doeTests/3DCube",
+			"args": ["Test.csv","tpl_3DtwoLayers_Stochastic.in","debug"]
+		},
+		{
+			"name": "Python: Workstation Stochastic Deploy",
+			"type": "python",
+			"request": "launch",
+			"program": "${file}",
+			"console": "integratedTerminal",
+			"cwd": "/home/edsaa/virusFlow/bioparticle/doeTests/3DCube",
+			"args": ["Deploy.csv","tpl_3DtwoLayers_Stochastic.in","deploy"]
+		},
 	]
 }
