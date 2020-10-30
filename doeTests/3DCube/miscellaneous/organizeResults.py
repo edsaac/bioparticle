@@ -1,3 +1,6 @@
+## HOW TO USE
+## python3 organizeResults <FOLDER_WITH_PFT_FILES>
+
 import numpy as np
 import matplotlib.pyplot as plt
 from os import system, listdir
