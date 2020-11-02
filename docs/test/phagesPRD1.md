@@ -42,11 +42,19 @@ python3 runTableCases.py [CSV_PARAMETERS] [TEMPLATE_FILE] -run
 An injection of an infective virus (PRD1) at a given concentration is set at the inlet of a column experiment. The virus can either attach to the quartz matrix, dettach and re-enter the aqueous phase, and decay and lose infectivity. After some time, the bioparticle injection is stopped and only clean water keeps runing through the column. 
 </p>
 
+<img src="./phagesPRD1_media/BreakThroughCurve.png" alt="Column flow" width=600>
+
 |Column parameters | | Value | Unit |
 |---|---|--:|:--|
 |Lenght| *L* |50|cm|
 |Diameter| *Ø* | 5|cm|
 |Grain size| *d<sub>50</sub>*|0.44|mm|
+|Darcy velocity| *q*| <code>f(Case)</code> | cm/h|
+|Liquid velocity| *v*| *= q × θ*| cm/h|
+|Pore Volume| *P<sub>V</sub>*| *= L / v* | s|
+|Pulse Duration| *t<sub>e</sub>*| <code>f(Case)</code>| s|
+
+<img src="./phagesPRD1_media/PV_Definition.png" alt="Column flow" width=200>
 
 <p>&nbsp;</p>
 
