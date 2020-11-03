@@ -8,7 +8,8 @@
 # 
 ###############################################################
 #
-# $ python3 runLeakingPoints.py [CASES.CSV] [TEMPLATE.IN]
+# $ python3 runCubeDomain.py \
+#           [CASES.CSV] [TEMPLATE.IN] [RUNOPTION] [FLOW.h5]
 # 
 # Where:
 #   - [CASES.CSV] path to csv file with the list of 
@@ -18,6 +19,8 @@
 #   - [RUNOPTION]:
 #       - debugLaptop (default)
 #       - deployWorkStation
+#       - flowGiven
+#         - [FLOW.h5] path to hdf5 file from flow simulation
 #
 ###############################################################
 
@@ -26,6 +29,7 @@ import matplotlib.pyplot as plt
 from pandas import read_csv
 from os import system
 import sys
+import h5py as hdf5
 
 def buildDXYZ(L,R,N,bump=False):
   if abs(R) < 1e-10:
@@ -65,6 +69,59 @@ def buildDXYZ(L,R,N,bump=False):
       Formatted+="\\\\ \\n    "
   
   return Formatted
+
+def buildHDF5Flow(filePath,outFile):
+  f = hdf5.File(filePath,mode="r")
+  t_Key  = 'Time:  2.00000E+00 d'
+  f1 = f[t_Key]
+
+  uX_Key = 'Liquid X-Flux Velocities'
+  uY_Key = 'Liquid Y-Flux Velocities'
+  uZ_Key = 'Liquid Z-Flux Velocities'
+  ID_Key = 'Natural_ID'
+
+  ID3D = np.transpose(f1[ID_Key],(2,1,0))
+  NX = np.shape(ID3D)[2]
+  NY = np.shape(ID3D)[1]
+  NZ = np.shape(ID3D)[0]
+
+  uX3D = np.transpose(f1[uX_Key],(2,1,0))
+  uY3D = np.transpose(f1[uY_Key],(2,1,0))
+  uZ3D = np.transpose(f1[uZ_Key],(2,1,0))
+
+  fillX = np.zeros((NZ,NY,1))
+  fillY = np.zeros((NZ,1,NX))
+  fillZ = np.zeros((1,NY,NX))
+
+  uXAdd = np.append(uX3D,fillX,axis=2)
+  uYAdd = np.append(uY3D,fillY,axis=1)
+  uZAdd = np.append(uZ3D,fillZ,axis=0)
+
+  uX = np.reshape(uXAdd,-1)
+  uY = np.reshape(uYAdd,-1)
+  uZ = np.reshape(uZAdd,-1)
+  ID = np.reshape(ID3D,-1)
+
+  daysToSeconds = 1./86400.
+  uX *= daysToSeconds
+  uY *= daysToSeconds
+  uZ *= daysToSeconds
+
+  fOUT = hdf5.File(outFile,mode='w')
+
+  fOUT.create_dataset('Internal Velocity X', data=uX)
+  fOUT.create_dataset('Internal Velocity Y', data=uY)
+  fOUT.create_dataset('Internal Velocity Z', data=uZ)
+  fOUT.create_dataset('Cell Ids', data=ID)
+
+  ## Boundary conditions ??
+  fOUT.create_dataset('leaking_top', data=uZ)
+  fOUT.create_dataset('noFlowSide_right', data=uX)
+  fOUT.create_dataset('noFlowSide_left', data=uX)
+  fOUT.create_dataset('noFlowSide_north', data=uY)
+  fOUT.create_dataset('noFlowSide_south', data=uY)
+
+  fOUT.close()
 
 tagsCaseName =  {  
   "Title"	   	  : "<Name>"
@@ -136,6 +193,14 @@ if "debug" in runMode:
   PFLOTRAN_path = "mpirun -n 1 $PFLOTRAN_DIR/src/pflotran/pflotran "
 elif "deploy" in runMode:
   PFLOTRAN_path = "mpirun -n 1 $PFLOTRAN_DIR/src/pflotran/pflotran "
+elif "flow" in runMode:
+  PFLOTRAN_path = "mpirun -n 1 $PFLOTRAN_DIR/src/pflotran/pflotran "
+  try:
+    flowFile = str(sys.argv[4])
+  except IndexError:
+    sys.exit("Flow HDF5 file not found")
+  system("rm -rf FLOW; mkdir FLOW")
+  buildHDF5Flow(flowFile,"./FLOW/ReadyToTransport.h5")
 else:
   print("Run mode not recognized. Defaulted to debug in laptop")
   PFLOTRAN_path = "$PFLOTRAN_DIR/src/pflotran/pflotran "
@@ -175,7 +240,7 @@ for i in range(total_rows):
   
   ## Replace tags for values in case
   for current_tag in tagsReplaceable:
-    if "nX" in current_tag or "nZ" in current_tag:
+    if ("nX" in current_tag or "nZ" in current_tag) or "nY" in current_tag:
       Value2Text = '{:}'.format(setParameters.loc[i,tagsReplaceable[current_tag]])
     elif "dX" in current_tag:
       Value2Text = buildDXYZ(\
@@ -205,7 +270,7 @@ for i in range(total_rows):
   
   ## Run case
   #system(PFLOTRAN_path + "-pflotranin " + current_file + " &")
-if "debug" in runMode:
+if "debug" in runMode or "flow" in runMode:
   system(PFLOTRAN_path + "-pflotranin " + current_file)  ##This will onlt run the last one
 elif "deploy" in runMode:
   system("./miscellaneous/handlePIDS.sh")

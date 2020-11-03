@@ -21,7 +21,7 @@ SUBSURFACE
 ############# GRID ###############
 GRID
   TYPE STRUCTURED CARTESIAN
-  NXYZ <nX> <nX> <nZ>
+  NXYZ <nX> <nY> <nZ>
   DXYZ 
     <dX>
     <dY>
@@ -210,8 +210,8 @@ TRANSPORT_CONDITION BC2__leaking_t
   TYPE DIRICHLET_ZERO_GRADIENT
   TIME_UNITS d
   CONSTRAINT_LIST
-    0.0d0 clean_inlet
-    <warmUpTime> leaking_inlet
+    0.0d0 leaking_inlet
+    #<warmUpTime> leaking_inlet
     #1.5d10 clean_inlet
   /
 END
@@ -259,37 +259,37 @@ INITIAL_CONDITION
   TRANSPORT_CONDITION ic__initial_t
 END
 
-BOUNDARY_CONDITION
-  REGION Face__BC0_Top1
-  TRANSPORT_CONDITION ic__initial_t
-END
+# BOUNDARY_CONDITION topNoFlow1
+#   REGION Face__BC0_Top1
+#   TRANSPORT_CONDITION ic__initial_t
+# END
 
-BOUNDARY_CONDITION
-  REGION Face__BC0_Top2
-  TRANSPORT_CONDITION ic__initial_t
-END
+# BOUNDARY_CONDITION topNoFlow2
+#   REGION Face__BC0_Top2
+#   TRANSPORT_CONDITION ic__initial_t
+# END
 
-BOUNDARY_CONDITION
+BOUNDARY_CONDITION noFlowSide_right
   REGION Face__BC1_Right
   TRANSPORT_CONDITION BC1__inflow_t
 END
 
-BOUNDARY_CONDITION
+BOUNDARY_CONDITION noFlowSide_left
   REGION Face__BC1_Left
   TRANSPORT_CONDITION BC1__inflow_t
 END
 
-BOUNDARY_CONDITION
+BOUNDARY_CONDITION noFlowSide_north
   REGION Face__BC1_North
   TRANSPORT_CONDITION BC1__inflow_t
 END
 
-BOUNDARY_CONDITION
+BOUNDARY_CONDITION noFlowSide_south
   REGION Face__BC1_South
   TRANSPORT_CONDITION BC1__inflow_t
 END
 
-BOUNDARY_CONDITION
+BOUNDARY_CONDITION leaking_top
   REGION Face__BC2_TopLeak
   TRANSPORT_CONDITION BC2__leaking_t
 END
@@ -313,9 +313,10 @@ END
 ############# OUTPUT ###############
 OUTPUT
   SNAPSHOT_FILE
-    PERIODIC TIME <warmUpTime> d between 0. d and <warmUpTime> d
-    PERIODIC TIME 0.5 d between <warmUpTime> d and 30. d
-    PERIODIC TIME 1.0 d between <warmUpTime> d and 100. d
+#    PERIODIC TIME <warmUpTime> d between 0. d and <warmUpTime> d
+#    PERIODIC TIME 0.5 d between <warmUpTime> d and 30. d
+    PERIODIC TIME 1.0 d between 0. d and 75. d
+#    PERIODIC TIME 1.0 d between <warmUpTime> d and 100. d
   /
   
   MASS_BALANCE_FILE
@@ -375,7 +376,7 @@ REFERENCE_PRESSURE 101325.
 
 SPECIFIED_VELOCITY
   UNIFORM? NO
-  DATASET ../FLOW/Arreglado.h5
+  DATASET ../FLOW/ReadyToTransport.h5
 END
 
 END_SUBSURFACE

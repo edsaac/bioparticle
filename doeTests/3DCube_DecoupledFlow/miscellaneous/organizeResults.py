@@ -10,7 +10,7 @@ def get_cmap(n, name='tab10'): ## Color map for plots
   return plt.cm.get_cmap(name, n)
 
 FOLDER = str(sys.argv[1])
-VAQ_COL_ID = 3
+VAQ_COL_ID = 1
 TIME_COL_ID = 0
 
 # Fix those weird PFT headers
@@ -29,21 +29,14 @@ for f in listdir(FOLDER):
   Cnorm = ObservationPoint[:,VAQ_COL_ID]/Cmax
   Time = ObservationPoint[:,TIME_COL_ID]
   
-  if "Public" in f:
-    ax1.plot(Time,Cnorm,c=cmap(i),lw=3,label=f[:-17])
-  elif "Domestic" in f:
-    ax2.plot(Time,Cnorm,c=cmap(i),lw=3,label=f[:-19])
-  
+  ax1.plot(Time,Cnorm,c=cmap(i),lw=3,label=f[:-17])
+
   i+=1
 
 LegendTitle="$\\dfrac{[V_{(aq)}]}{[V_{(aq)}]_0}$"
 ax1.set_yscale("log")
 ax1.legend(loc='center left', bbox_to_anchor=(1.2, 0.5),title=LegendTitle + " Public")
-
-ax2.set_yscale("log")
-ax2.set_xlabel("Time [d]",fontsize="large")
-ax2.legend(loc='center left', bbox_to_anchor=(1.2, 0.5),title=LegendTitle + " Domestic")
-
+ax1.set_xlabel("Time [d]",fontsize="large")
 plt.setp(ax1.get_xticklabels(), visible=False)
 
 plt.subplots_adjust(wspace=0.0, hspace=0.1)

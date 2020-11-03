@@ -1,35 +1,69 @@
 import numpy as np
 import h5py as hdf5
 
-InputFilename = './FLOW/SandOnGravel_Public.h5'
+InputFilename = './FLOW/Test.h5'
 f = hdf5.File(InputFilename,mode="r")
 
-t_Key  = 'Time:  0.00000E+00 d'
+t_Key  = 'Time:  2.00000E+00 d'
 f1 = f[t_Key]
 
 uX_Key = 'Liquid X-Flux Velocities'
 uY_Key = 'Liquid Y-Flux Velocities'
 uZ_Key = 'Liquid Z-Flux Velocities'
+ID_Key = 'Natural_ID'
 
-uX = np.reshape(f1[uX_Key],-1)
-uY = np.reshape(f1[uY_Key],-1)
-uZ = np.reshape(f1[uZ_Key],-1)
+ID3D = np.transpose(f1[ID_Key],(2,1,0))
+NX = np.shape(ID3D)[2]
+NY = np.shape(ID3D)[1]
+NZ = np.shape(ID3D)[0]
 
-NX = len(f1[uX_Key])
-NY = len(f1[uY_Key][0])
-NZ = len(f1[uX_Key][0][0])
-N = NX*NY*NZ
-print(NX,NY,NZ)
+print("(NZ,NY,NX): ",np.shape(ID3D))
+print("(NZ,NY,NX): ",NZ,NY,NX)
 
-cellID = np.arange(1,len(uX)+1,dtype="int32")
+uX3D = np.transpose(f1[uX_Key],(2,1,0))
+uY3D = np.transpose(f1[uY_Key],(2,1,0))
+uZ3D = np.transpose(f1[uZ_Key],(2,1,0))
 
-OutputFilename = './FLOW/Arreglado.h5'
+print("uX3D: ",np.shape(uX3D))
+print("uY3D: ",np.shape(uY3D))
+print("uZ3D: ",np.shape(uZ3D))
+
+fillX = np.zeros((NZ,NY,1))
+fillY = np.zeros((NZ,1,NX))
+fillZ = np.zeros((1,NY,NX))
+
+uXAdd = np.append(uX3D,fillX,axis=2)
+uYAdd = np.append(uY3D,fillY,axis=1)
+uZAdd = np.append(uZ3D,fillZ,axis=0)
+
+uX = np.reshape(uXAdd,-1)
+uY = np.reshape(uYAdd,-1)
+uZ = np.reshape(uZAdd,-1)
+ID = np.reshape(ID3D,-1)
+
+daysToSeconds = 1./86400.
+uX *= daysToSeconds
+uY *= daysToSeconds
+uZ *= daysToSeconds
+
+#cellID = np.arange(1,len(uX)+1,dtype="int32")
+
+OutputFilename = './FLOW/ReadyToTransport.h5'
 fOUT = hdf5.File(OutputFilename,mode='w')
 
 fOUT.create_dataset('Internal Velocity X', data=uX)
 fOUT.create_dataset('Internal Velocity Y', data=uY)
 fOUT.create_dataset('Internal Velocity Z', data=uZ)
-fOUT.create_dataset('Cell Ids', data=cellID)
+fOUT.create_dataset('Cell Ids', data=ID)
+
+## Boundary conditions ??
+fOUT.create_dataset('leaking_top', data=uZ)
+fOUT.create_dataset('noFlowSide_right', data=uX)
+fOUT.create_dataset('noFlowSide_left', data=uX)
+fOUT.create_dataset('noFlowSide_north', data=uY)
+fOUT.create_dataset('noFlowSide_south', data=uY)
+
+
 fOUT.close()
 '''
 import sys
