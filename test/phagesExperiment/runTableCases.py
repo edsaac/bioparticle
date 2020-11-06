@@ -6,22 +6,22 @@ import sys
 
 def plotResults(U,pH,IS,PV,kATT,kDET,dAq,dIm):
   FILE = current_folder+"/pflotran-obs-0.tec"
-
+  
   textBoxpH = "pH = {:n}".format(pH)\
     + "\nIS = {:n}".format(IS)
-
+  
   textBoxKin = \
     "$k_{\\rm att}$"+" = {:.4f}".format(kATT) + " $h^{-1}$"\
     +"\n$k_{\\rm det}$"+" = {:.4f}".format(kDET) + " $h^{-1}$"\
     +"\n$\lambda_{\\rm aq}$"+" = {:.4f}".format(dAq)+ " $h^{-1}$"\
     +"\n$\lambda_{\\rm im}$"+" = {:.4f}".format(dIm)+ " $h^{-1}$"
-
-  system("sed -i 's/,/  /g' " + FILE)
-  system("rm " + current_folder +"/*.out")
-
-  ObservationPoint = read_csv(FILE,sep="  ",engine="python")
-  Cnorm = ObservationPoint["\"Total Vaq [M] Obs__PointOutflow (100) (0.025 0.025 0.498)\""]/ConcentrationAtInlet
-  TimeInPoreVolumes = ObservationPoint["\"Time [d]\""] * (U*24.)/ColumnLenght
+  
+  system("./miscellaneous/PFT2CSV.sh " + FILE)
+  #system("rm " + current_folder +"/*.out")
+  
+  ObservationPoint = np.loadtxt(FILE,delimiter=",",skiprows=1)
+  Cnorm = ObservationPoint[:,3]/ConcentrationAtInlet
+  TimeInPoreVolumes = ObservationPoint[:,0] * (U*24.)/ColumnLenght
   
   Legend=["$\\dfrac{[V_{(aq)}]}{[V_{(aq)}]_0}$"]
   plt.figure(figsize=(10,4),facecolor="white")
@@ -52,7 +52,9 @@ def plotResults(U,pH,IS,PV,kATT,kDET,dAq,dIm):
     bbox=dict(boxstyle='round', facecolor='purple', alpha=0.15),\
     horizontalalignment='right')
   plt.tight_layout()
-  plt.savefig(current_folder + "/breakthrough.png",transparent=False)
+  FIGPATH = current_folder + "/" + "breakthroughCurve_" + current_folder[7:10] + ".png"
+  #plt.show()
+  plt.savefig(FIGPATH,transparent=False)
 
 ## Global variables
 ColumnLenght = 50.0
@@ -138,7 +140,7 @@ for i in range(total_rows):
     current_k = setParameters.loc[i,tagsAccesory["PoreVol"]]
     current_PV = setParameters.loc[i,tagsAccesory["PoreVol"]]
     current_PV = setParameters.loc[i,tagsAccesory["PoreVol"]]
-
+    #input("Press Enter to continue...")
     plotResults(current_U,current_pH,current_IS,current_PV,\
       setParameters.loc[i,tagsReplaceable["AttachRate"]],\
       setParameters.loc[i,tagsReplaceable["DetachRate"]],\

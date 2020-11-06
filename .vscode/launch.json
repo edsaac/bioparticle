@@ -4,6 +4,7 @@
 	// For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
 	"version": "0.2.0",
 	"configurations": [
+
 		{
 			"name": "Python: Laptop Debug",
 			"type": "python",
@@ -39,6 +40,15 @@
 			"console": "integratedTerminal",
 			"cwd": "/home/edsaa/virusFlow/bioparticle/doeTests/3DCube",
 			"args": ["Deploy.csv","tpl_3DtwoLayers_Stochastic.in","deploy"]
+		},
+    {
+			"name": "Python: Column Experiment",
+			"type": "python",
+			"request": "launch",
+			"program": "${file}",
+			"console": "integratedTerminal",
+			"cwd": "/home/edwin/VirusPFLOTRAN/bioparticle/test/phagesExperiment",
+			"args": ["Table2_perSecond.csv","template.in","-run"]
 		},
 	]
 }
