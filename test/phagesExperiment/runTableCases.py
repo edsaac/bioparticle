@@ -33,9 +33,9 @@ def plotResults(U,pH,IS,PV,kATT,kDET,dAq,dIm):
   
   textBoxKin = \
     "$k_{\\rm att}$"+" = {:.4f}".format(kATT) + " $h^{-1}$"\
-    +"\n$k_{\\rm det}$"+" = {:.4f}".format(kDET) + " $h^{-1}$"\
-    +"\n$\lambda_{\\rm aq}$"+" = {:.4f}".format(dAq)+ " $h^{-1}$"\
-    +"\n$\lambda_{\\rm im}$"+" = {:.4f}".format(dIm)+ " $h^{-1}$"
+    +"\n" + "$k_{\\rm det}$"+" = {:.4f}".format(kDET) + " $h^{-1}$"\
+    +"\n" + "$\lambda_{\\rm aq}$"+" = {:.4f}".format(dAq)+ " $h^{-1}$"\
+    +"\n" + "$\lambda_{\\rm im}$"+" = {:.4f}".format(dIm)+ " $h^{-1}$"
   
   system("./miscellaneous/PFT2CSV.sh " + FILE)
   #system("rm " + current_folder +"/*.out")
