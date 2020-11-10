@@ -4,7 +4,7 @@ N=10
 
 parallel --jobs $N $PFLOTRAN_path -pflotranin ::: $LIST
 
-rm -rf PFTS || mkdir PFTS
-cp CASE**/.pft PFTS/
+rm -rf PFTS ; mkdir PFTS
+cp CASE**/*.pft PFTS/
 cd ./miscellaneous
 python3 organizeResults.py ../PFTS
