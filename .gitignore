@@ -1,0 +1,16 @@
+# Ignore results from tests
+**/*.vtk
+**/*.out
+**/*.txt
+**/*.tec
+**/*.h5
+**/CASE*/
+**/*.chk
+**/*.ogv
+**/*.pvsm
+**/*.pft
+*/.vscode/
+**/.~*
+**/*.ss
+**/*.ugi
+**/*.msh
