@@ -8,6 +8,7 @@ task(){
 
 for d in $LIST ; do
    ((i=i%N)); ((i++==0)) && wait
+   echo $d
    task "$PFLOTRAN_path -pflotranin $d" &
 done
 
