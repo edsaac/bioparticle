@@ -42,7 +42,9 @@ ax1.plot(Time,CAcum,c="black",lw=1,ls="dashed",\
   label="Mean\nn= %i runs" %i)
 
 LegendTitle="$\\dfrac{[V_{(aq)}]}{[V_{(aq)}]_0}$"
-ax1.set_yscale("log")
+ax1.set_yscale("symlog",linthresh=1.0E-6)
+ax1.set_ylim([-1.0E-7,1.2])
+ax1.axhspan(ymin=-1,ymax=1.0E-6,color="purple",alpha=0.05)
 ax1.legend(loc='lower right')
 ax1.set_xlabel("Time [d]",fontsize="large")
 ax1.set_ylabel(LegendTitle,fontsize="large")
