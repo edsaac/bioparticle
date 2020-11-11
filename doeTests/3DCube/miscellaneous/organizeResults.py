@@ -37,11 +37,16 @@ for f in listdir(FOLDER):
   i+=1
 
 LegendTitle="$\\dfrac{[V_{(aq)}]}{[V_{(aq)}]_0}$"
-ax1.set_yscale("log")
-ax1.legend(loc='center left', bbox_to_anchor=(1.2, 0.5),title=LegendTitle + " Public")
 
-ax2.set_yscale("log")
+ax1.set_yscale("symlog",linthreshy=1.0E-6)
+ax2.set_yscale("symlog",linthreshy=1.0E-6)
+
+ax1.set_ylim([0,1.2])
+ax2.set_ylim([0,1.2])
+
 ax2.set_xlabel("Time [d]",fontsize="large")
+
+ax1.legend(loc='center left', bbox_to_anchor=(1.2, 0.5),title=LegendTitle + " Public")
 ax2.legend(loc='center left', bbox_to_anchor=(1.2, 0.5),title=LegendTitle + " Domestic")
 
 plt.setp(ax1.get_xticklabels(), visible=False)

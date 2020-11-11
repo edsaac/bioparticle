@@ -1,5 +1,5 @@
 ## HOW TO USE
-## python3 organizeResults.py <FOLDER_WITH_PFT_FILES>
+## python3 plotResultsStochastic.py <FOLDER_WITH_PFT_FILES>
 
 import numpy as np
 import matplotlib.pyplot as plt
@@ -48,4 +48,4 @@ ax1.set_xlabel("Time [d]",fontsize="large")
 ax1.set_ylabel(LegendTitle,fontsize="large")
 plt.subplots_adjust(wspace=0.0, hspace=0.1)
 
-plt.savefig("./break2.png",transparent=False)
+plt.savefig("./breakCurve.png",transparent=False)

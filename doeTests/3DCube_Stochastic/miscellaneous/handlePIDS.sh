@@ -2,12 +2,10 @@ PFLOTRAN_path="$PFLOTRAN_DIR/src/pflotran/pflotran"
 LIST=$(ls CASE*/*.in)
 N=10
 
-task(){
-  local run=$1
-}
+parallel --jobs $N $PFLOTRAN_path -pflotranin ::: $LIST
 
-for d in $LIST ; do
-   ((i=i%N)); ((i++==0)) && wait
-   task "$PFLOTRAN_path -pflotranin $d" &
-done
+rm -rf PFTS ; mkdir PFTS
+cp CASE**/*.pft PFTS/
+cd ./miscellaneous
+python3 plotResultsStochastic.py ../PFTS
 
