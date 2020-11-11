@@ -38,11 +38,14 @@ for f in listdir(FOLDER):
 
 LegendTitle="$\\dfrac{[V_{(aq)}]}{[V_{(aq)}]_0}$"
 
-ax1.set_yscale("symlog",linthreshy=1.0E-6)
-ax2.set_yscale("symlog",linthreshy=1.0E-6)
+ax1.set_yscale("symlog",linthresh=1.0E-6)
+ax2.set_yscale("symlog",linthresh=1.0E-6)
 
-ax1.set_ylim([0,1.2])
-ax2.set_ylim([0,1.2])
+ax1.set_ylim([-1.0E-7,1.2])
+ax2.set_ylim([-1.0E-7,1.2])
+
+ax1.axhspan(ymin=-1,ymax=1.0E-6,color="purple",alpha=0.05)
+ax2.axhspan(ymin=-1,ymax=1.0E-6,color="purple",alpha=0.05)
 
 ax2.set_xlabel("Time [d]",fontsize="large")
 
