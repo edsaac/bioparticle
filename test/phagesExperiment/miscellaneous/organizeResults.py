@@ -34,7 +34,7 @@ fig = plt.figure(figsize=(10,4),facecolor="white")
 ax1 = plt.subplot(1,2,1)
 ax1.plot(Time,Cnorm,c="black",lw=3,label=Legend[0])
 ax1.set_yscale("symlog",\
- 	linthreshy=1.0E-6,subsy=[1,2,3,4,5,6,7,8,9])
+ 	linthresh=1.0E-6,subsy=[1,2,3,4,5,6,7,8,9])
 ax1.set_ylim([-1.0E-7,1.15])
 ax1.set_xlim([0,10])
 ax1.set_xlabel("Time [$d$]",fontsize="large")

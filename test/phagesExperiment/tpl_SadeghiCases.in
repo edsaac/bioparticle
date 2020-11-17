@@ -140,8 +140,10 @@ END
 TRANSPORT_CONDITION bc__inflow_t
   TYPE DIRICHLET_ZERO_GRADIENT
   CONSTRAINT_LIST
-    0.0d0 inlet_constraint
-    <elutionTime> clean_inlet
+#    0.0d0 inlet_constraint
+#    <elutionTime> clean_inlet
+   0.0d0 clean_inlet
+   <elutionTime> inlet_constraint
   /
 END
 
@@ -155,10 +157,10 @@ END
 ############## CONSTRAINTS #################
 CONSTRAINT initial_constraint
   CONCENTRATIONS
-    Vaq   1.d-30      T
+    Vaq   1.d-50      T
   /
   IMMOBILE
-    Vim   1.d-30
+    Vim   1.d-50
   /
 END
 
@@ -170,7 +172,7 @@ END
 
 CONSTRAINT clean_inlet
   CONCENTRATIONS
-    Vaq   1.d-30      T
+    Vaq   1.d-50      T
   /
 END
 
@@ -203,15 +205,15 @@ END
 
 ############# OUTPUT ###############
 OUTPUT
-  # SNAPSHOT_FILE
-  # 	PERIODIC TIME 2.5d-1 d
-  # /
+  SNAPSHOT_FILE
+  	PERIODIC TIME 2.d-1 d
+  /
   
   OBSERVATION_FILE
     PERIODIC TIME 1.d-1 d
   /
-#  FORMAT VTK
-#  VELOCITY_AT_CENTER
+  FORMAT HDF5
+  VELOCITY_AT_CENTER
 /
 
 ############# TIME ###############
@@ -235,13 +237,15 @@ CHEMISTRY
     BIOPARTICLE
       PARTICLE_NAME_AQ Vaq
       PARTICLE_NAME_IM Vim
-      RATE_ATTACHMENT <katt> #1/h
-      RATE_DETACHMENT <kdet> #1/h
-      DECAY_AQUEOUS <decayAq> #1/h
-      DECAY_ADSORBED <decayIm> #1/h
+      RATE_ATTACHMENT <katt> 1/h
+      RATE_DETACHMENT <kdet> 1/h
+      DECAY_AQUEOUS <decayAq> 1/h
+      DECAY_ADSORBED <decayIm> 1/h
+      ZERO_CONCENTRATION 0.0
     /
   /
   LOG_FORMULATION
+  TRUNCATE_CONCENTRATION 1.0E-50
   DATABASE ../miscellaneous/rxn_database.dat
   OUTPUT
     TOTAL

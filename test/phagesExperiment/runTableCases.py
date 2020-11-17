@@ -1,3 +1,24 @@
+###############################################################
+#  _     _                        _   _      _
+# | |__ (_) ___  _ __   __ _ _ __| |_(_) ___| | ___
+# | '_ \| |/ _ \| '_ \ / _` | '__| __| |/ __| |/ _ \
+# | |_) | | (_) | |_) | (_| | |  | |_| | (__| |  __/
+# |_.__/|_|\___/| .__/ \__,_|_|   \__|_|\___|_|\___|
+#               |_|
+# 
+###############################################################
+#
+# $ python3 runTableCases.py [CASES.CSV] [TEMPLATE.IN] -run
+# 
+# Where:
+#   - [CASES.CSV] path to csv file with the list of 
+#     parameters and the corresponding tags
+#   - [TEMPLATE.IN] input file template for PFLOTRAN and 
+#     the corresponding tags
+#   - [shouldRunPFLOTRAN = "-run"]
+#
+###############################################################
+
 import numpy as np
 import matplotlib.pyplot as plt
 from pandas import read_csv
@@ -12,9 +33,9 @@ def plotResults(U,pH,IS,PV,kATT,kDET,dAq,dIm):
   
   textBoxKin = \
     "$k_{\\rm att}$"+" = {:.4f}".format(kATT) + " $h^{-1}$"\
-    +"\n$k_{\\rm det}$"+" = {:.4f}".format(kDET) + " $h^{-1}$"\
-    +"\n$\lambda_{\\rm aq}$"+" = {:.4f}".format(dAq)+ " $h^{-1}$"\
-    +"\n$\lambda_{\\rm im}$"+" = {:.4f}".format(dIm)+ " $h^{-1}$"
+    +"\n" + "$k_{\\rm det}$"+" = {:.4f}".format(kDET) + " $h^{-1}$"\
+    +"\n" + "$\lambda_{\\rm aq}$"+" = {:.4f}".format(dAq)+ " $h^{-1}$"\
+    +"\n" + "$\lambda_{\\rm im}$"+" = {:.4f}".format(dIm)+ " $h^{-1}$"
   
   system("./miscellaneous/PFT2CSV.sh " + FILE)
   #system("rm " + current_folder +"/*.out")
@@ -147,4 +168,4 @@ for i in range(total_rows):
       setParameters.loc[i,tagsReplaceable["DecayAq"]],\
       setParameters.loc[i,tagsReplaceable["DecayIm"]])
     #input("Press Enter to continue...")
-  
+system("cp CASE**/*.png ./pictures/")

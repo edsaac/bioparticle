@@ -28,7 +28,10 @@ module Reaction_Sandbox_escPTr_class
     !Attachment/detachment rates
     PetscReal :: rate_attachment
     PetscReal :: rate_detachment
-      
+    
+    !Zero concentration (low boundary)
+    PetscReal :: zero_concentration
+
   contains
     procedure, public :: ReadInput => escPTr_Read
     procedure, public :: Setup => escPTr_Setup
@@ -66,6 +69,8 @@ function escPTr_Create()
   escPTr_Create%decay_adsorbed = 0.d0
   escPTr_Create%rate_attachment = 0.d0
   escPTr_Create%rate_detachment = 0.d0
+
+  escPTr_Create%zero_concentration = 0.d0
 
   nullify(escPTr_Create%next)
 
@@ -208,6 +213,17 @@ call InputPushBlock(input,option)
           this%decay_adsorbed = this%decay_adsorbed * &
             UnitsConvertToInternal(word,internal_units,option)
         endif
+
+        ! Zero concentration for log calculation
+        ! for instance, assume 1E-35 is a just 0.0 mol/L
+      case('ZERO_CONCENTRATION')
+        ! Read the double precision rate constant
+        call InputReadDouble(input,option,this%zero_concentration)
+        call InputErrorMsg(input,option,'zero_concentration', &
+                           'CHEMISTRY,REACTION_SANDBOX,BIOPARTICLE,zeroConcentration')
+        PRINT *, "Read zero concentration value" ! Edwin debugging    
+      
+        ! Default break if nothing found in sandbox
       case default
         call InputKeywordUnrecognized(input,word, &
                      'CHEMISTRY,REACTION_SANDBOX,BIOPARTICLE',option)
@@ -295,23 +311,28 @@ subroutine escPTr_React(this,Residual,Jacobian,compute_derivative, &
   PetscReal :: katt, kdet
   PetscReal :: decayAq, decayIm
 
+  PetscReal :: ZeroConc
+
   porosity = material_auxvar%porosity
   liquid_saturation = global_auxvar%sat(iphase)
   volume = material_auxvar%volume
   L_water = porosity*liquid_saturation*volume*1.d3  ! 1.d3 converts m^3 water -> L water
   
+  ! Add a pseudo-zero to concentrations
+  ZeroConc = this%zero_concentration
+
 ! Assign concentrations of Vaq and Vim
-  Vaq = rt_auxvar%total(this%species_Vaq_id,iphase)
-  Vim = rt_auxvar%immobile(this%species_Vim_id)
+  Vaq = rt_auxvar%total(this%species_Vaq_id,iphase) - ZeroConc
+  Vim = rt_auxvar%immobile(this%species_Vim_id) - ZeroConc
 !  PRINT *, "Assigned Vaq/Vim concentrations" ! Edwin debugging    
 
-! initialize all rates to zero
+  ! initialize all rates to zero
   Rate = 0.d0
   RateAtt = 0.d0
   RateDet = 0.d0
   RateDecayAq = 0.d0
   RateDecayIm = 0.d0
-
+  
   ! stoichiometries
   ! reactants have negative stoichiometry
   ! products have positive stoichiometry
@@ -321,18 +342,22 @@ subroutine escPTr_React(this,Residual,Jacobian,compute_derivative, &
   ! kinetic rate constants
   katt = 0.d0
   kdet = 0.d0
-
   katt = this%rate_attachment
-  kdet = this%rate_detachment
-!  PRINT *, "Assigned attachment/detachment rates" ! Edwin debugging    
+  kdet = this%rate_detachment  
+  !  PRINT *, "Assigned attachment/detachment rates" ! Edwin debugging    
 
   decayAq = this%decay_aqueous
   decayIm = this%decay_adsorbed
 !  PRINT *, "Assigned decay rates" ! Edwin debugging    
 
+  RateAtt = 0.0
+  RateDet = 0.0
+  RateDecayAq = 0.0
+  RateDecayIm = 0.0
+
+  
   ! Build here for attachment/detachment
   ! first-order forward - reverse (A <-> C)
-
   Rate = katt * Vaq * L_water - kdet * Vim * volume
   RateAtt = stoichVaq * Rate
   RateDet = stoichVim * Rate
@@ -341,20 +366,76 @@ subroutine escPTr_React(this,Residual,Jacobian,compute_derivative, &
   ! first-order (A -> X)
   Rate = decayAq * Vaq * L_water
   RateDecayAq = - Rate 
-  
-  Rate = decayIm * Vim * volume
-  RateDecayIm = - Rate
 
+  Rate = decayIm * Vim * volume
+  RateDecayIm = - Rate 
+
+  IF ( Vaq > 0.0 ) THEN
+    IF ( Vim > 0.0 ) THEN
+      !PRINT *, "AQ > 0 and IM > 0"
+      Residual(this%species_Vaq_id) = &
+        Residual(this%species_Vaq_id) - RateAtt - RateDecayAq
+  
+      Residual(this%species_Vim_id + reaction%offset_immobile) = &
+        Residual(this%species_Vim_id + reaction%offset_immobile) &
+        - RateDet - RateDecayIm
+
+    ELSE IF ( Vim <= 0.0 ) THEN
+      !PRINT *, "AQ > 0 but IM < 0"
+      Vim = ZeroConc
+      RateDet = 0.0
+      RateDecayIm = 0.0
+
+      Residual(this%species_Vaq_id) = &
+        Residual(this%species_Vaq_id) - RateAtt - RateDecayAq
+  
+      Residual(this%species_Vim_id + reaction%offset_immobile) = &
+        Residual(this%species_Vim_id + reaction%offset_immobile) &
+        - RateDet - RateDecayIm
+      
+    END IF
+  ELSE IF ( Vaq <= 0.0 ) THEN
+    IF ( Vim > 0.0 ) THEN
+      !PRINT *, "AQ < 0 but IM > 0"
+      Vaq = ZeroConc
+      RateAtt = 0.0
+      RateDecayAq = 0.0
+  
+      Residual(this%species_Vaq_id) = &
+        Residual(this%species_Vaq_id) - RateAtt - RateDecayAq
+  
+      Residual(this%species_Vim_id + reaction%offset_immobile) = &
+        Residual(this%species_Vim_id + reaction%offset_immobile) &
+        - RateDet - RateDecayIm
+  
+    ELSE IF ( Vim <= 0.0 ) THEN
+      !PRINT *, "AQ < 0 and IM < 0"
+      Vim = ZeroConc
+      Vaq = ZeroConc
+      RateAtt = 0.0
+      RateDet = 0.0
+      RateDecayAq = 0.0
+      RateDecayIm = 0.0
+
+      Residual(this%species_Vaq_id) = &
+        Residual(this%species_Vaq_id) - RateAtt - RateDecayAq
+
+      Residual(this%species_Vim_id + reaction%offset_immobile) = &
+        Residual(this%species_Vim_id + reaction%offset_immobile) &
+        - RateDet - RateDecayIm
+    END IF
+  END IF
+  
   ! NOTES
   ! 1. Always subtract contribution from residual
   ! 2. Units of residual are moles/second  
-  Residual(this%species_Vaq_id) = &
-    Residual(this%species_Vaq_id) - RateAtt - RateDecayAq
+  ! Residual(this%species_Vaq_id) = &
+  !   Residual(this%species_Vaq_id) - RateAtt - RateDecayAq
   
-  Residual(this%species_Vim_id + reaction%offset_immobile) = &
-    Residual(this%species_Vim_id + reaction%offset_immobile) &
-    - RateDet - RateDecayIm
-  
+  ! Residual(this%species_Vim_id + reaction%offset_immobile) = &
+  !   Residual(this%species_Vim_id + reaction%offset_immobile) &
+  !   - RateDet - RateDecayIm
+
 end subroutine escPTr_React
 
 subroutine escPTr_Destroy(this)

@@ -451,9 +451,10 @@ CHEMISTRY
       RATE_DETACHMENT <kdet> 1/s
       DECAY_AQUEOUS <decayAq> 1/s
       DECAY_ADSORBED <decayIm> 1/s
+      ZERO_CONCENTRATION 0.00
     /
   /
-  
+  TRUNCATE_CONCENTRATION 1.0E-35
   LOG_FORMULATION
   DATABASE ../miscellaneous/rxn_database.dat
   OUTPUT

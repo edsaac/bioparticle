@@ -13,18 +13,16 @@ except IndexError:
 	CLEAN = False
 
 if CLEAN:
-	system("sed -i 's/,/  /g' " + FILE)
-	system("head -3 " + FILE)
-	system("rm -r VTK")
-	system("mkdir VTK")
-	system("mv *.vtk ./VTK/")
-	system("rm *.out")
+  system("sed -i 's/^  //g' " + FILE)
+  system("sed -i 's/  /,/g' " + FILE)
+  system("head -3 " + FILE)
+  system("rm *.out")
 
-ObservationPoint = read_csv(FILE,sep="  ",engine="python")
+ObservationPoint = np.loadtxt(FILE,delimiter=",",skiprows=1)
 
 
-Cnorm = ObservationPoint["\"Total Vaq [M] Obs__PointOutflow (100) (0.025 0.025 0.498)\""]/Cmax
-Time = ObservationPoint["\"Time [d]\""]
+Cnorm = ObservationPoint[:,3]/Cmax
+Time = ObservationPoint[:,0]
 
 Legend=["$\\dfrac{[V_{(aq)}]}{[V_{(aq)}]_0}$"]
 

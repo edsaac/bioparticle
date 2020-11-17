@@ -203,20 +203,20 @@ END
 
 ############# OUTPUT ###############
 OUTPUT
-  SNAPSHOT_FILE
-  	PERIODIC TIME 2.5d-1 d
-  /
+  # SNAPSHOT_FILE
+  # 	PERIODIC TIME 1.d0 d
+  # /
   
   OBSERVATION_FILE
-    PERIODIC TIME 6.d1 s
+    PERIODIC TIME 1d-1 d
   /
-  FORMAT VTK
+  FORMAT HDF5
   VELOCITY_AT_CENTER
 /
 
 ############# TIME ###############
 TIME
-  FINAL_TIME 10.d0 d
+  FINAL_TIME 1.d1 d
   INITIAL_TIMESTEP_SIZE 1.d-2 d
   MAXIMUM_TIMESTEP_SIZE 5.d-1 d
 /
@@ -239,6 +239,7 @@ CHEMISTRY
       RATE_DETACHMENT 7.22d-7
       DECAY_AQUEOUS 1.94d-6
       DECAY_ADSORBED 9.72d-6
+      ZERO_CONCENTRATION 1.d-31
     /
   /
 
