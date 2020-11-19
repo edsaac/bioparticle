@@ -139,7 +139,7 @@ call InputPushBlock(input,option)
         call InputErrorMsg(input,option,'name_immobile', &
                            'CHEMISTRY,REACTION_SANDBOX,BIOPARTEMP,NAMEIM')
         PRINT *, "Read particles' immobile name: ", this%name_immobile ! Edwin debugging    
-      
+
       ! Attachment rate   
       case('RATE_ATTACHMENT')
         ! Read the double precision rate constant
@@ -147,7 +147,8 @@ call InputPushBlock(input,option)
         call InputErrorMsg(input,option,'rate_attachment', &
                            'CHEMISTRY,REACTION_SANDBOX,BIOPARTEMP,Katt')
         PRINT *, "Read attachment rate: ", this%rate_attachment ! Edwin debugging    
-        
+        PRINT "(ES12.4)",this%rate_attachment
+
         ! Read the units
         call InputReadWord(input,option,word,PETSC_TRUE)
         if (InputError(input)) then
@@ -168,7 +169,9 @@ call InputPushBlock(input,option)
         call InputReadDouble(input,option,this%rate_detachment)
         call InputErrorMsg(input,option,'rate_detachment', &
                            'CHEMISTRY,REACTION_SANDBOX,BIOPARTEMP,kdet')
-        PRINT *, "Read detachment rate: ", this%rate_detachment ! Edwin debugging    
+        PRINT *, "Read detachment rate: " ! Edwin debugging    
+        PRINT "(ES12.4)", this%rate_detachment
+
         ! Read the units
         call InputReadWord(input,option,word,PETSC_TRUE)
         if (InputError(input)) then
@@ -204,29 +207,33 @@ call InputPushBlock(input,option)
             call InputReadDouble(input,option,this%Tref_aqueous)
             call InputErrorMsg(input,option,'TrefAq', &
                         'CHEMISTRY,REACTION_SANDBOX,BIOPARTEMP,DECAY_AQ_MODEL,TREF')
-            PRINT *, "Read Tref for decay aqueous model: ", this%Tref_aqueous ! Edwin debugging  
+            PRINT *, "Read Tref for decay aqueous model: " 
+            PRINT "(ES12.4)", this%Tref_aqueous ! Edwin debugging 
           
           ! Model parameter zT  
           case('ZT')
             call InputReadDouble(input,option,this%zT_aqueous)
             call InputErrorMsg(input,option,'decay_aqueous_zT', &
                         'CHEMISTRY,REACTION_SANDBOX,BIOPARTEMP,DECAY_AQ_MODEL,ZT')
-            PRINT *, "zT parameter: ", this%zT_aqueous ! Edwin debugging   
-    
+            PRINT *, "zT parameter: "  ! Edwin debugging   
+            PRINT "(ES12.4)", this%zT_aqueous
+
           ! Model parameter n (Probably 2.0)  
           case('N')
             call InputReadDouble(input,option,this%nAq_aqueous)
             call InputErrorMsg(input,option,'decay_aqueous_nAq', &
                         'CHEMISTRY,REACTION_SANDBOX,BIOPARTEMPDECAY_AQ_MODEL,N')
-            PRINT *, "n parameter: ", this%nAq_aqueous ! Edwin debugging   
+            PRINT *, "n parameter: " ! Edwin debugging   
+            PRINT "(ES12.4)", this%nAq_aqueous
 
           ! D reference value (Probably 2.3)  
           case('LOGDREF')
             call InputReadDouble(input,option,this%logDref_aqueous)
             call InputErrorMsg(input,option,'decay_aqueous_logDref', &
                         'CHEMISTRY,REACTION_SANDBOX,BIOPARTEMPDECAY_AQ_MODEL,LOGDREF')
-            PRINT *, "log(D_ref) parameter: ", this%logDref_aqueous ! Edwin debugging 
-          
+            PRINT *, "log(D_ref) parameter: " ! Edwin debugging 
+            PRINT "(ES12.4)", this%logDref_aqueous
+
           ! Something else
           case default
             call InputKeywordUnrecognized(input,word, &
@@ -240,7 +247,8 @@ call InputPushBlock(input,option)
         call InputReadDouble(input,option,this%decay_adsorbed)
         call InputErrorMsg(input,option,'decay_adsorbed', &
                            'CHEMISTRY,REACTION_SANDBOX,BIOPARTEMP,DECAY_ADSORBED')
-        PRINT *, "Read decay while adsorbed rate: ", this%decay_adsorbed ! Edwin debugging    
+        PRINT *, "Read decay while adsorbed rate: "   
+        PRINT "(ES12.4)", this%decay_adsorbed ! Edwin debugging 
         ! Read the units
         call InputReadWord(input,option,word,PETSC_TRUE)
         if (InputError(input)) then
@@ -262,8 +270,8 @@ call InputPushBlock(input,option)
         call InputReadDouble(input,option,this%zero_concentration)
         call InputErrorMsg(input,option,'zero_concentration', &
                            'CHEMISTRY,REACTION_SANDBOX,BIOPARTEMP,zeroConcentration')
-        PRINT *, "Read zero concentration value: ", this%zero_concentration ! Edwin debugging    
-      
+        PRINT *, "Read zero concentration value: "
+        PRINT "(ES12.4)", this%zero_concentration ! Edwin debugging    
         ! Default break if nothing found in sandbox
       case default
         call InputKeywordUnrecognized(input,word, &
@@ -408,9 +416,14 @@ subroutine bioTH_React(this,Residual,Jacobian,compute_derivative, &
   TrefAq = this%Tref_aqueous
   zTAq = this%zT_aqueous
   nAq = this%nAq_aqueous
-    
-  decayAq = (2.302585/(10.0 ** (logDrefAq - (((temperature - TrefAq)/zTAq)**nAq))))/3600  ! 1/s
+
   
+  decayAq = (2.302585/(10.0 ** (logDrefAq - (((temperature - TrefAq)/zTAq)**nAq))))/3600  ! 1/s
+  ! PRINT *, "Temperature:"
+  ! PRINT "(ES12.4)", temperature
+  ! PRINT *, "Decay Rate 1/s:"
+  ! PRINT "(ES12.4)", decayAq !(Should be 4.45E-6 for a 10°C)
+
   decayIm = this%decay_adsorbed
 !  PRINT *, "Assigned decay rates" ! Edwin debugging    
 
