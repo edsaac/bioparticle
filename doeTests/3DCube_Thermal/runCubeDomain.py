@@ -115,14 +115,18 @@ tagsReplaceable =	{
   ## BIOPARTICLE
   "AttachRate"  : "<katt>",
   "DetachRate"  : "<kdet>",
-  "DecayAq"     : "<decayAq>",
+  #"DecayAq"     : "<decayAq>",
   "DecayIm"     : "<decayIm>",
   ## BREAKTHROUGH CURVE
   "IOdT"        : "<obsTimeStep>",
   "IOObsZ"      : "<observationAtWell>",
   ## TIMESTEPPING
   "deltaT"      : "<desiredTimeStep>",
-  "warmUpT"     : "<warmUpTime>"
+  "warmUpT"     : "<warmUpTime>",
+  ## TEMPERATURE
+  "TEMP_0"      : "<initialTemperature>",
+  "TEMP_Atm"    : "<atmosphereTemperature>",
+  "TEMP_Leak"   : "<leakageTemperature>"
 }
 
 ## Path to PFLOTRAN executable
