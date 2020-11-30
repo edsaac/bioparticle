@@ -25,18 +25,38 @@ from pandas import read_csv
 from os import system
 import sys
 
-def plotResults(U,pH,IS,PV,kATT,kDET,dAq,dIm):
+## Global variables
+ColumnLenght = 50.0
+ConcentrationAtInlet = 1.66E-16
+
+## Non-dimensional numbers
+def DaII(K,A,U,L=ColumnLenght):
+  return (L*L*K)/(A*U)
+
+def Peclet(A,L=ColumnLenght):
+  return L/A
+
+def plotResults(U,pH,IS,PV,kATT,kDET,dAq,dIm,alpha):
   FILE = current_folder+"/pflotran-obs-0.tec"
-  
+
   textBoxpH = "pH = {:n}".format(pH)\
     + "\nIS = {:n}".format(IS)
   
   textBoxKin = \
-    "$k_{\\rm att}$"+" = {:.4f}".format(kATT) + " $h^{-1}$"\
-    +"\n" + "$k_{\\rm det}$"+" = {:.4f}".format(kDET) + " $h^{-1}$"\
-    +"\n" + "$\lambda_{\\rm aq}$"+" = {:.4f}".format(dAq)+ " $h^{-1}$"\
-    +"\n" + "$\lambda_{\\rm im}$"+" = {:.4f}".format(dIm)+ " $h^{-1}$"
+    "$k_{\\rm att}$"+" = {:.4f}".format(kATT) + " h$^{-1}$" +"\n" + \
+    "$k_{\\rm det}$"+" = {:.4f}".format(kDET) + " h$^{-1}$" +"\n" + \
+    "$\lambda_{\\rm aq}$"+" = {:.4f}".format(dAq)+ " h$^{-1}$" +"\n" + \
+    "$\lambda_{\\rm im}$"+" = {:.4f}".format(dIm)+ " h$^{-1}$" +"\n" + \
+    "$\\alpha_{\\rm L}$"+" = {:.4f}".format(alpha)+ " cm "
   
+  textBoxDimensionless = "Damköhler(II) = $\\dfrac{\\rm reaction}{\\rm dispersion}$"+"\n" +\
+    "Da$^{\\rm att}$"+" = {:.1E}".format(DaII(kATT,alpha,U)) +"\n" +\
+    "Da$^{\\rm det}$"+" = {:.1E}".format(DaII(kDET,alpha,U)) +"\n" +\
+    "Da$^{\\rm λaq}$"+" = {:.1E}".format(DaII(dAq, alpha,U)) +"\n" +\
+    "Da$^{\\rm λim}$"+" = {:.1E}".format(DaII(dIm, alpha,U)) +"\n\n" +\
+    "Péclet = $\\dfrac{\\rm advection}{\\rm dispersion}$"+"\n" +\
+    "P$_{\\rm é}$"+" = {:.1E}".format(Peclet(alpha))
+
   system("./miscellaneous/PFT2CSV.sh " + FILE)
   #system("rm " + current_folder +"/*.out")
   
@@ -49,37 +69,40 @@ def plotResults(U,pH,IS,PV,kATT,kDET,dAq,dIm):
   
   ## Plot log-scale
   ax1 = plt.subplot(1,2,1)
-  ax1.plot(TimeInPoreVolumes,Cnorm,c="black",lw=3)
+  ax1.plot(TimeInPoreVolumes,Cnorm,c="purple",lw=3)
   ax1.set_yscale("symlog",\
-    linthreshy=1.0E-6,subsy=[1,2,3,4,5,6,7,8,9])
+    linthresh=1.0E-6,subs=[1,2,3,4,5,6,7,8,9])
   ax1.set_ylim([-1.0E-7,1.15])
   ax1.set_xlim([0,10])
   ax1.set_xlabel("Pore Volume [$-$]",fontsize="large")
   ax1.axvline(x=PV,ls="dotted",c="gray",lw=1)
   ax1.axhspan(ymin=-1.0E-7,ymax=1.0E-6,facecolor="pink",alpha=0.2)
-  ax1.text(9.5,5.0E-3,textBoxKin,\
+  ## Rate values
+  ax1.text(9.5,5.0E-5,textBoxKin,\
     bbox=dict(boxstyle='round', facecolor='wheat', alpha=0.5),\
+    horizontalalignment='right')
+  ## Case pH/IS
+  ax1.text(9.0,1.0E-1,textBoxpH,\
+    bbox=dict(boxstyle='round', facecolor='purple', alpha=0.15),\
     horizontalalignment='right')
 
   ## Plot linear-scale
   ax2 = plt.subplot(1,2,2)
-  ax2.plot(TimeInPoreVolumes,Cnorm,c="black",lw=3,label=Legend[0])
+  ax2.plot(TimeInPoreVolumes,Cnorm,c="purple",lw=3,label=Legend[0])
   ax2.set_ylim([-1.0E-2,1.02])
   ax2.set_xlim([0,10])
   ax2.set_xlabel("Pore Volume [$-$]",fontsize="large")
   ax2.axvline(x=PV,ls="dotted",c="gray",lw=1)
   ax2.legend(fontsize="large",loc="upper right")
-  ax2.text(9.0,0.6,textBoxpH,\
+  ## Péclet and Damköhler numbers
+  ax2.text(9.5,0.1,textBoxDimensionless,\
     bbox=dict(boxstyle='round', facecolor='purple', alpha=0.15),\
     horizontalalignment='right')
-  plt.tight_layout()
-  FIGPATH = current_folder + "/" + "breakthroughCurve_" + current_folder[7:10] + ".png"
+  
+  plt.tight_layout()  
+  FIGPATH = current_folder + "/" + "CASE_" + current_folder[7:10] + ".png"
   #plt.show()
   plt.savefig(FIGPATH,transparent=False)
-
-## Global variables
-ColumnLenght = 50.0
-ConcentrationAtInlet = 1.66E-16
 
 ## Tags dictionary for variables in input file
 tagsReplaceable =	{
@@ -90,7 +113,8 @@ tagsReplaceable =	{
   "AttachRate": "<katt>",
   "DetachRate": "<kdet>",
   "DecayAq"   : "<decayAq>",
-  "DecayIm"   : "<decayIm>"
+  "DecayIm"   : "<decayIm>",
+  "LongDisp"  : "<longDisp>"
 }
 
 ## Tags dictionary for other parameters
@@ -166,6 +190,8 @@ for i in range(total_rows):
       setParameters.loc[i,tagsReplaceable["AttachRate"]],\
       setParameters.loc[i,tagsReplaceable["DetachRate"]],\
       setParameters.loc[i,tagsReplaceable["DecayAq"]],\
-      setParameters.loc[i,tagsReplaceable["DecayIm"]])
+      setParameters.loc[i,tagsReplaceable["DecayIm"]],\
+      setParameters.loc[i,tagsReplaceable["LongDisp"]])
     #input("Press Enter to continue...")
+system("rm -r pictures ; mkdir pictures")
 system("cp CASE**/*.png ./pictures/")

@@ -190,29 +190,42 @@ An injection of an infective virus (PRD1) at a given concentration is set at the
 
 ## **PFLOTRAN Simulation**
 
-<img src="./phagesPRD1_media/plot/CASE_1.png" alt="Column flow" width=600>
+### **_Without_ the attachment/detachment and decay rates**
 
-<img src="./phagesPRD1_media/plot/CASE_2.png" alt="Column flow" width=600>
+Low Péclet number: 
 
-<img src="./phagesPRD1_media/plot/CASE_3.png" alt="Column flow" width=600>
+<img src="./phagesPRD1_media/plot/CASE_013.png" alt="Column flow" width=600>
 
-<img src="./phagesPRD1_media/plot/CASE_4.png" alt="Column flow" width=600>
+High Péclet number:
 
-<img src="./phagesPRD1_media/plot/CASE_5.png" alt="Column flow" width=600>
+<img src="./phagesPRD1_media/plot/CASE_014.png" alt="Column flow" width=600>
 
-<img src="./phagesPRD1_media/plot/CASE_6.png" alt="Column flow" width=600>
 
-<img src="./phagesPRD1_media/plot/CASE_7.png" alt="Column flow" width=600>
+### **With the attachment/detachment and decay rates**
 
-<img src="./phagesPRD1_media/plot/CASE_8.png" alt="Column flow" width=600>
+<img src="./phagesPRD1_media/plot/CASE_001.png" alt="Column flow" width=600>
 
-<img src="./phagesPRD1_media/plot/CASE_9.png" alt="Column flow" width=600>
+<img src="./phagesPRD1_media/plot/CASE_002.png" alt="Column flow" width=600>
 
-<img src="./phagesPRD1_media/plot/CASE_10.png" alt="Column flow" width=600>
+<img src="./phagesPRD1_media/plot/CASE_003.png" alt="Column flow" width=600>
 
-<img src="./phagesPRD1_media/plot/CASE_11.png" alt="Column flow" width=600>
+<img src="./phagesPRD1_media/plot/CASE_004.png" alt="Column flow" width=600>
 
-<img src="./phagesPRD1_media/plot/CASE_12.png" alt="Column flow" width=600>
+<img src="./phagesPRD1_media/plot/CASE_005.png" alt="Column flow" width=600>
+
+<img src="./phagesPRD1_media/plot/CASE_006.png" alt="Column flow" width=600>
+
+<img src="./phagesPRD1_media/plot/CASE_007.png" alt="Column flow" width=600>
+
+<img src="./phagesPRD1_media/plot/CASE_008.png" alt="Column flow" width=600>
+
+<img src="./phagesPRD1_media/plot/CASE_009.png" alt="Column flow" width=600>
+
+<img src="./phagesPRD1_media/plot/CASE_010.png" alt="Column flow" width=600>
+
+<img src="./phagesPRD1_media/plot/CASE_011.png" alt="Column flow" width=600>
+
+<img src="./phagesPRD1_media/plot/CASE_012.png" alt="Column flow" width=600>
 
 _______
 
