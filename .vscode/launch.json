@@ -49,6 +49,15 @@
 			"console": "integratedTerminal",
 			"cwd": "/home/edwin/VirusPFLOTRAN/bioparticle/test/phagesExperiment",
 			"args": ["Table2_perSecond.csv","template.in","-run"]
+    },
+    {
+			"name": "Python: Laptop Thermal",
+			"type": "python",
+			"request": "launch",
+			"program": "${file}",
+			"console": "integratedTerminal",
+			"cwd": "/home/edwin/VirusPFLOTRAN/bioparticle/doeTests/3DCube_Thermal",
+			"args": ["Test.csv","tpl_3DtwoLayers_TH.in","debug"]
 		},
 	]
 }

@@ -81,7 +81,7 @@ MATERIAL_PROPERTY soil1
     PERM_Z 1.d-4
   /
   SATURATION_FUNCTION vanGenuchtenMualem1
-  LONGITUDINAL_DISPERSIVITY 0.2d-2
+  LONGITUDINAL_DISPERSIVITY <longDisp>
 END
 
 ############# CURVES ###############
@@ -140,10 +140,12 @@ END
 TRANSPORT_CONDITION bc__inflow_t
   TYPE DIRICHLET_ZERO_GRADIENT
   CONSTRAINT_LIST
-#    0.0d0 inlet_constraint
-#    <elutionTime> clean_inlet
-   0.0d0 clean_inlet
-   <elutionTime> inlet_constraint
+# Pulse injection
+    0.0d0 inlet_constraint
+    <elutionTime> clean_inlet
+## Continous injection
+#   0.0d0 clean_inlet
+#   <elutionTime> inlet_constraint
   /
 END
 
