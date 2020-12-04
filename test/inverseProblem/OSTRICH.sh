@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # set path to OSTRICH binary
-OSTRICH=/projects/ccrstaff/lsmatott/research/Ostrich/Ostrich
+OSTRICH=/home/edwin/Apps/Ostrich_v17.12.19/Linux/openmpi/2.0.2/Ostrich
 
 $OSTRICH
 

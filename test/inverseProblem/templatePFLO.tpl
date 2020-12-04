@@ -73,7 +73,7 @@ END
 ############# SOILS ###############
 MATERIAL_PROPERTY soil1
   ID 1
-  POROSITY 3.700E-01
+  POROSITY <porosity>
   TORTUOSITY 0.5d0
   PERMEABILITY
     PERM_X 1.d-4
@@ -81,7 +81,7 @@ MATERIAL_PROPERTY soil1
     PERM_Z 1.d-4
   /
   SATURATION_FUNCTION vanGenuchtenMualem1
-  LONGITUDINAL_DISPERSIVITY 1.995E-07
+  LONGITUDINAL_DISPERSIVITY 1.333452E-05
 END
 
 ############# CURVES ###############
@@ -103,7 +103,7 @@ FLOW_CONDITION bc__inflow
  TYPE
    FLUX NEUMANN
  END
- FLUX 7.585E-01 cm/h
+ FLUX <darcyVel> cm/h
 END
 
 FLOW_CONDITION bc__outflow
@@ -142,10 +142,10 @@ TRANSPORT_CONDITION bc__inflow_t
   CONSTRAINT_LIST
 # Pulse injection
     0.0d0 inlet_constraint
-    1.098E+05 clean_inlet
+    <elutionTime> clean_inlet
 ## Continous injection
 #   0.0d0 clean_inlet
-#   1.098E+05 inlet_constraint
+#   <elutionTime> inlet_constraint
   /
 END
 
@@ -220,7 +220,7 @@ OUTPUT
 
 ############# TIME ###############
 TIME
-  FINAL_TIME 1.250E+01 d
+  FINAL_TIME <endTime> d
   INITIAL_TIMESTEP_SIZE 1.d-2 d
   MAXIMUM_TIMESTEP_SIZE 5.d-1 d
 /
@@ -239,10 +239,10 @@ CHEMISTRY
     BIOPARTICLE
       PARTICLE_NAME_AQ Vaq
       PARTICLE_NAME_IM Vim
-      RATE_ATTACHMENT 4.000E-02 1/h
-      RATE_DETACHMENT 2.600E-03 1/h
-      DECAY_AQUEOUS 7.000E-03 1/h
-      DECAY_ADSORBED 3.500E-02 1/h
+      RATE_ATTACHMENT 9.864485E-08 1/h
+      RATE_DETACHMENT 2.494554E-05 1/h
+      DECAY_AQUEOUS 2.501787E-02 1/h
+      DECAY_ADSORBED 1.307897E-05 1/h
       ZERO_CONCENTRATION 0.0
     /
   /
