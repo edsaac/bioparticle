@@ -5,9 +5,9 @@
 # ModelSubdir <subdirParallelStuff>
 # ObjectiveFunction WSSE
 
-#ProgramType DDS
-ProgramType ParticleSwarm
-#ProgramType Levenberg-Marquardt
+ProgramType DDS
+# ProgramType ParticleSwarm
+# ProgramType Levenberg-Marquardt
 ModelExecutable   ./Column1D.py
 ModelSubdir subdirParallelStuff
 ObjectiveFunction WSSE
@@ -33,7 +33,7 @@ BeginParams
 <kdet> 1.0E-04 1.0E-10 1.0E+01 none log10 none
 <decayAq> 1.0E-04 1.0E-10 1.0E+01 none log10 none
 <decayIm> 1.0E-04 1.0E-10 1.0E+01 none log10 none
-<longDisp> 1.0E-04 1.0E-10 1.0E+01 none log10 none
+<longDisp> 1.0E-09 1.0E-10 1.0E+01 none log10 none
 EndParams
 
 ## Observations to match
@@ -79,22 +79,22 @@ EndObservations
 # MaxIterations    20
 # EndLevMar
 
-## Configuration for DDS algorithm
-# BeginDDSAlg
-# PerturbationValue 0.2 
-# MaxIterations 100
-# UseRandomParamValues 
-# EndDDSAlg
+# Configuration for DDS algorithm
+BeginDDSAlg
+PerturbationValue 0.2 
+MaxIterations 100
+UseRandomParamValues 
+EndDDSAlg
 
-# Configuration for Particle Swarm algorithm
-BeginParticleSwarm
-SwarmSize 20
-NumGenerations 50
-ConstrictionFactor 1.0
-CognitiveParam 2.0
-SocialParam 2.0
-InertiaWeight 1.2
-InertiaReductionRate 0.1
-InitPopulationMethod Random
-ConvergenceVal 1.00E-3
-EndParticleSwarm
+# # Configuration for Particle Swarm algorithm
+# BeginParticleSwarm
+# SwarmSize 20
+# NumGenerations 50
+# ConstrictionFactor 1.0
+# CognitiveParam 2.0
+# SocialParam 2.0
+# InertiaWeight 1.2
+# InertiaReductionRate 0.1
+# InitPopulationMethod Random
+# ConvergenceVal 1.00E-3
+# EndParticleSwarm

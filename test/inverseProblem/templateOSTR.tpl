@@ -20,6 +20,12 @@ END
 ############# FLOW CONFIGURATION ###############
 SUBSURFACE
 
+NUMERICAL_METHODS transport
+  TIMESTEPPER
+    CFL_GOVERNOR 1.0
+  /
+END
+
 ############# GRID ###############
 GRID
   TYPE STRUCTURED CARTESIAN
@@ -67,14 +73,14 @@ END
 
 ############# FLUID ###############
 FLUID_PROPERTY
-  DIFFUSION_COEFFICIENT 1.d-9
+  DIFFUSION_COEFFICIENT 0.0
 END
 
 ############# SOILS ###############
 MATERIAL_PROPERTY soil1
   ID 1
   POROSITY <porosity>
-  TORTUOSITY 0.5d0
+  TORTUOSITY 1.0
   PERMEABILITY
     PERM_X 1.d-4
     PERM_Y 1.d-4

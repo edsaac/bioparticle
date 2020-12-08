@@ -7,7 +7,17 @@
 #               |_|
 # 
 ###############################################################
-
+#
+# $ python3 runTableCases.py [CASES.CSV] [TEMPLATE.IN] -run
+# 
+# Where:
+#   - [CASES.CSV] path to csv file with the list of 
+#     parameters and the corresponding tags
+#   - [TEMPLATE.IN] input file template for PFLOTRAN and 
+#     the corresponding tags
+#   - [shouldRunPFLOTRAN = "-run"]
+#
+###############################################################
 import numpy as np
 import matplotlib.pyplot as plt
 from os import system
@@ -122,14 +132,20 @@ class Model:
 
 ## Non-dimensional numbers
 def DamkII(K,A,U,L,asString=False):
-  DaII = (L*L*K)/(A*U)
+  if A <= 0.0:
+    DaII = float('inf')
+  else: 
+    DaII = (L*L*K)/(A*U)
   if asString:
     return "{:.1E}".format(DaII)
   else:
     return DaII
 
 def Peclet(A,L,U,asString=False):
-  Pe = (L*U)/(A*U)
+  if A <= 0.0:
+    Pe = float('inf')
+  else: 
+    Pe = (L*U)/(A*U)
   if asString:
     return "{:.1E}".format(Pe)
   else:
