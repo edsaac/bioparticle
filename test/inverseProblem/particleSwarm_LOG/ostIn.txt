@@ -1,0 +1,100 @@
+### Configuration File for Ostrich Program ###
+## Essential variables
+# ProgramType <OptimizationRoutine>
+# ModelExecutable <modelToRunEachTime>
+# ModelSubdir <subdirParallelStuff>
+# ObjectiveFunction WSSE
+
+# ProgramType DDS
+ProgramType ParticleSwarm
+# ProgramType Levenberg-Marquardt
+ModelExecutable   ./Column1D.py
+ModelSubdir subdirParallelStuff
+ObjectiveFunction WSSE
+
+BeginFilePairs    
+templateOSTR.tpl ; templatePFLO.tpl
+EndFilePairs
+
+BeginExtraFiles
+PFLOTRAN.py
+rxn_database.dat
+EndExtraFiles
+
+## Parameters to change
+# BeginParams
+# <name1> <init1> <lwr1> <upr1> <txIn1> <txOst1> <txOut1> <fmt1>
+# . . .
+# <nameN> <initN> <lwrN> <uprN> <txInN> <txOstN> <txOutN> <fmtN>
+# EndParams
+
+BeginParams
+<katt> 1.0E-04 1.0E-10 1.0E+01 none log10 none
+<kdet> 1.0E-04 1.0E-10 1.0E+01 none log10 none
+<decayAq> 1.0E-04 1.0E-10 1.0E+01 none log10 none
+<decayIm> 1.0E-04 1.0E-10 1.0E+01 none log10 none
+<longDisp> 1.0E-09 1.0E-10 1.0E+01 none log10 none
+EndParams
+
+## Observations to match
+# BeginObservations
+# <name1><value1><wgt1><file1><sep1><key1><line1><col1><tok1><aug1><grp1>
+# . . .
+# <nameN><valueN><wgtN><fileN><sepN><keyN><lineN><colN><tokN><augN><grpN>
+# EndObservations
+
+BeginObservations
+OBS_01 -4.02426794258373 1 ResultsFile.txt ; OST_NULL 1 2 ' ' no no
+OBS_02 -1.32999043062201 1 ResultsFile.txt ; OST_NULL 2 2 ' ' no no
+OBS_03 -0.909167464114832 1 ResultsFile.txt ; OST_NULL 3 2 ' ' no no
+OBS_04 -0.425186602870814 1 ResultsFile.txt ; OST_NULL 4 2 ' ' no no
+OBS_05 -0.08865071770335 1 ResultsFile.txt ; OST_NULL 5 2 ' ' no no
+OBS_06 -0.047464114832536 1 ResultsFile.txt ; OST_NULL 6 2 ' ' no no
+OBS_07 -0.048382775119617 1 ResultsFile.txt ; OST_NULL 7 2 ' ' no no
+OBS_08 -0.09178947368421 1 ResultsFile.txt ; OST_NULL 8 2 ' ' no no
+OBS_09 -0.260976076555024 1 ResultsFile.txt ; OST_NULL 9 2 ' ' no no
+OBS_10 -0.808803827751196 1 ResultsFile.txt ; OST_NULL 10 2 ' ' no no
+OBS_11 -1.18805741626794 1 ResultsFile.txt ; OST_NULL 11 2 ' ' no no
+OBS_12 -2.24145454545455 1 ResultsFile.txt ; OST_NULL 12 2 ' ' no no
+OBS_13 -2.45251674641148 1 ResultsFile.txt ; OST_NULL 13 2 ' ' no no
+OBS_14 -2.51674641148325 1 ResultsFile.txt ; OST_NULL 14 2 ' ' no no
+OBS_15 -2.83368421052631 1 ResultsFile.txt ; OST_NULL 15 2 ' ' no no
+OBS_16 -3.00325358851675 1 ResultsFile.txt ; OST_NULL 16 2 ' ' no no
+OBS_17 -2.58334928229665 1 ResultsFile.txt ; OST_NULL 17 2 ' ' no no
+OBS_18 -3.11134928229665 1 ResultsFile.txt ; OST_NULL 18 2 ' ' no no
+OBS_19 -3.11433492822966 1 ResultsFile.txt ; OST_NULL 19 2 ' ' no no
+OBS_20 -3.22105263157895 1 ResultsFile.txt ; OST_NULL 20 2 ' ' no no
+OBS_21 -3.03303349282297 1 ResultsFile.txt ; OST_NULL 21 2 ' ' no no
+EndObservations
+
+#Configuration for Levenberg-Marquardt algorithm
+BeginLevMar
+InitialLambda    10.0
+LambdaScaleFactor    1.1
+MoveLimit    0.1
+AlgorithmConvergenceValue    0.0001
+LambdaPhiRatio    0.3
+LambdaRelReduction    0.01
+MaxLambdas    10
+MaxIterations    20
+EndLevMar
+
+# # Configuration for DDS algorithm
+# BeginDDSAlg
+# PerturbationValue 0.2 
+# MaxIterations 100
+# UseRandomParamValues 
+# EndDDSAlg
+
+# Configuration for Particle Swarm algorithm
+BeginParticleSwarm
+SwarmSize 20
+NumGenerations 50
+ConstrictionFactor 1.0
+CognitiveParam 2.0
+SocialParam 2.0
+InertiaWeight 1.2
+InertiaReductionRate 0.1
+InitPopulationMethod Random
+ConvergenceVal 1.00E-3
+EndParticleSwarm
