@@ -29,6 +29,12 @@ ElutionTime  = PFLO.Var(tag="<elutionTime>",\
 EndTime      = PFLO.Var(tag="<endTime>",\
                         value=10.*InjectTimeInPoreVol,\
                         units="d")
+CFL = 1.0
+nZ = 50
+deltaX = L/nZ
+TimeStep     = PFLO.Var(tag="<timeStep>",\
+                        value=CFL*deltaX*Porosity.get_value()/FlowVelocity.get_value(),\
+                        units="h")
 
 # Parameters whose values are set by Ostrich Calibrator:
 LongDisp     = PFLO.Var(tag="<longDisp>",units="cm")
@@ -42,7 +48,8 @@ thingsThisScriptControls = [
     Porosity,
     FlowVelocity,
     ElutionTime,
-    EndTime]
+    EndTime,
+    TimeStep]
 thingsOstrichWillControl = [
     LongDisp,
     RateAttachment,
@@ -53,6 +60,16 @@ thingsOstrichWillControl = [
 
 # Function for running the model
 ColumnModel.cloneTemplate(TemplateFile)
+
+# # Only to extract a single result overiding OSTRICH
+# LongDisp.set_value(7.203543E-07)
+# RateAttachment.set_value(2.375945E-03)
+# RateDetachment.set_value(1.137801E-07)
+# RateDecayAqueo.set_value(3.088080E-03)
+# RateDecayImmob.set_value(9.949344E+00)
+# for parameter in thingsOstrichWillControl:
+#   parameter.replaceTag() 
+
 for parameter in thingsThisScriptControls:
   parameter.replaceTag()
 ColumnModel.runModel()
@@ -62,7 +79,7 @@ ColumnModel.fixTecFile()
 def postprocessResults():
   ResultsFile = "./pflotran-obs-0.tec"
   ObservationPoint = np.loadtxt(ResultsFile,delimiter=",",skiprows=1)
-  Cnorm = ObservationPoint[:,3]/ConcentrationAtInlet
+  Cnorm = ObservationPoint[:,1]/ConcentrationAtInlet
   TimeInPoreVolumes = 24.0 * ObservationPoint[:,0] * FlowVelocity.get_value()/(L*Porosity.get_value())
   return TimeInPoreVolumes, Cnorm
 
@@ -150,7 +167,7 @@ deltaC = np.log10(valuesAtGivenPV)-np.log10(ObservationsRelC)
 RMSE = np.sqrt(np.mean(np.square(deltaC)))
 NSE  = 1 - np.sum(np.square(deltaC))/np.sum(np.square(np.log10(ObservationsRelC)-np.mean(np.log10(ObservationsRelC))))
 
-ax1.text(5.5,5.0E-3,"RMSE = {:.2E}\n NSE = {:.3f}".format(RMSE,NSE),\
+ax1.text(5.5,5.0E-3,"RMSE logs = {:.2E}\n NSE logs = {:.3f}".format(RMSE,NSE),\
     bbox=dict(boxstyle='round', facecolor='wheat', alpha=0.25),\
     horizontalalignment='right')
 
