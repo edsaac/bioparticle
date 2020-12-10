@@ -61,8 +61,8 @@ def plotResults(U,pH,IS,PV,kATT,kDET,dAq,dIm,alpha):
   #system("rm " + current_folder +"/*.out")
   
   ObservationPoint = np.loadtxt(FILE,delimiter=",",skiprows=1)
-  Cnorm = ObservationPoint[:,3]/ConcentrationAtInlet
-  TimeInPoreVolumes = ObservationPoint[:,0] * (U*24.)/ColumnLenght
+  Cnorm = ObservationPoint[:,1]/ConcentrationAtInlet
+  TimeInPoreVolumes = ObservationPoint[:,0] * U*24./(ColumnLenght)
   
   Legend=["$\\dfrac{[V_{(aq)}]}{[V_{(aq)}]_0}$"]
   plt.figure(figsize=(10,4),facecolor="white")
@@ -181,10 +181,8 @@ for i in range(total_rows):
     current_IS = setParameters.loc[i,tagsAccesory["IonicStr"]]
     current_PV = setParameters.loc[i,tagsAccesory["PoreVol"]]
 
-    current_kAtt = setParameters.loc[i,tagsAccesory["PoreVol"]]
-    current_k = setParameters.loc[i,tagsAccesory["PoreVol"]]
-    current_PV = setParameters.loc[i,tagsAccesory["PoreVol"]]
-    current_PV = setParameters.loc[i,tagsAccesory["PoreVol"]]
+    #Porosity = setParameters.loc[i,tagsReplaceable["Porosity"]]
+    
     #input("Press Enter to continue...")
     plotResults(current_U,current_pH,current_IS,current_PV,\
       setParameters.loc[i,tagsReplaceable["AttachRate"]],\

@@ -8,11 +8,11 @@
 SIMULATION
   SIMULATION_TYPE SUBSURFACE
   PROCESS_MODELS
-    SUBSURFACE_FLOW flow
-      MODE RICHARDS
-    /
-   SUBSURFACE_TRANSPORT transport
-     MODE GIRT
+    # SUBSURFACE_FLOW flow
+    #   MODE RICHARDS
+    # /
+    SUBSURFACE_TRANSPORT transport
+      MODE GIRT
     /
   /
 END
@@ -20,13 +20,19 @@ END
 ############# FLOW CONFIGURATION ###############
 SUBSURFACE
 
+NUMERICAL_METHODS transport
+  TIMESTEPPER
+    CFL_GOVERNOR 1.0
+  /
+END
+
 ############# GRID ###############
 GRID
   TYPE STRUCTURED CARTESIAN
-  NXYZ 1 1 100
+  NXYZ 1 1 50
   BOUNDS
     0.d0   0.d0   0.d0
-    0.05d0 0.05d0 0.50d0
+    0.05d0 0.05d0 5.000E-01
   /
 END
 
@@ -34,14 +40,14 @@ END
 REGION Region__all
   COORDINATES
     0.d0   0.d0   0.d0
-    0.05d0 0.05d0 0.50d0
+    0.05d0 0.05d0 5.000E-01
   /
 END
 
 REGION Face__Top
   COORDINATES
-    0.05d0 0.05d0 0.50d0
-    0.d0 0.d0 0.50d0
+    0.05d0 0.05d0 5.000E-01
+    0.d0 0.d0 5.000E-01
   /
   FACE TOP
 END
@@ -56,7 +62,7 @@ END
 
 REGION Obs__PointOutflow
   COORDINATES
-    0.025d0 0.025d0 0.50d0
+    0.025d0 0.025d0 5.000E-01
   /
 END
 
@@ -67,66 +73,76 @@ END
 
 ############# FLUID ###############
 FLUID_PROPERTY
-  DIFFUSION_COEFFICIENT 1.d-9
+  DIFFUSION_COEFFICIENT 0.0
 END
 
 ############# SOILS ###############
 MATERIAL_PROPERTY soil1
   ID 1
   POROSITY 3.700E-01
-  TORTUOSITY 0.5d0
-  PERMEABILITY
-    PERM_X 1.d-4
-    PERM_Y 1.d-4
-    PERM_Z 1.d-4
-  /
-  SATURATION_FUNCTION vanGenuchtenMualem1
-  LONGITUDINAL_DISPERSIVITY 2.000E-01
+  # TORTUOSITY 0.0
+  # PERMEABILITY
+  #   PERM_X 1.d-4
+  #   PERM_Y 1.d-4
+  #   PERM_Z 1.d-1
+  # /
+#  SATURATION_FUNCTION vanGenuchtenMualem1
+  LONGITUDINAL_DISPERSIVITY 1.000E-30
 END
 
 ############# CURVES ###############
-CHARACTERISTIC_CURVES vanGenuchtenMualem1
-  SATURATION_FUNCTION VAN_GENUCHTEN
-    LIQUID_RESIDUAL_SATURATION 0.115
-    ALPHA  1.9401d-4
-    M 0.286d0 
-  /
+# CHARACTERISTIC_CURVES vanGenuchtenMualem1
+#   SATURATION_FUNCTION VAN_GENUCHTEN
+#     LIQUID_RESIDUAL_SATURATION 0.115
+#     ALPHA  1.9401d-4
+#     M 0.286d0 
+#   /
 
-  PERMEABILITY_FUNCTION MUALEM_VG_LIQ
-    LIQUID_RESIDUAL_SATURATION 0.115
-    M 0.286d0
-  /
-END
+#   PERMEABILITY_FUNCTION MUALEM_VG_LIQ
+#     LIQUID_RESIDUAL_SATURATION 0.115
+#     M 0.286d0
+#   /
+# END
 
 ############# FLOW CONDITIONS ###############
-FLOW_CONDITION bc__inflow
- TYPE
-   FLUX NEUMANN
- END
- FLUX 7.585E-01 cm/h
-END
+# FLOW_CONDITION bc__inflow
+#  TYPE
+#    FLUX NEUMANN
+#  END
+#  FLUX 7.585E-01 cm/h
+# END
 
-FLOW_CONDITION bc__outflow
- TYPE
-   PRESSURE DIRICHLET
- END
-  PRESSURE 101325.d0
-END
+# FLOW_CONDITION bc__outflow
+#  TYPE
+#    PRESSURE DIRICHLET
+#  END
+#   PRESSURE 101325.d0
+# END
 
-FLOW_CONDITION bc__noFlow
-  TYPE
-    FLUX neumann
-  END
-  FLUX 0.d0
-END
+# FLOW_CONDITION bc__noFlow
+#   TYPE
+#     FLUX neumann
+#   END
+#   FLUX 0.d0
+# END
 
-FLOW_CONDITION ic__initial
-  TYPE
-    FLUX HYDROSTATIC
-  END
-  INTERPOLATION LINEAR
-  DATUM 0.d0 0.d0 0.5d0
-  PRESSURE 101325.d0
+# FLOW_CONDITION ic__initial
+#   TYPE
+#     FLUX HYDROSTATIC
+#   END
+#   INTERPOLATION LINEAR
+#   DATUM 0.d0 0.d0 0.5d0
+#   PRESSURE 101325.d0
+# END
+
+SPECIFIED_VELOCITY
+  UNIFORM? YES
+  DATASET LIST
+    TIME_UNITS d
+    DATA_UNITS cm/h
+    INTERPOLATION STEP
+    0.d0 0.d0 0.d0 7.585E-01 
+  /
 END
 
 ########### TRANSPORT CONDITIONS #############
@@ -142,10 +158,7 @@ TRANSPORT_CONDITION bc__inflow_t
   CONSTRAINT_LIST
 # Pulse injection
     0.0d0 inlet_constraint
-    1.098E+05 clean_inlet
-## Continous injection
-#   0.0d0 clean_inlet
-#   1.098E+05 inlet_constraint
+    8.780E+04 clean_inlet
   /
 END
 
@@ -159,10 +172,10 @@ END
 ############## CONSTRAINTS #################
 CONSTRAINT initial_constraint
   CONCENTRATIONS
-    Vaq   1.d-50      T
+    Vaq   1.d-35      T
   /
   IMMOBILE
-    Vim   1.d-50
+    Vim   1.d-35
   /
 END
 
@@ -174,7 +187,7 @@ END
 
 CONSTRAINT clean_inlet
   CONCENTRATIONS
-    Vaq   1.d-50      T
+    Vaq   1.d-35      T
   /
 END
 
@@ -182,20 +195,20 @@ END
 # initial condition
 INITIAL_CONDITION
   REGION Region__all
-  FLOW_CONDITION ic__initial
+#  FLOW_CONDITION ic__initial
   TRANSPORT_CONDITION ic__initial_t
 END
 
 # boundary conditions
 BOUNDARY_CONDITION
   REGION Face__Bottom
-  FLOW_CONDITION bc__inflow
+#  FLOW_CONDITION bc__inflow
   TRANSPORT_CONDITION bc__inflow_t
 END
 
 BOUNDARY_CONDITION
   REGION Face__Top
-  FLOW_CONDITION bc__outflow
+#  FLOW_CONDITION bc__outflow
   TRANSPORT_CONDITION bc__outflow_t
 END
 
@@ -207,9 +220,9 @@ END
 
 ############# OUTPUT ###############
 OUTPUT
-  SNAPSHOT_FILE
-  	PERIODIC TIME 2.d-1 d
-  /
+  # SNAPSHOT_FILE
+  # 	PERIODIC TIME 2.d-1 d
+  # /
   
   OBSERVATION_FILE
     PERIODIC TIME 1.d-1 d
@@ -220,9 +233,9 @@ OUTPUT
 
 ############# TIME ###############
 TIME
-  FINAL_TIME 1.250E+01 d
-  INITIAL_TIMESTEP_SIZE 1.d-2 d
-  MAXIMUM_TIMESTEP_SIZE 5.d-1 d
+  FINAL_TIME 1.000E+01 d
+  INITIAL_TIMESTEP_SIZE 4.878E-01 h
+  MAXIMUM_TIMESTEP_SIZE 4.878E-01 h
 /
 
 ############# CHEMISTRY MAGIC ###############
@@ -247,7 +260,7 @@ CHEMISTRY
     /
   /
   LOG_FORMULATION
-  TRUNCATE_CONCENTRATION 1.0E-50
+  TRUNCATE_CONCENTRATION 1.0E-35
   DATABASE rxn_database.dat
   OUTPUT
     TOTAL
