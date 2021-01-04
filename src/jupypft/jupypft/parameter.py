@@ -8,7 +8,213 @@ encountered in PFLOTRAN cases
 from os import system
 import ipywidgets as wd
 
-class WithSlider:
+class Parameter:
+  '''
+  Class for parameters to set in a PFLOTRAN case
+  '''
+  __numberOf = 0   # Counter of all instantiated variables 
+  __listObjs = []    # List of all instantiated variables 
+  __listTags = []    # List of all tags
+  
+  def __init__(
+    self,
+    tag,
+    value=None
+    ):
+    '''
+    Parameters
+    ---------------
+    tag: string
+      The tag to replace in the template file
+    value: float
+      The value of the parameter
+    '''
+    self._tag = tag
+    self._value = value
+
+    Parameter.__numberOf += 1
+    Parameter.__listTags.append(tag)
+    Parameter.__listObjs.append(self)
+ 
+  def __del__(self):
+    Parameter.__numberOf -= 1
+    Parameter.__listTags.remove(self._tag)
+    Parameter.__listObjs.remove(self)
+  
+  def __str__(self):
+    return self.tag + " = " + self.strValue
+  
+  def __repr__(self):
+    return "jupypft.parameter.Parameter(\"" \
+      + self.tag + "\")"
+  
+  # def __setattr__(self, key, value):
+  #   raise TypeError( "%r won't accept new attributes" % self )
+  '''
+  Getters & Setters
+  aka methods that return the value of the attribute
+  and modify their values
+  '''
+  @property
+  def tag(self) -> str: return self._tag
+  @tag.setter
+  def tag(self,tag) -> None: self._tag = tag
+  
+  @property
+  def value(self) -> float: return self._value
+  @value.setter
+  def value(self,value) -> None: self._value = value
+  
+  @property
+  def strValue(self) -> str: 
+    try: return str(self._value)
+    except TypeError: return str("<None>")
+  
+  '''
+  Class variable «getters»
+  aka methods that return the value of static attributes
+  '''
+  @classmethod
+  def num_of_vars(cls) -> float: return cls.__numberOf
+  
+  @classmethod
+  def list_of_tags(cls) -> list: return cls.__listTags
+  
+  @classmethod
+  def list_of_vars(cls) -> list: return cls.__listObjs
+  
+
+####################
+
+class Real(Parameter):
+  '''
+  Class for real-valued parameters to set in a PFLOTRAN case
+  
+    e.g.
+      permeability = var(tag="<K>",units="cm2")
+  '''
+  def __init__(
+    self,
+    tag,
+    value=None,
+    units=None
+    ):
+    '''
+    Parameters
+    ---------------
+    tag: string
+      The tag to replace in the template file
+    value: float
+      The value of the parameter
+    units: string
+      the units of the parameter - does nothing
+    )
+    '''
+    super().__init__(tag,value)
+    self._units = units 
+  
+  '''
+  Getters & Setters
+  aka methods that return the value of the attribute
+  and modify their values
+  '''
+  @property
+  def units(self) -> str: return self._units
+  @units.setter
+  def units(self,units) -> None: self._units = units
+  
+  '''Polymorphic method!'''
+  @property
+  def strValue(self) -> str:
+    try: return "{:.3E}".format(self._value)
+    except TypeError: return str("<None>")
+  
+######
+
+class Integer(Parameter):
+  '''
+  Class for integer-valued parameters to set in a PFLOTRAN case
+  
+    e.g.
+      numberOfCells = Integer(tag="<nX>",units="-")
+  '''
+  def __init__(
+    self,
+    tag,
+    value=None,
+    units=None
+    ):
+    '''
+    Parameters
+    ---------------
+    tag: string
+      The tag to replace in the template file
+    value: float
+      The value of the parameter
+    units: string
+      the units of the parameter - does nothing
+    )
+    '''
+    super().__init__(tag,value)
+    self.units = units 
+
+  '''
+  Getters & Setters
+  aka methods that return the value of the attribute
+  and modify their values
+  '''
+  @property
+  def units(self) -> str: return self._units
+  @units.setter
+  def units(self,units) -> None: self._units = units
+  
+  '''Polymorphic method!'''
+  @property
+  def strValue(self) -> str:
+    try:  return "{:}".format(int(self._value))
+    except TypeError: return str("<None>")
+  
+##############################
+
+class JustText(Parameter):
+  '''
+  Class for text parameters to set in a PFLOTRAN case
+  
+    e.g.
+      DXYZ = JustText(tag="<DX>")
+  '''
+  
+  def __init__(
+    self,
+    tag,
+    value=None
+    ):
+    '''
+    Parameters
+    ---------------
+    tag: string
+      The tag to replace in the template file
+    value: float
+      The value of the parameter
+    units: string
+      the units of the parameter - does nothing
+    )
+    '''
+    super().__init__(tag,value)
+    
+  '''
+  Getters & Setters
+  aka methods that return the value of the attribute
+  and modify their values
+  '''
+  @property
+  def strValue(self) -> str: 
+    try: return self._value
+    except TypeError: return str("<None>")
+
+
+###################
+class WithSlider(Real):
   '''
   Class for parameters to set in a PFLOTRAN case
   with a ipywidget slider to modify their value.
@@ -35,13 +241,10 @@ class WithSlider:
       the units of the parameter - does nothing
     slider: ipywidgets.FloatSlider()
       a widget to modify this.value
-    )
     '''
-    self.tag = tag
-    self.value = value
-    self.units = units  
+    super().__init__(tag,value,units)
     if slider is None:
-      self.slider = wd.FloatLogSlider(
+      self._slider = wd.FloatLogSlider(
         value=10,
         base=10,
         min=-10,  # max exponent of base
@@ -49,70 +252,23 @@ class WithSlider:
         step=0.2, # exponent step
         description = self.tag
       )
-    else: self.slider = slider
+    else: self._slider = slider
 
   '''
-  Methods that return the value of the attribute
+  Getters & Setters
+  aka methods that return the value of the attribute
+  and modify their values
   '''
-  def get_tag(self) -> str: return(self.tag)
-  def get_value(self) -> float: return(self.value)
-  def get_strValue(self) -> str: return("{:.2E}".format(self.value))
-  def get_units(self) -> str: return(self.units)
-  def get_slider(self) : return(self.slider)
-
-  '''
-  Set attribute data methods
-  '''
-  def set_tag(self,tag) -> None: self.tag = tag
-  def set_value(self,value) -> None: self.value = value
-  def set_units(self,units) -> None: self.units = units
-  def set_slider(self,slider) -> None: self.slider = slider
-
-#########################
-
-class Simple:
-  '''
-  Class for parameters to set in a PFLOTRAN case
+  @property
+  def slider(self) -> str: return self._slider
+  @slider.setter
+  def slider(self,slider) -> None: self._slider = slider
   
-    e.g.
-      permeability = var(tag="<K>",units="cm2")
+  @property
+  def strValue(self) -> str: 
+    try: return "{:.3E}".format(self._value)
+    except TypeError: return str("<None>")
 
-  '''  
-  def __init__(
-    self,
-    tag,
-    value=None,
-    units=None
-    ):
-    '''
-    Parameters
-    ---------------
-    tag: string
-      The tag to replace in the template file
-    value: float
-      The value of the parameter
-    units: string
-      the units of the parameter - does nothing
-    )
-    '''
-    self.tag = tag
-    self.value = value
-    self.units = units  
-
-  '''
-  Methods that return the value of the attribute
-  '''
-  def get_tag(self) -> str: return(self.tag)
-  def get_value(self) -> float: return(self.value)
-  def get_strValue(self) -> str: return("{:.2E}".format(self.value))
-  def get_units(self) -> str: return(self.units)
-
-  '''
-  Set attribute data methods
-  '''
-  def set_tag(self,tag) -> None: self.tag = tag
-  def set_value(self,value) -> None: self.value = value
-  def set_units(self,units) -> None: self.units = units
 
 ###############################
 

@@ -53,12 +53,12 @@ class model:
   '''
   File management methods
   '''
-  def cloneTemplate(self,TemplateFile) -> None:
+  def cloneTemplate(self) -> None:
     '''
     Creates a copy of the template file as the
     this.runFile
     '''
-    system("cp " + TemplateFile + " " + self.runFile)
+    system("cp " + self.templateFile + " " + self.runFile)
   
   def runModel(self) -> None:
     '''
@@ -90,8 +90,7 @@ class model:
   
   def replaceTagInFile(
     self,
-    var,
-    pflotranFile="./pflotran.in"
+    var
     ) -> None:
     '''
     Replace the variable tag for its value 
@@ -101,7 +100,7 @@ class model:
       print("Object has no value asigned :/ \n Try set_value() first")
     else:
       C = "sed -i 's/" + var.tag + "/"\
-        +'{:.3E}'.format(var.value)\
+        + var.strValue\
         + "/g' " + self.runFile
       system(C)
         
@@ -113,27 +112,84 @@ Non-dimensional numbers
 ## Non-dimensional numbers
 def DamkII(K,A,U,L,asString=False):
   '''Return the second Damköhler number'''
-  if A <= 0.0:
-    DaII = float('inf')
-  else: 
-    DaII = (L*L*K)/(A*U)
-  
-  if asString:
-    return "{:.1E}".format(DaII)
-  else:
-    return DaII
+  DaII = ((L*L*K)/(A*U) if A>0 else float('inf'))
+  return "{:.1E}".format(DaII) if asString else DaII
 
 def Peclet(A,L,U,asString=False):
   '''Return the Peclet number'''
-  if A <= 0.0:
-    Pe = float('inf')
-  else: 
-    Pe = (L*U)/(A*U)
+  Pe = (L*U)/(A*U) if A>0 else float('inf')
+  return "{:.1E}".format(Pe) if asString else Pe
 
-  if asString:
-    return "{:.1E}".format(Pe)
+'''
+Functions
+--------------
+Create a structured grid with unhomogeneous sizes
+'''
+def buildDXYZ(
+  lenght,
+  growRatio,
+  numberOfElements,
+  hasBump=False) -> str:
+  '''
+  lenght: float
+    Lenght of the domain
+  growRatio: float
+    Ratio between the size of the last and the initial element
+    d_N/d_0
+      if R > 1, smallest is the initial element
+      if R < 1, largest is the initial element
+      if R == 1, all elements are the same
+  numberOfElements: int 
+    Size of the grid. Only handles even values(!)
+  hasBump: bool
+    Similar to transfinite GMSH withHump.
+  '''
+  
+  import numpy as np
+  
+  # Avoid close to zero growRatios
+  if abs(growRatio) < 1e-8: growRatio = 1
+
+  if hasBump:
+    lenght = lenght/2.0
+    numberOfElements = int(numberOfElements/2.0)
   else:
-    return Pe
+    lenght = lenght/1.0
+    numberOfElements = int(numberOfElements)
+
+  # Cell-to-cell ratio (K)
+  K = np.abs(growRatio)**(1/(numberOfElements-1))
+  listIntegers = list(range(numberOfElements))
+  KPow = [K**i for i in listIntegers]
+
+  # Array of distances
+  D = np.zeros(numberOfElements)
+  D[0] = lenght/(np.sum(KPow))
+  for i in range(1,numberOfElements):
+    D[i] = D[0] * KPow[i]
+
+  # Array of rounded distances
+  D2 = np.around(D,decimals=2)
+  partialSum = np.sum(D2[:-1])
+  D2[-1] = lenght - partialSum
+  
+  '''If the growRatio was negative, a short to long 
+  grid was expected'''
+  if growRatio < 0: D2 = np.flip(D2)
+  
+  '''For hump, flip and double the array'''
+  D3 = np.concatenate((D2,np.flip(D2))) if hasBump else D2
+  
+  '''Format as a long string'''
+  F1 = ""
+  for i in range(len(D3)):
+    F1+="{:.4f} ".format(D3[i])
+    if i == (len(D3)-1):
+      F1+=" \\n    "
+    elif i % 2 == 1 and i+1 < len(D3):
+      F1+="\\\\ \\n    "
+
+  return F1
 
 # def plotResults(U,pH,IS,PV,kATT,kDET,dAq,dIm,alpha):
 #   FILE = current_folder+"/pflotran-obs-0.tec"

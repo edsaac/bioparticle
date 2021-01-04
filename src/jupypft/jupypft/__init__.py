@@ -11,10 +11,10 @@ __author__ = 'Edwin Saavedra C.'
 __credits__ = 'Northwestern University'
 
 from . import model
-from . import variable
+from . import parameter
 
-import numpy as np
-import matplotlib.pyplot as plt
-from os import system
-import sys
-import ipywidgets as wd
+# import numpy as np
+# import matplotlib.pyplot as plt
+# from os import system
+# import sys
+# import ipywidgets as wd
