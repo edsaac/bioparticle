@@ -9,7 +9,7 @@ SIMULATION
   SIMULATION_TYPE SUBSURFACE
   PROCESS_MODELS
     SUBSURFACE_FLOW flow
-      MODE RICHARDS
+      MODE TH
     /
    SUBSURFACE_TRANSPORT transport
      MODE GIRT
@@ -20,11 +20,10 @@ END
 ############# FLOW CONFIGURATION ###############
 SUBSURFACE
 
-# For comparison to TH models
-EOS WATER
-  DENSITY CONSTANT 999.65d0 kg/m^3 #10°C
-  VISCOSITY CONSTANT 0.0013076 Pa-s #10°C
-END
+# EOS WATER
+#   DENSITY CONSTANT 999.65d0 kg/m^3 #10°C
+#   VISCOSITY CONSTANT 0.0013076 Pa-s #10°C
+# END
 
 # NUMERICAL_METHODS flow
 #   # NEWTON_SOLVER
@@ -37,24 +36,30 @@ END
 ############# GRID ###############
 GRID
   TYPE STRUCTURED CARTESIAN
-  NXYZ <nX> <nX> <nZ>
+  NXYZ <nX> <nY> <nZ> 
+  ORIGIN 0.d0 0.d0 0.d0
+  #SKIP
   DXYZ 
     <dX>
     <dY>
     <dZ>
   /
-
-  # BOUNDS
-  #   0.d0 0.d0 0.d0
-  #   <AquiferLen> <AquiferLen> <DomainDepth>
-  # /
+  #NOSKIP
+  SKIP
+  BOUNDS
+    0.d0 0.d0 0.d0
+    <AquiferLen> <AquiferLen> <DomainDepth>
+  /
+  NOSKIP
 END
 
 ############# REGIONS ###############
 REGION Region__all
   COORDINATES
-    0.d0 0.d0 0.d0
-    <AquiferLen> <AquiferLen> <DomainDepth> 
+   -1.d20 -1.d20 -1.d20
+   1.d20  1.d20  1.d20
+#    0.d0 0.d0 0.d0
+#    <AquiferLen> <AquiferLen> <DomainDepth> 
   /
 END
 
@@ -165,6 +170,9 @@ MATERIAL_PROPERTY soil__topLayer
   /
   SATURATION_FUNCTION cc1
   #LONGITUDINAL_DISPERSIVITY <longDisp1>
+  SPECIFIC_HEAT 1E3
+  THERMAL_CONDUCTIVITY_DRY 0.5
+  THERMAL_CONDUCTIVITY_WET 0.5
 END
 
 MATERIAL_PROPERTY soil__bottomLayer
@@ -177,7 +185,10 @@ MATERIAL_PROPERTY soil__bottomLayer
     PERM_Z <permZ2>
   /
   SATURATION_FUNCTION cc1
-  #LONGITUDINAL_DISPERSIVITY <longDisp2>
+  #LONGITUDINAL_DISPERSIVITY <longDisp2>  
+  SPECIFIC_HEAT 1E3
+  THERMAL_CONDUCTIVITY_DRY 0.5
+  THERMAL_CONDUCTIVITY_WET 0.5
 END
 
 ############# CURVES ###############
@@ -209,8 +220,10 @@ END
 
 ############# FLOW CONDITIONS ###############
 FLOW_CONDITION ic__initial
+  UNITS Pa, C, yr
   TYPE
     PRESSURE HYDROSTATIC
+    TEMPERATURE DIRICHLET
   END
   INTERPOLATION LINEAR
   DATUM 0.d0 0.d0 <boundaryWaterTable>
@@ -218,21 +231,28 @@ FLOW_CONDITION ic__initial
   GRADIENT
     PRESSURE 0. 0. 0.
   /
+  TEMPERATURE <initialTemperature>
 END
 
 FLOW_CONDITION BC0__topSoil
+ UNITS Pa, C, yr
  TYPE
    FLUX NEUMANN
+   TEMPERATURE DIRICHLET
  /
   FLUX 0.0d0
+  TEMPERATURE <atmosphereTemperature>
 END
 
 FLOW_CONDITION BC1__inflow
+ UNITS Pa, C, yr
  TYPE
    PRESSURE HYDROSTATIC
+   TEMPERATURE ZERO_GRADIENT
  END
   DATUM 0.d0 0.d0 <boundaryWaterTable>
   PRESSURE 101325.d0
+  TEMPERATURE 0.0
 END
 
 # FLOW_CONDITION BC2__leaking
@@ -249,15 +269,21 @@ END
 # END
 
 FLOW_CONDITION BC2__leaking
+ UNITS Pa, C, yr
  TYPE
    PRESSURE dirichlet
+   TEMPERATURE DIRICHLET
  /
   PRESSURE 101325.0
+  TEMPERATURE <leakageTemperature>
 END
 
 FLOW_CONDITION BC3__extraction
+  UNITS Pa, C, yr
   TYPE
     RATE SCALED_VOLUMETRIC_RATE NEIGHBOR_PERM
+    TEMPERATURE ZERO_GRADIENT
+    #TEMPERATURE DIRICHLET
   END
   RATE LIST
     INTERPOLATION linear
@@ -266,6 +292,8 @@ FLOW_CONDITION BC3__extraction
     0.00  0.00E+00
     <warmUpTime> -<rateExtraction> #always in [m/s] 
   /
+  #ENERGY_RATE 0.0 
+  TEMPERATURE 0.0
 END
 
 ########### TRANSPORT CONDITIONS #############
@@ -405,16 +433,16 @@ OUTPUT
     PERIODIC TIME 0.5 d between <warmUpTime> d and 30. d
     PERIODIC TIME 1.0 d between <warmUpTime> d and 100. d
 
-    VARIABLES
-      # LIQUID_HEAD #[DONT USE THIS LOL]
-      LIQUID_PRESSURE
-      LIQUID_SATURATION
-      PERMEABILITY_X
-      PERMEABILITY_Y
-      PERMEABILITY_Z
-      MATERIAL_ID_KLUDGE_FOR_VISIT
-      POROSITY
-    /
+    # VARIABLES
+    #   # LIQUID_HEAD #[DONT USE THIS LOL]
+    #   LIQUID_PRESSURE
+    #   LIQUID_SATURATION
+    #   PERMEABILITY_X
+    #   PERMEABILITY_Y
+    #   PERMEABILITY_Z
+    #   MATERIAL_ID_KLUDGE_FOR_VISIT
+    #   POROSITY
+    # /
   /
   
   MASS_BALANCE_FILE
@@ -450,14 +478,23 @@ CHEMISTRY
   /
 
   REACTION_SANDBOX
-    BIOPARTICLE
+    BIOPARTEMP
       PARTICLE_NAME_AQ Vaq
       PARTICLE_NAME_IM Vim
+      # Attachment << Constant
       RATE_ATTACHMENT <katt> 1/s
+      # Detachment << Constant
       RATE_DETACHMENT <kdet> 1/s
-      DECAY_AQUEOUS <decayAq> 1/s
+      # Decay Adsorbed << Constant
       DECAY_ADSORBED <decayIm> 1/s
-      ZERO_CONCENTRATION 0.0d0
+      # Decay Aqueous << Temp-Model
+      DECAY_AQ_MODEL
+        TREF    4.0
+        ZT      29.1
+        N       2.0
+        LOGDREF 2.3
+      /
+      ZERO_CONCENTRATION 1.0E-50
     /
   /
   TRUNCATE_CONCENTRATION 1.0E-35
@@ -472,6 +509,5 @@ END
 ############# REFERENCE VALUES ###############
 
 REFERENCE_PRESSURE 101325.
-REFERENCE_TEMPERATURE 10.d0
 
 END_SUBSURFACE
