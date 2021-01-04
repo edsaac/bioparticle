@@ -13,22 +13,14 @@
 $ cp src/reactionSandbox/reaction_sandbox_escPTr.F90  $PFLOTRAN_DIR/src/pflotran/reaction_sandbox_escPTr.F90
 ```
 2. Replace the main reaction sandbox fortran file to include this sandbox as one of the options.
-
 ```
 $ sed '/Add new reaction sandbox classes here./a \ \ use Reaction_Sandbox_escPTr_class' reaction_sandbox_template.F90 > reaction_sandbox.F90
-```
-```
 $ sed -i '/Add new cases statements for new reaction sandbox classes here./a \      case('BIOPARTICLE')\n\        new_sandbox => escPTr_Create()' reaction_sandbox.F90
-```
-```
 $ cp src/reactionSandbox/reaction_sandbox.F90  $PFLOTRAN_DIR/src/pflotran/reaction_sandbox.F90
 ```
-
 3. Add the reaction sandbox to the list of objects to compile
 ```
 $ cd $PFLOTRAN_DIR/src/pflotran/
-```
-```
 $ sed -i '/reaction_sandbox_simple.o/a \ \ \ \ \${common_src}reaction_sandbox_escPTr.o \\' pflotran_object_files.txt
 ```
 4. Update dependencies.
@@ -88,9 +80,7 @@ $ cp src/reactionSandbox/reaction_sandbox_bioTH.F90  $PFLOTRAN_DIR/src/pflotran/
 2. Replace the main reaction sandbox fortran file to include this sandbox as one of the options.
 ```
 $ sed '/Add new reaction sandbox classes here./a \ \ use Reaction_Sandbox_bioTH_class' reaction_sandbox_template.F90 > reaction_sandbox.F90
-
 $ sed -i '/Add new cases statements for new reaction sandbox classes here./a \      case('BIOPARTEMP')\n\        new_sandbox => bioTH_Create()' reaction_sandbox.F90
-
 $ cp src/reactionSandbox/reaction_sandbox.F90  $PFLOTRAN_DIR/src/pflotran/reaction_sandbox.F90
 ```
 3. Add the reaction sandbox to the list of objects to compile
