@@ -494,7 +494,6 @@ CHEMISTRY
         N       2.0
         LOGDREF 2.3
       /
-      ZERO_CONCENTRATION 1.0E-50
     /
   /
   TRUNCATE_CONCENTRATION 1.0E-35
