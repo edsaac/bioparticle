@@ -12,7 +12,6 @@ module Reaction_Sandbox_module
   use Reaction_Sandbox_Gas_class 
 
   ! Add new reaction sandbox classes here.
-  use Reaction_Sandbox_escPTr_class
   
   use PFLOTRAN_Constants_module
 
@@ -157,8 +156,6 @@ subroutine RSandboxRead2(local_sandbox_list,input,option)
       case('CLM-CN')
         new_sandbox => CLM_CN_Create()
       ! Add new cases statements for new reaction sandbox classes here.
-      case(BIOPARTICLE)
-        new_sandbox => escPTr_Create()
       case('UFD-WP')
         new_sandbox => WastePackageCreate()
       case('EXAMPLE')
