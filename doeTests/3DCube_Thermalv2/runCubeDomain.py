@@ -8,7 +8,7 @@
 # 
 ###############################################################
 #
-# $ python3 runCubeDomain.py [CASES.CSV] [TEMPLATE.IN]
+# $ python3 runCubeDomain.py [CASES.CSV] [TEMPLATE.IN] [RUNOPTION]
 # 
 # Where:
 #   - [CASES.CSV] path to csv file with the list of 
@@ -184,7 +184,6 @@ if "debug" in runMode:
   caseModel.runModel()
 elif "deploy" in runMode:
   mo.Model.runAllModels(folderPrefix="CASE",nProcs=4)
-  system("./miscellaneous/handlePIDS.sh")
 else:
   print("Run mode not recognized. Defaulted to debug in laptop")
   
