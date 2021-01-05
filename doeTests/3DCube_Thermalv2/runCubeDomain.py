@@ -130,6 +130,7 @@ total_rows = wholeTable.shape[0]
 ## Delete previous cases
 system("rm -rf CASE*")
 
+
 for i in range(total_rows):
   f = wholeTable.loc[i]
   caseName = f.loc[titleCase.tag] 
@@ -139,7 +140,7 @@ for i in range(total_rows):
   current_file = current_folder + "/" + caseName +".in"
   system("mkdir " + current_folder)
   
-  caseModel = mo.model(
+  caseModel = mo.Model(
     templateFile=template_file,
     runFile = current_file
     )
@@ -180,8 +181,16 @@ for i in range(total_rows):
   ## Run case
   #system(PFLOTRAN_path + "-pflotranin " + current_file + " &")
 if "debug" in runMode:
-  system(PFLOTRAN_path + "-pflotranin " + current_file)  ##This will onlt run the last one
+  caseModel.runModel()
 elif "deploy" in runMode:
+  mo.Model.runAllModels(folderPrefix="CASE",nProcs=4)
   system("./miscellaneous/handlePIDS.sh")
 else:
   print("Run mode not recognized. Defaulted to debug in laptop")
+  
+system('''
+  rm -rf CASE_GroupedResults; mkdir CASE_GroupedResults
+  cp CASE**/*mas* CASE_GroupedResults
+  ''')
+
+mo.Model.folderFixedToCSV(folder="CASE_GroupedResults")

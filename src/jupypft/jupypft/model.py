@@ -7,18 +7,23 @@ Module for PFLOTRAN model
 
 from os import system
 
-class model:
+class Model:
   '''
   Class for a PFLOTRAN model. 
     
     e.g.
-      myModel = model()
+      myModel = Model()
   '''
+  _execPath = "$PFLOTRAN_DIR/src/pflotran/pflotran"
+  __numberOf = 0   # Counter of all instantiated variables 
+  __listObjs = []    # List of all instantiated variables 
+
   def __init__(
     self,
     templateFile,
+    description="None provided",
     runFile="./pflotran.in",
-    execPath="$PFLOTRAN_DIR/src/pflotran/pflotran"
+    folder="."
     ):
     '''
     Parameters
@@ -34,24 +39,61 @@ class model:
 
     )
     '''
-    self.execPath = execPath
-    self.templateFile = templateFile
-    self.runFile = runFile
+    self._templateFile = templateFile
+    self._runFile = runFile
+    self._description = description
+    self._folder = folder
+    
+    Model.__numberOf += 1
+    Model.__listObjs.append(self)
+  
+    def __str__(self):
+      C = Model._execPath\
+        + " -pflotranin "\
+        + self._folder +\
+        + self._runFile
+      return C
+  
+    def __repr__(self):
+      return self._description + " -> jupypft.model.Model()"
   
   '''
-  Methods that return the value of the attribute
+  Getters & Setters
+  aka methods that return the value of the attribute
+  and modify their values
   '''
-  def get_execPath(self) -> str: return(self.execPath)
-  def get_runFile(self) -> str: return(self.runFile)
-  
-  '''
-  Set attribute data methods
-  '''
-  def set_execPath(self,execPath) -> None: self.execPath = execPath
-  def set_runFile(self,runFile)-> None: self.runFile = runFile
+  @property
+  def templateFile(self) -> str: return self._templateFile
+  @templateFile.setter
+  def templateFile(self,templateFile) -> None: self._templateFile = templateFile
+
+  @property
+  def runFile(self) -> str: return self._runFile
+  @runFile.setter
+  def runFile(self,runFile) -> None: self._runFile = runFile
+
+  @property
+  def folder(self) -> str: return self._folder
+  @folder.setter
+  def folder(self,folder) -> None: self._folder = folder
+
+  @property
+  def description(self) -> str: return self._description
+  @description.setter
+  def description(self,description) -> None: self._description = description
  
   '''
-  File management methods
+  Class variable «getters»
+  aka methods that return the value of static attributes
+  '''
+  @classmethod
+  def num_of_models(cls) -> float: return cls.__numberOf
+    
+  @classmethod
+  def list_of_models(cls) -> list: return cls.__listObjs
+  
+  '''
+  Instance methods
   '''
   def cloneTemplate(self) -> None:
     '''
@@ -59,35 +101,8 @@ class model:
     this.runFile
     '''
     system("cp " + self.templateFile + " " + self.runFile)
-  
-  def runModel(self) -> None:
-    '''
-    Run PFLOTRAN executable with the input file
-    '''
-    system(self.execPath + " -pflotranin " + self.runFile)
 
-  def fixTecFile(
-    self,
-    outputFile="pflotran-obs-0.tec"
-    ) -> None:
-    '''
-    Run PFLOTRAN executable with the input file
-    '''
-    C = '''
-      NCOMMAS=$(head -1 $file | grep -o '"' | wc -l)
-      if [ $NCOMMAS -gt 0 ]
-        then
-        sed -i 's/^  //g' $file
-        sed -i '1s/^ //g' $file
-        sed -i '1s/"//g' $file
-        sed -i 's/  /,/g' $file
-        echo "FIXED FILE"
-      else
-        echo "NOTHING DONE"
-      fi
-    '''
-    system("file=" + outputFile + "; " + C)
-  
+    
   def replaceTagInFile(
     self,
     var
@@ -103,6 +118,117 @@ class model:
         + var.strValue\
         + "/g' " + self.runFile
       system(C)
+  
+  def runModel(self) -> None:
+    '''
+    Run PFLOTRAN executable with the input file 
+    '''
+    system(Model._execPath \
+      + " -pflotranin " \
+      + self._folder \
+      + "/" \
+      + self.runFile)
+
+  def fixedToCSV(self,outputFile) -> None:
+    '''
+    Takes a folder of output files from PFLOTRAN and convert them to a
+    comma separated.
+    '''
+    system('''
+      file={0}
+      # Keep headers in other file
+      head -1 $file > header.hidden
+      # Delete header from file
+      sed -i '1d' $file
+      # Delete leading spaces
+      sed -i 's/^  //g' $file
+      sed -i '1s/^ //g' $file
+      # Delete strings
+      sed -i '1s/"//g' $file
+      # Replace spaces for commas
+      sed -i 's/  /,/g' $file
+      sed -i 's/ /,/g' $file
+      # Add the header again
+      cat header.hidden $file > temp.file
+      # Organize stuff
+      mv temp.file $file
+      rm header.hidden
+      # Print end message
+      echo "DONE with " $file
+      '''.format(outputFile)
+      )
+
+  '''
+  Class methods
+  '''
+  @classmethod
+  def runAllModels(
+    cls,
+    folderPrefix="CASE",
+    nProcs=1,
+    ) -> None:
+    '''
+    Run PFLOTRAN .in files on all the folders named
+    with the given prefix. This function requires GNU Parallel
+    instaled in the machine. 
+    
+    folderPrefix: string
+      Prefix of cases to run in parallel 
+      e.g. "CASE"
+    nProcs: int
+      Number of cores to parallel run. Default 1
+      
+    NOTE: This is different than mpirun !!
+    '''
+
+    system('''
+      PFLOTRAN_path={0}
+      LIST=$(ls {1}*/*.in)
+      N={2}
+      parallel --jobs $N $PFLOTRAN_path -pflotranin ::: $LIST
+      '''.format(cls._execPath,folderPrefix,nProcs)
+    )
+  
+  @classmethod
+  def folderFixedToCSV(cls,folder) -> None:
+    '''
+    Takes a folder of output files from PFLOTRAN and convert them to a
+    comma separated.
+    '''
+    system('''
+      FOLDER={0}
+
+      for file in $FOLDER/*
+      do
+        NCOMMAS=$(head -1 $file | grep -o '"' | wc -l)
+        if [ $NCOMMAS -gt 0 ]
+        then
+          # Keep headers in other file
+          head -1 $file > header.hidden
+          # Delete header from file
+          sed -i '1d' $file
+          # Delete leading spaces
+          sed -i 's/^  //g' $file
+          sed -i '1s/^ //g' $file
+          # Delete strings
+          sed -i '1s/"//g' $file
+          # Replace spaces for commas
+          sed -i 's/  /,/g' $file
+          sed -i 's/ /,/g' $file
+          # Add the header again
+          cat header.hidden $file > temp.file
+          # Organize stuff
+          mv temp.file $file
+          rm header.hidden
+          # Print end message
+          echo "DONE with " $file
+        else
+          echo "FILE PROPERLY WORKS"
+        fi
+      done
+      '''.format(folder)
+      )
+  
         
 '''
 Functions

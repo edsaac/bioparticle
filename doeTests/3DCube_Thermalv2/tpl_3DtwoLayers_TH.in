@@ -25,14 +25,14 @@ SUBSURFACE
 #   VISCOSITY CONSTANT 0.0013076 Pa-s #10°C
 # END
 
-# NUMERICAL_METHODS flow
-#   # NEWTON_SOLVER
-#   #   USE_INFINITY_NORM_CONVERGENCE
-#   # /
-#   # TIMESTEPPER
-#   #   CFL_GOVERNOR 1.0
-#   # /
-# /
+NUMERICAL_METHODS flow
+  # NEWTON_SOLVER
+  #   USE_INFINITY_NORM_CONVERGENCE
+  # /
+  TIMESTEPPER
+    CFL_GOVERNOR 1.0
+  /
+/
 ############# GRID ###############
 GRID
   TYPE STRUCTURED CARTESIAN
@@ -56,10 +56,8 @@ END
 ############# REGIONS ###############
 REGION Region__all
   COORDINATES
-   -1.d20 -1.d20 -1.d20
-   1.d20  1.d20  1.d20
-#    0.d0 0.d0 0.d0
-#    <AquiferLen> <AquiferLen> <DomainDepth> 
+    0.d0 0.d0 0.d0
+    <AquiferLen> <AquiferLen> <DomainDepth> 
   /
 END
 
@@ -361,55 +359,55 @@ END
 
 ############# COUPLERS ###############
 # initial condition
-INITIAL_CONDITION
+INITIAL_CONDITION InitialCondition
   REGION Region__all
   FLOW_CONDITION ic__initial
   TRANSPORT_CONDITION ic__initial_t
 END
 
-BOUNDARY_CONDITION
+BOUNDARY_CONDITION Top1
   REGION Face__BC0_Top1
   FLOW_CONDITION BC0__topSoil
   TRANSPORT_CONDITION ic__initial_t
 END
 
-BOUNDARY_CONDITION
+BOUNDARY_CONDITION Top2
   REGION Face__BC0_Top2
   FLOW_CONDITION BC0__topSoil
   TRANSPORT_CONDITION ic__initial_t
 END
 
-BOUNDARY_CONDITION
+BOUNDARY_CONDITION Right
   REGION Face__BC1_Right
   FLOW_CONDITION BC1__inflow
   TRANSPORT_CONDITION BC1__inflow_t
 END
 
-BOUNDARY_CONDITION
+BOUNDARY_CONDITION left
   REGION Face__BC1_Left
   FLOW_CONDITION BC1__inflow
   TRANSPORT_CONDITION BC1__inflow_t
 END
 
-BOUNDARY_CONDITION
+BOUNDARY_CONDITION North
   REGION Face__BC1_North
   FLOW_CONDITION BC1__inflow
   TRANSPORT_CONDITION BC1__inflow_t
 END
 
-BOUNDARY_CONDITION
+BOUNDARY_CONDITION South
   REGION Face__BC1_South
   FLOW_CONDITION BC1__inflow
   TRANSPORT_CONDITION BC1__inflow_t
 END
 
-BOUNDARY_CONDITION
+BOUNDARY_CONDITION TopLeak
   REGION Face__BC2_TopLeak
   FLOW_CONDITION BC2__leaking
   TRANSPORT_CONDITION BC2__leaking_t
 END
 
-SOURCE_SINK
+SOURCE_SINK ExtractWell
   REGION Line__BC3_ExtractionWell
   FLOW_CONDITION BC3__extraction
   TRANSPORT_CONDITION BC3__extraction_t
@@ -446,7 +444,7 @@ OUTPUT
   /
   
   MASS_BALANCE_FILE
-    PERIODIC TIME 2.0d0 d
+    PERIODIC TIME 0.25d0 d
     TOTAL_MASS_REGIONS
       Region__all
     /
@@ -462,7 +460,7 @@ OUTPUT
 
 ############# TIME ###############
 TIME
-  FINAL_TIME 7.5d1 d
+  FINAL_TIME 3.5d1 d
   INITIAL_TIMESTEP_SIZE <desiredTimeStep> s
   MAXIMUM_TIMESTEP_SIZE 1.0d-0 d
 /
