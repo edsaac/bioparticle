@@ -31,7 +31,7 @@ $ python3 ../python/pflotran_depedencies.py
 5. Compile PFLOTRAN code.
 ```
 $ cd $PFLOTRAN_DIR/src/pflotran/
-make pflotran
+$ make pflotran
 ```
 
 #### **How to use?**
@@ -96,7 +96,7 @@ $ python3 ../python/pflotran_depedencies.py
 5. Compile PFLOTRAN code.
 ```
 $ cd $PFLOTRAN_DIR/src/pflotran/
-make pflotran
+$ make pflotran
 ```
 
 #### **How to use?**
@@ -143,7 +143,6 @@ END
 1. Add the package to your python installation using `pip`.
 ```
 $ cd ./src/jupypft/
-
 $ pip install -e .
 ```
 
