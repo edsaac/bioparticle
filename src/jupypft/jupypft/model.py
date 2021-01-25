@@ -47,15 +47,15 @@ class Model:
     Model.__numberOf += 1
     Model.__listObjs.append(self)
   
-    def __str__(self):
-      C = Model._execPath\
-        + " -pflotranin "\
-        + self._folder +\
-        + self._runFile
-      return C
-  
-    def __repr__(self):
-      return self._description + " -> jupypft.model.Model()"
+  def __str__(self):
+    C = Model._execPath\
+      + " -pflotranin "\
+      + self._folder \
+      + self._runFile
+    return C
+
+  def __repr__(self):
+    return self._runFile + " -> jupypft.model.Model()"
   
   '''
   Getters & Setters
@@ -131,7 +131,7 @@ class Model:
 
   def fixedToCSV(self,outputFile) -> None:
     '''
-    Takes a folder of output files from PFLOTRAN and convert them to a
+    Takes an output files from PFLOTRAN and convert them to a
     comma separated.
     '''
     system('''
@@ -205,21 +205,26 @@ class Model:
         then
           # Keep headers in other file
           head -1 $file > header.hidden
+          # Delete leading spaces
+          sed -i 's/^ //g' header.hidden
+          # Delete strings
+          sed -i 's/"//g' header.hidden
+
           # Delete header from file
           sed -i '1d' $file
           # Delete leading spaces
           sed -i 's/^  //g' $file
-          sed -i '1s/^ //g' $file
-          # Delete strings
-          sed -i '1s/"//g' $file
           # Replace spaces for commas
           sed -i 's/  /,/g' $file
           sed -i 's/ /,/g' $file
+
           # Add the header again
           cat header.hidden $file > temp.file
+          
           # Organize stuff
           mv temp.file $file
           rm header.hidden
+          
           # Print end message
           echo "DONE with " $file
         else
