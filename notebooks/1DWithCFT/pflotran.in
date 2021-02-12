@@ -1,0 +1,287 @@
+#==============================================================================
+#Description: Toy problem for richards equation
+#Flow: RICHARDS
+#==============================================================================
+
+############# General Configuration ###############
+
+SIMULATION
+  SIMULATION_TYPE SUBSURFACE
+  PROCESS_MODELS
+    SUBSURFACE_FLOW flow
+      MODE RICHARDS
+    /
+    SUBSURFACE_TRANSPORT transport
+      MODE GIRT
+    /
+  /
+END
+
+############# FLOW CONFIGURATION ###############
+SUBSURFACE
+
+NUMERICAL_METHODS transport
+  TIMESTEPPER
+    CFL_GOVERNOR 1.0
+  /
+END
+
+############# GRID ###############
+GRID
+  TYPE STRUCTURED CARTESIAN
+  NXYZ 1 1 51
+  BOUNDS
+    0.d0   0.d0   0.d0
+    0.05d0 0.05d0 1.000E+00
+  /
+END
+
+############# REGIONS ###############
+REGION Region__all
+  COORDINATES
+    0.d0   0.d0   0.d0
+    0.05d0 0.05d0 1.000E+00
+  /
+END
+
+REGION Face__Top
+  COORDINATES
+    0.05d0 0.05d0 1.000E+00
+    0.d0 0.d0 1.000E+00
+  /
+  FACE TOP
+END
+
+REGION Face__Bottom
+  COORDINATES
+    0.d0 0.d0 0.d0
+    0.05d0 0.05d0 0.d0
+  /
+  FACE BOTTOM
+END
+
+REGION Obs__PointOutflow
+  COORDINATES
+    0.025d0 0.025d0 1.000E+00
+  /
+END
+
+############# OBSERVATION ###############
+OBSERVATION
+  REGION Obs__PointOutflow
+END
+
+############# FLUID ###############
+FLUID_PROPERTY
+  DIFFUSION_COEFFICIENT 0.0
+END
+
+############# SOILS ###############
+MATERIAL_PROPERTY soil1
+  ID 1
+  POROSITY 3.700E-01
+  TORTUOSITY 0.0
+  PERMEABILITY
+    PERM_X 1.d-4
+    PERM_Y 1.d-4
+    PERM_Z 1.d-4
+  /
+  SATURATION_FUNCTION vanGenuchtenMualem1
+  LONGITUDINAL_DISPERSIVITY 1.000E-12
+END
+
+############# CURVES ###############
+CHARACTERISTIC_CURVES vanGenuchtenMualem1
+  SATURATION_FUNCTION VAN_GENUCHTEN
+    LIQUID_RESIDUAL_SATURATION 0.115
+    ALPHA  1.9401d-4
+    M 0.286d0 
+  /
+
+  PERMEABILITY_FUNCTION MUALEM_VG_LIQ
+    LIQUID_RESIDUAL_SATURATION 0.115
+    M 0.286d0
+  /
+END
+
+############# FLOW CONDITIONS ###############
+FLOW_CONDITION bc__inflow
+ TYPE
+   FLUX NEUMANN
+ END
+ FLUX 1.585E-05 m/s
+END
+
+FLOW_CONDITION bc__outflow
+ TYPE
+   PRESSURE DIRICHLET
+ END
+  PRESSURE 101325.d0
+END
+
+FLOW_CONDITION bc__noFlow
+  TYPE
+    FLUX neumann
+  END
+  FLUX 0.d0
+END
+
+FLOW_CONDITION ic__initial
+  TYPE
+    FLUX HYDROSTATIC
+  END
+  INTERPOLATION LINEAR
+  DATUM 0.d0 0.d0 0.5d0
+  PRESSURE 101325.d0
+END
+
+# SPECIFIED_VELOCITY
+#   UNIFORM? YES
+#   DATASET LIST
+#     TIME_UNITS h
+#     DATA_UNITS m/s
+#     INTERPOLATION STEP
+#     0.d0 0.d0 0.d0 1.585E-05 
+#   /
+# END
+
+########### TRANSPORT CONDITIONS #############
+TRANSPORT_CONDITION ic__initial_t
+  TYPE DIRICHLET_ZERO_GRADIENT
+  CONSTRAINT_LIST
+    0.d0 initial_constraint
+  /
+END
+
+TRANSPORT_CONDITION bc__inflow_t
+  TYPE DIRICHLET_ZERO_GRADIENT
+  CONSTRAINT_LIST
+# Pulse injection
+    0.0d0 inlet_constraint
+    2.335E+04 clean_inlet
+  /
+END
+
+TRANSPORT_CONDITION bc__outflow_t
+  TYPE ZERO_GRADIENT
+  CONSTRAINT_LIST
+    0.d0 initial_constraint
+  /
+END
+
+############## CONSTRAINTS #################
+CONSTRAINT initial_constraint
+  CONCENTRATIONS
+    Vaq   1.d-50      T
+  /
+  IMMOBILE
+    Vim   1.d-50
+  /
+END
+
+CONSTRAINT inlet_constraint
+  CONCENTRATIONS
+    Vaq   1.000E-10   T
+  /
+END
+
+CONSTRAINT clean_inlet
+  CONCENTRATIONS
+    Vaq   1.d-50      T
+  /
+END
+
+############# COUPLERS ###############
+# initial condition
+INITIAL_CONDITION
+  REGION Region__all
+  FLOW_CONDITION ic__initial
+  TRANSPORT_CONDITION ic__initial_t
+END
+
+# boundary conditions
+BOUNDARY_CONDITION
+  REGION Face__Bottom
+  FLOW_CONDITION bc__inflow
+  TRANSPORT_CONDITION bc__inflow_t
+END
+
+BOUNDARY_CONDITION
+  REGION Face__Top
+  FLOW_CONDITION bc__outflow
+  TRANSPORT_CONDITION bc__outflow_t
+END
+
+############# STRATAS ###############
+STRATA
+  REGION Region__all
+  MATERIAL soil1
+END
+
+############# OUTPUT ###############
+OUTPUT
+  # SNAPSHOT_FILE
+  # 	PERIODIC TIME 2.d-1 d
+  # /
+  
+  OBSERVATION_FILE
+    PERIODIC TIME 3.242E-01 h
+  /
+  FORMAT HDF5
+  VELOCITY_AT_CENTER
+/
+
+############# TIME ###############
+TIME
+  FINAL_TIME 3.242E+01 h
+  INITIAL_TIMESTEP_SIZE 4.578E+02 s
+  MAXIMUM_TIMESTEP_SIZE 4.578E+02 s
+/
+
+############# CHEMISTRY MAGIC ###############
+CHEMISTRY
+  PRIMARY_SPECIES
+    Vaq
+  /
+  
+  IMMOBILE_SPECIES
+    Vim
+  /
+
+  REACTION_SANDBOX
+    BIOPARTEMP
+      PARTICLE_NAME_AQ Vaq
+      PARTICLE_NAME_IM Vim
+      RATE_ATTACHMENT FILTRATION_MODEL
+        DIAMETER_COLLECTOR 1.995E-02
+        DIAMETER_PARTICLE 1.000E-07
+        HAMAKER_CONSTANT 5.012E-21
+        DENSITY_PARTICLE 1.050E+03
+        ALPHA_EFFICIENCY 1.000E-01
+      /
+      RATE_DETACHMENT CONSTANT
+        VALUE   1.000E-30 1/h
+      /
+      DECAY_AQUEOUS CONSTANT
+        VALUE 0.0 1/s
+      /
+      DECAY_ADSORBED CONSTANT
+        VALUE 0.0 1/s
+      /
+    /
+  /
+  LOG_FORMULATION
+  TRUNCATE_CONCENTRATION 1.0E-50
+  DATABASE ../MISCELLANEOUS/rxn_database.dat
+  OUTPUT
+    TOTAL
+    ALL
+  /
+END
+
+############# REFERENCE VALUES ###############
+
+REFERENCE_PRESSURE 101325.0
+REFERENCE_TEMPERATURE 10.0
+
+END_SUBSURFACE

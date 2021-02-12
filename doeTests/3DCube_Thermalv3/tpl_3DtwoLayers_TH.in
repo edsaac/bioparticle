@@ -1,0 +1,516 @@
+#==============================================================================
+#Description: Toy problem for richards equation
+#Flow: RICHARDS
+#==============================================================================
+
+############# General Configuration ###############
+
+SIMULATION
+  SIMULATION_TYPE SUBSURFACE
+  PROCESS_MODELS
+    SUBSURFACE_FLOW flow
+      MODE TH
+    /
+   SUBSURFACE_TRANSPORT transport
+     MODE GIRT
+    /
+  /
+END
+
+############# FLOW CONFIGURATION ###############
+SUBSURFACE
+
+# EOS WATER
+#   DENSITY CONSTANT 999.65d0 kg/m^3 #10°C
+#   VISCOSITY CONSTANT 0.0013076 Pa-s #10°C
+# END
+
+NUMERICAL_METHODS flow
+  # NEWTON_SOLVER
+  #   USE_INFINITY_NORM_CONVERGENCE
+  # /
+  TIMESTEPPER
+    CFL_GOVERNOR 1.0
+  /
+/
+############# GRID ###############
+GRID
+  TYPE STRUCTURED CARTESIAN
+  NXYZ <nX> <nY> <nZ> 
+  ORIGIN 0.d0 0.d0 0.d0
+  #SKIP
+  DXYZ 
+    <dX>
+    <dY>
+    <dZ>
+  /
+  #NOSKIP
+  SKIP
+  BOUNDS
+    0.d0 0.d0 0.d0
+    <AquiferLen> <AquiferLen> <DomainDepth>
+  /
+  NOSKIP
+END
+
+############# REGIONS ###############
+REGION Region__all
+  COORDINATES
+    0.d0 0.d0 0.d0
+    <AquiferLen> <AquiferLen> <DomainDepth> 
+  /
+END
+
+REGION Region__BottomLayer
+  COORDINATES
+    0.d0 0.d0 0.d0
+    <AquiferLen> <AquiferLen> <zInBetweenLayers> 
+  /
+END
+
+REGION Region__TopLayer
+  COORDINATES
+    0.d0 0.d0 <zInBetweenLayers> 
+    <AquiferLen> <AquiferLen> <DomainDepth>  
+  /
+END
+
+
+REGION Face__BC0_Top1
+  COORDINATES
+    0.d0 0.d0 <DomainDepth>
+    <setbackDist> <AquiferLen> <DomainDepth>
+  /
+  FACE TOP
+END
+
+REGION Face__BC0_Top2
+  COORDINATES
+    <setbackPlusLeak> 0.d0 <DomainDepth>
+    <AquiferLen> <AquiferLen> <DomainDepth>
+  /
+  FACE TOP
+END
+
+REGION Face__BC1_Right
+  COORDINATES
+    <AquiferLen> 0.d0 <DomainDepth>
+    <AquiferLen> <AquiferLen> 0.d0
+  /
+  FACE EAST
+END
+
+REGION Face__BC1_Left
+  COORDINATES
+    0.d0 0.d0 <DomainDepth>
+    0.d0 <AquiferLen> 0.d0
+  /
+  FACE WEST
+END
+
+REGION Face__BC1_North
+  COORDINATES
+    <AquiferLen> 0.d0 <DomainDepth>
+    0.d0 0.d0 0.d0
+  /
+  FACE SOUTH
+END
+
+REGION Face__BC1_South
+  COORDINATES
+    <AquiferLen> <AquiferLen> <DomainDepth>
+    0.d0 <AquiferLen> 0.d0
+  /
+  FACE NORTH
+END
+
+REGION Face__BC2_TopLeak
+  COORDINATES
+    <setbackDist> <leakingYNorth> <DomainDepth>
+    <setbackPlusLeak> <leakingYSouth> <DomainDepth>
+  /
+  FACE TOP
+END
+
+REGION Line__BC3_ExtractionWell
+  COORDINATES
+    <wellXY> <wellXY> <wellZBottom>
+    <wellXY> <wellXY> <wellZTop>
+  /
+END
+
+REGION Obs__PointOutflow
+  COORDINATES
+    <wellXY> <wellXY> <observationAtWell>
+  /
+END
+
+############# OBSERVATION ###############
+OBSERVATION
+  REGION Obs__PointOutflow
+END
+
+############# FLUID ###############
+FLUID_PROPERTY
+  DIFFUSION_COEFFICIENT 1.d-9
+  PHASE LIQUID
+END
+
+############# SOILS ###############
+MATERIAL_PROPERTY soil__topLayer
+  ID 1
+  POROSITY <porosity1>
+  TORTUOSITY 0.25d0
+  PERMEABILITY
+    PERM_X <permX1>
+    PERM_Y <permY1>
+    PERM_Z <permZ1>
+  /
+  SATURATION_FUNCTION cc1
+  #LONGITUDINAL_DISPERSIVITY <longDisp1>
+  SPECIFIC_HEAT 1E3
+  THERMAL_CONDUCTIVITY_DRY 0.5
+  THERMAL_CONDUCTIVITY_WET 0.5
+END
+
+MATERIAL_PROPERTY soil__bottomLayer
+  ID 2
+  POROSITY <porosity2>
+  TORTUOSITY 0.25d0
+  PERMEABILITY
+    PERM_X <permX2>
+    PERM_Y <permY2>
+    PERM_Z <permZ2>
+  /
+  SATURATION_FUNCTION cc1
+  #LONGITUDINAL_DISPERSIVITY <longDisp2>  
+  SPECIFIC_HEAT 1E3
+  THERMAL_CONDUCTIVITY_DRY 0.5
+  THERMAL_CONDUCTIVITY_WET 0.5
+END
+
+############# CURVES ###############
+CHARACTERISTIC_CURVES vanGenuchtenMualem1
+  SATURATION_FUNCTION VAN_GENUCHTEN
+    LIQUID_RESIDUAL_SATURATION 0.115
+    ALPHA  1.9401d-4
+    M 0.286d0 
+  /
+
+  PERMEABILITY_FUNCTION MUALEM_VG_LIQ
+    LIQUID_RESIDUAL_SATURATION 0.115
+    M 0.286d0
+  /
+END
+
+CHARACTERISTIC_CURVES cc1
+  SATURATION_FUNCTION VAN_GENUCHTEN
+    ALPHA  1.d-4
+    M 0.5d0
+    LIQUID_RESIDUAL_SATURATION 0.1d0
+    MAX_CAPILLARY_PRESSURE 1.d8
+  /
+  PERMEABILITY_FUNCTION MUALEM_VG_LIQ
+    M 0.5d0
+    LIQUID_RESIDUAL_SATURATION 0.1d0
+  /
+END
+
+############# FLOW CONDITIONS ###############
+FLOW_CONDITION ic__initial
+  UNITS Pa, C, yr
+  TYPE
+    PRESSURE HYDROSTATIC
+    TEMPERATURE DIRICHLET
+  END
+  INTERPOLATION LINEAR
+  DATUM 0.d0 0.d0 <boundaryWaterTable>
+  PRESSURE 101325.d0
+  GRADIENT
+    PRESSURE 0. 0. 0.
+  /
+  TEMPERATURE <initialTemperature>
+END
+
+FLOW_CONDITION BC0__topSoil
+ UNITS Pa, C, yr
+ TYPE
+   FLUX NEUMANN
+   TEMPERATURE DIRICHLET
+ /
+  FLUX 0.0d0
+  TEMPERATURE <atmosphereTemperature>
+END
+
+FLOW_CONDITION BC1__inflow
+ UNITS Pa, C, yr
+ TYPE
+   PRESSURE HYDROSTATIC
+   TEMPERATURE ZERO_GRADIENT
+ END
+  DATUM 0.d0 0.d0 <boundaryWaterTable>
+  PRESSURE 101325.d0
+  TEMPERATURE 0.0
+END
+
+# FLOW_CONDITION BC2__leaking
+#  TYPE
+#    FLUX NEUMANN
+#  /
+#   FLUX LIST
+#     INTERPOLATION linear
+#     TIME_UNITS d
+#     DATA_UNITS m/s
+#     0.00 0.00E+00
+#     5.00 <rateLeaking> #always in [m/s] 
+#   /
+# END
+
+FLOW_CONDITION BC2__leaking
+ UNITS Pa, C, yr
+ TYPE
+   PRESSURE dirichlet
+   TEMPERATURE DIRICHLET
+ /
+  PRESSURE 101325.0
+  TEMPERATURE <leakageTemperature>
+END
+
+FLOW_CONDITION BC3__extraction
+  UNITS Pa, C, yr
+  TYPE
+    RATE SCALED_VOLUMETRIC_RATE NEIGHBOR_PERM
+    TEMPERATURE ZERO_GRADIENT
+    #TEMPERATURE DIRICHLET
+  END
+  RATE LIST
+    INTERPOLATION linear
+    TIME_UNITS d
+    DATA_UNITS m^3/day
+    0.00  0.00E+00
+    <warmUpTime> -<rateExtraction> #always in [m/s] 
+  /
+  #ENERGY_RATE 0.0 
+  TEMPERATURE 0.0
+END
+
+########### TRANSPORT CONDITIONS #############
+TRANSPORT_CONDITION ic__initial_t
+  TYPE DIRICHLET_ZERO_GRADIENT
+  TIME_UNITS d
+  CONSTRAINT_LIST
+    0.d0 initial_constraint
+  /
+END
+
+TRANSPORT_CONDITION BC1__inflow_t
+  TYPE DIRICHLET_ZERO_GRADIENT
+  TIME_UNITS d
+  CONSTRAINT_LIST
+    0.0d0 clean_inlet
+  /
+END
+
+TRANSPORT_CONDITION BC2__leaking_t
+  TYPE DIRICHLET_ZERO_GRADIENT
+  TIME_UNITS d
+  CONSTRAINT_LIST
+    0.0d0 clean_inlet
+    <warmUpTime> leaking_inlet
+    #1.5d10 clean_inlet
+  /
+END
+
+TRANSPORT_CONDITION BC3__extraction_t
+  TYPE ZERO_GRADIENT
+  TIME_UNITS d
+  CONSTRAINT_LIST
+    0.d0 zeroGrad_outflow
+  /
+END
+
+############## CONSTRAINTS #################
+CONSTRAINT initial_constraint
+  CONCENTRATIONS
+    Vaq   1.d-35      T
+  /
+  IMMOBILE
+    Vim   1.d-35
+  /
+END
+
+CONSTRAINT clean_inlet
+  CONCENTRATIONS
+    Vaq   1.d-35      T
+  /
+END
+
+CONSTRAINT leaking_inlet
+  CONCENTRATIONS
+    Vaq   <initialConcentration>      T
+  /
+END
+
+CONSTRAINT zeroGrad_outflow
+  CONCENTRATIONS
+    Vaq   1.d-35      T
+  /
+END
+
+############# COUPLERS ###############
+# initial condition
+INITIAL_CONDITION InitialCondition
+  REGION Region__all
+  FLOW_CONDITION ic__initial
+  TRANSPORT_CONDITION ic__initial_t
+END
+
+BOUNDARY_CONDITION Top1
+  REGION Face__BC0_Top1
+  FLOW_CONDITION BC0__topSoil
+  TRANSPORT_CONDITION ic__initial_t
+END
+
+BOUNDARY_CONDITION Top2
+  REGION Face__BC0_Top2
+  FLOW_CONDITION BC0__topSoil
+  TRANSPORT_CONDITION ic__initial_t
+END
+
+BOUNDARY_CONDITION Right
+  REGION Face__BC1_Right
+  FLOW_CONDITION BC1__inflow
+  TRANSPORT_CONDITION BC1__inflow_t
+END
+
+BOUNDARY_CONDITION left
+  REGION Face__BC1_Left
+  FLOW_CONDITION BC1__inflow
+  TRANSPORT_CONDITION BC1__inflow_t
+END
+
+BOUNDARY_CONDITION North
+  REGION Face__BC1_North
+  FLOW_CONDITION BC1__inflow
+  TRANSPORT_CONDITION BC1__inflow_t
+END
+
+BOUNDARY_CONDITION South
+  REGION Face__BC1_South
+  FLOW_CONDITION BC1__inflow
+  TRANSPORT_CONDITION BC1__inflow_t
+END
+
+BOUNDARY_CONDITION TopLeak
+  REGION Face__BC2_TopLeak
+  FLOW_CONDITION BC2__leaking
+  TRANSPORT_CONDITION BC2__leaking_t
+END
+
+SOURCE_SINK ExtractWell
+  REGION Line__BC3_ExtractionWell
+  FLOW_CONDITION BC3__extraction
+  TRANSPORT_CONDITION BC3__extraction_t
+END
+
+############# STRATAS ###############
+STRATA
+  REGION Region__TopLayer
+  MATERIAL soil__topLayer
+END
+
+STRATA
+  REGION Region__BottomLayer
+  MATERIAL soil__bottomLayer
+END
+
+############# OUTPUT ###############
+OUTPUT
+  SNAPSHOT_FILE
+    PERIODIC TIME <warmUpTime> d between 0. d and <warmUpTime> d
+    PERIODIC TIME 0.5 d between <warmUpTime> d and 30. d
+    PERIODIC TIME 1.0 d between <warmUpTime> d and 100. d
+
+    # VARIABLES
+    #   # LIQUID_HEAD #[DONT USE THIS LOL]
+    #   LIQUID_PRESSURE
+    #   LIQUID_SATURATION
+    #   PERMEABILITY_X
+    #   PERMEABILITY_Y
+    #   PERMEABILITY_Z
+    #   MATERIAL_ID_KLUDGE_FOR_VISIT
+    #   POROSITY
+    # /
+  /
+  
+  MASS_BALANCE_FILE
+    PERIODIC TIME 0.25d0 d
+    TOTAL_MASS_REGIONS
+      Region__all
+    /
+  /  
+  
+  OBSERVATION_FILE
+     PERIODIC TIME <obsTimeStep> h
+  /
+  
+  FORMAT HDF5
+  VELOCITY_AT_CENTER
+/
+
+############# TIME ###############
+TIME
+  FINAL_TIME 3.5d1 d
+  INITIAL_TIMESTEP_SIZE <desiredTimeStep> s
+  MAXIMUM_TIMESTEP_SIZE 1.0d-0 d
+/
+
+############# CHEMISTRY MAGIC ###############
+CHEMISTRY
+  PRIMARY_SPECIES
+    Vaq
+  /
+  
+  IMMOBILE_SPECIES
+    Vim
+  /
+
+  REACTION_SANDBOX
+    BIOPARTEMP
+      PARTICLE_NAME_AQ Vaq
+      PARTICLE_NAME_IM Vim
+      # Attachment << Constant
+      RATE_ATTACHMENT <katt> 1/s
+      # Detachment << Constant
+      RATE_DETACHMENT <kdet> 1/s
+      
+      # Decay Adsorbed << Temp-Model
+      DECAY_ADSORBED TEMPERATURE_MODEL
+        TREF    4.0
+        ZT      29.1
+        N       2.0
+        LOGDREF 2.3
+      /
+      # Decay Aqueous << Temp-Model
+      DECAY_AQUEOUS TEMPERATURE_MODEL
+        TREF    4.0
+        ZT      29.1
+        N       2.0
+        LOGDREF 2.3
+      /
+    /
+  /
+  TRUNCATE_CONCENTRATION 1.0E-35
+  LOG_FORMULATION
+  DATABASE ../miscellaneous/rxn_database.dat
+  OUTPUT
+    TOTAL
+    ALL
+  /
+END
+
+############# REFERENCE VALUES ###############
+
+REFERENCE_PRESSURE 101325.
+
+END_SUBSURFACE
