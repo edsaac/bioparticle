@@ -14,7 +14,6 @@ class Model:
     e.g.
       myModel = Model()
   '''
-  _execPath = "$PFLOTRAN_DIR/src/pflotran/pflotran"
   __numberOf = 0   # Counter of all instantiated variables 
   __listObjs = []    # List of all instantiated variables 
 
@@ -23,6 +22,7 @@ class Model:
     templateFile,
     description="None provided",
     runFile="./pflotran.in",
+    execPath="$PFLOTRAN_DIR/src/pflotran/pflotran",
     folder="."
     ):
     '''
@@ -43,14 +43,14 @@ class Model:
     self._runFile = runFile
     self._description = description
     self._folder = folder
+    self._execPath = execPath
     
     Model.__numberOf += 1
     Model.__listObjs.append(self)
   
   def __str__(self):
-    C = Model._execPath\
+    C = self._execPath\
       + " -pflotranin "\
-      + self._folder \
       + self._runFile
     return C
 
@@ -71,6 +71,11 @@ class Model:
   def runFile(self) -> str: return self._runFile
   @runFile.setter
   def runFile(self,runFile) -> None: self._runFile = runFile
+
+  @property
+  def execPath(self) -> str: return self._execPath
+  @execPath.setter
+  def execPath(self,execPath) -> None: self._execPath = execPath
 
   @property
   def folder(self) -> str: return self._folder
@@ -123,10 +128,10 @@ class Model:
     '''
     Run PFLOTRAN executable with the input file 
     '''
-    system(Model._execPath \
+    system(self._execPath \
       + " -pflotranin " \
-      + self._folder \
-      + "/" \
+#      + self._folder \
+#      + "/" \
       + self.runFile)
 
   def fixedToCSV(self,outputFile) -> None:
@@ -180,13 +185,14 @@ class Model:
       
     NOTE: This is different than mpirun !!
     '''
-
+    with open("taskForParallel.txt","w") as f:
+      for ob in cls.__listObjs:
+        f.write("{0} -pflotranin {1}"\
+          .format(ob.execPath,ob.runFile))
+             
     system('''
-      PFLOTRAN_path={0}
-      LIST=$(ls {1}*/*.in)
-      N={2}
-      parallel --jobs $N $PFLOTRAN_path -pflotranin ::: $LIST
-      '''.format(cls._execPath,folderPrefix,nProcs)
+      parallel --jobs {0} < taskForParallel.txt
+      '''.format(nProcs)
     )
   
   @classmethod

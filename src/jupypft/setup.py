@@ -14,5 +14,5 @@ setup(
                       'ipywidgets'
                       ],
 
-    classifiers=['None' ],
+    classifiers=['None'],
 )

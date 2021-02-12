@@ -7,6 +7,7 @@ encountered in PFLOTRAN cases
 
 from os import system
 import ipywidgets as wd
+from ipywidgets.widgets.widget_string import Label
 
 class Parameter:
   '''
@@ -19,18 +20,22 @@ class Parameter:
   def __init__(
     self,
     tag,
-    value=None
+    value=None,
+    mathRep=""
     ):
     '''
     Parameters
     ---------------
-    tag: string
+    tag: str
       The tag to replace in the template file
-    value: float
+    value: float, optional
       The value of the parameter
+    mathRep : str, optional
+      The Latex representation of the parameter, e,g, $k_{att}$
     '''
     self._tag = tag
     self._value = value
+    self._mathRep = mathRep
 
     Parameter.__numberOf += 1
     Parameter.__listTags.append(tag)
@@ -66,6 +71,11 @@ class Parameter:
   def value(self,value) -> None: self._value = value
   
   @property
+  def mathRep(self) -> float: return self._mathRep
+  @mathRep.setter
+  def mathRep(self,mathRep) -> None: self._mathRep = mathRep
+    
+  @property
   def strValue(self) -> str: 
     try: return str(self._value)
     except TypeError: return str("<None>")
@@ -97,7 +107,8 @@ class Real(Parameter):
     self,
     tag,
     value=None,
-    units=None
+    units="",
+    mathRep="",
     ):
     '''
     Parameters
@@ -108,9 +119,10 @@ class Real(Parameter):
       The value of the parameter
     units: string
       the units of the parameter - does nothing
-    )
+    mathRep : str, optional
+      The Latex representation of the parameter, e,g, $k_{att}$
     '''
-    super().__init__(tag,value)
+    super().__init__(tag,value,mathRep=mathRep)
     self._units = units 
   
   '''
@@ -142,7 +154,8 @@ class Integer(Parameter):
     self,
     tag,
     value=None,
-    units=None
+    units="",
+    mathRep="",
     ):
     '''
     Parameters
@@ -153,9 +166,11 @@ class Integer(Parameter):
       The value of the parameter
     units: string
       the units of the parameter - does nothing
+    mathRep : str, optional
+      The Latex representation of the parameter, e,g, $k_{att}$
     )
     '''
-    super().__init__(tag,value)
+    super().__init__(tag,value,mathRep=mathRep)
     self.units = units 
 
   '''
@@ -187,7 +202,8 @@ class JustText(Parameter):
   def __init__(
     self,
     tag,
-    value=None
+    value=None,
+    mathRep="",
     ):
     '''
     Parameters
@@ -198,9 +214,11 @@ class JustText(Parameter):
       The value of the parameter
     units: string
       the units of the parameter - does nothing
+    mathRep : str, optional
+      The Latex representation of the parameter, e,g, $k_{att}$
     )
     '''
-    super().__init__(tag,value)
+    super().__init__(tag,value,mathRep=mathRep)
     
   '''
   Getters & Setters
@@ -227,8 +245,9 @@ class WithSlider(Real):
     self,
     tag,
     value=None,
-    units=None,
-    slider=None
+    units="",
+    slider=wd.FloatLogSlider(),
+    mathRep="",
     ):
     '''
     Parameters
@@ -241,19 +260,14 @@ class WithSlider(Real):
       the units of the parameter - does nothing
     slider: ipywidgets.FloatSlider()
       a widget to modify this.value
+    mathRep : str, optional
+      The Latex representation of the parameter, e,g, $k_{att}$
     '''
-    super().__init__(tag,value,units)
-    if slider is None:
-      self._slider = wd.FloatLogSlider(
-        value=10,
-        base=10,
-        min=-10,  # max exponent of base
-        max=1,    # min exponent of base
-        step=0.2, # exponent step
-        description = self.tag
-      )
-    else: self._slider = slider
-
+    super().__init__(tag,value,units,mathRep=mathRep)
+    self._slider = slider
+    # self._floatBox = wd.FloatText()
+    # self._link  wd.link((self._slider,'value'),(self._floatBox,'value'))
+    self.buildui()
   '''
   Getters & Setters
   aka methods that return the value of the attribute
@@ -262,7 +276,20 @@ class WithSlider(Real):
   @property
   def slider(self) -> str: return self._slider
   @slider.setter
-  def slider(self,slider) -> None: self._slider = slider
+  def slider(self,slider) -> None: 
+    self._slider = slider
+    self.buildui()
+  
+  @property
+  def ui(self) -> str: return self._ui
+  def buildui(self) -> None: 
+    # self._link = \
+    #   wd.link((self._slider, 'value'), (self._floatBox, 'value'))
+    self._ui = wd.HBox([
+      wd.HTMLMath(value=self._mathRep),
+#      self._floatBox,
+      self._slider,
+      wd.Label(value="["+ self._units + "]")])
   
   @property
   def strValue(self) -> str: 

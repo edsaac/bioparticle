@@ -14,6 +14,7 @@ module Reaction_Sandbox_bioTH_class
   type, public, &
     extends(reaction_sandbox_base_type) :: reaction_sandbox_bioTH_type
     
+    !ID number of bioparticle species
     PetscInt :: species_Vaq_id ! Aqueous species
     PetscInt :: species_Vim_id ! Immobile species  
     
@@ -26,17 +27,32 @@ module Reaction_Sandbox_bioTH_class
     PetscReal :: Tref_aqueous
     PetscReal :: zT_aqueous
     PetscReal :: nAq_aqueous
+    
+    PetscReal :: logDref_adsorbed
+    PetscReal :: Tref_adsorbed
+    PetscReal :: zT_adsorbed
+    PetscReal :: nAq_adsorbed
 
     !Decay rates (Constant)
+    PetscReal :: decay_aqueous
     PetscReal :: decay_adsorbed
     
-    !Attachment/detachment rates
+    !Attachment rate (Filtration Model)
+    PetscReal :: diam_collector
+    PetscReal :: diam_particle
+    PetscReal :: hamaker_constant
+    PetscReal :: BOLTZMANN_CONSTANT = 1.380649d-23 !J/K 
+                 !(Non found on pflotran_constants.f90)
+    PetscReal :: density_particle
+    PetscReal :: alpha_efficiency
+
+    !Attachment/Detachment rates (Constant)
     PetscReal :: rate_attachment
     PetscReal :: rate_detachment
-    
-    !Zero concentration (low boundary)
-    PetscReal :: zero_concentration
 
+    !Debug?
+    PetscBool :: debug_option
+    
   contains
     procedure, public :: ReadInput => bioTH_Read
     procedure, public :: Setup => bioTH_Setup
@@ -64,22 +80,43 @@ function bioTH_Create()
   class(reaction_sandbox_bioTH_type), pointer :: bioTH_Create
   
   allocate(bioTH_Create)
+
+  !ID number of bioparticle species
   bioTH_Create%species_Vaq_id = 0
   bioTH_Create%species_Vim_id = 0
 
+  !Name of bioparticle species
   bioTH_Create%name_aqueous = ''
   bioTH_Create%name_immobile = ''
 
+  !Decay rates (Temperature model)
   bioTH_Create%logDref_aqueous = 0.d0
   bioTH_Create%Tref_aqueous = 0.d0
   bioTH_Create%zT_aqueous = 0.d0
   bioTH_Create%nAq_aqueous = 0.d0
 
-  bioTH_Create%decay_adsorbed = 0.d0
-  bioTH_Create%rate_attachment = 0.d0
+  bioTH_Create%logDref_adsorbed = 0.d0
+  bioTH_Create%Tref_adsorbed = 0.d0
+  bioTH_Create%zT_adsorbed = 0.d0
+  bioTH_Create%nAq_adsorbed = 0.d0
+
+  !Decay rates (Constant)
+  bioTH_Create%decay_aqueous = -1.d0
+  bioTH_Create%decay_adsorbed = -1.d0
+
+  !Filtration Model
+  bioTH_Create%diam_collector = 0.d0
+  bioTH_Create%diam_particle = 0.d0
+  bioTH_Create%hamaker_constant = 0.d0
+  bioTH_Create%density_particle = 0.d0
+  bioTH_Create%alpha_efficiency = 1.d0
+
+  !Attachment rates
+  bioTH_Create%rate_attachment = -1.d0
   bioTH_Create%rate_detachment = 0.d0
 
-  bioTH_Create%zero_concentration = 0.d0
+  !Attachment rates
+  bioTH_Create%debug_option = .False.
 
   nullify(bioTH_Create%next)
 
@@ -88,21 +125,20 @@ function bioTH_Create()
 end function bioTH_Create
 
 ! ************************************************************************** !
-
-subroutine bioTH_Read(this,input,option)
+SUBROUTINE bioTH_Read(this,input,option)
   ! 
   ! Reads input deck for reaction sandbox parameters
   ! 
   ! Author: Edwin
   ! Date: 09/04/2020
   ! 
-  use Option_module
-  use String_module
-  use Input_Aux_module
-  use Utility_module
-  use Units_module, only : UnitsConvertToInternal
+  USE Option_module
+  USE String_module
+  USE Input_Aux_module
+  USE Utility_module
+  USE Units_module, ONLY : UnitsConvertToInternal
   
-  implicit none
+  IMPLICIT NONE
 
   class(reaction_sandbox_bioTH_type) :: this
   type(input_type), pointer :: input
@@ -114,174 +150,436 @@ subroutine bioTH_Read(this,input,option)
 !  nullify(new_particle)
 !  nullify(prev_particle)
 
-call InputPushBlock(input,option)
-  do 
-    call InputReadPflotranString(input,option)
-    if (InputError(input)) exit
-    if (InputCheckExit(input,option)) exit
+  CALL InputPushBlock(input,option)
+  DO 
+    CALL InputReadPflotranString(input,option)
+    IF (InputError(input)) EXIT
+    IF (InputCheckExit(input,option)) EXIT
 
-    call InputReadCard(input,option,word)
-    call InputErrorMsg(input,option,'keyword', &
-                       'CHEMISTRY,REACTION_SANDBOX,BIOPARTEMP')
-    call StringToUpper(word)   
+    CALL InputReadCard(input,option,word)
+    CALL InputErrorMsg(input,option,'keyword', &
+                     'CHEMISTRY,REACTION_SANDBOX,BIOPARTICLE')
+    CALL StringToUpper(word)   
 
-    select case(trim(word))
-      ! Bioparticle name while in suspension
-      case('PARTICLE_NAME_AQ')
-        call InputReadWord(input,option,this%name_aqueous,PETSC_TRUE)  
-        call InputErrorMsg(input,option,'name_aqueous', &
-                           'CHEMISTRY,REACTION_SANDBOX,BIOPARTEMP,NAMEAQ')
+    SELECT CASE(trim(word))
+      CASE('PARTICLE_NAME_AQ')
+        ! Bioparticle name while in suspension
+        CALL InputReadWord(input,option,this%name_aqueous,PETSC_TRUE)
+        CALL InputErrorMsg(input,option,'name_aqueous', &
+                           'CHEMISTRY,REACTION_SANDBOX,BIOPARTICLE,NAMEAQ')
         PRINT *, "Read particles' aq name: ", this%name_aqueous ! Edwin debugging    
       
-      ! Bioparticle name while immobilized
-      case('PARTICLE_NAME_IM')
-        call InputReadWord(input,option,this%name_immobile,PETSC_TRUE)  
-        call InputErrorMsg(input,option,'name_immobile', &
-                           'CHEMISTRY,REACTION_SANDBOX,BIOPARTEMP,NAMEIM')
+      CASE('PARTICLE_NAME_IM')
+        ! Bioparticle name while immobilized
+        CALL InputReadWord(input,option,this%name_immobile,PETSC_TRUE)  
+        CALL InputErrorMsg(input,option,'name_immobile', &
+                           'CHEMISTRY,REACTION_SANDBOX,BIOPARTICLE,NAMEIM')
         PRINT *, "Read particles' immobile name: ", this%name_immobile ! Edwin debugging    
+    
+      CASE('DECAY_AQUEOUS')
+        ! Decay rate while in the aqueous phase
+        CALL InputReadWord(input,option,word,PETSC_TRUE)
+        CALL InputErrorMsg(input,option,'Which Aqueous decay', &
+                           'CHEMISTRY,REACTION_SANDBOX,BIOPARTICLE,DECAY_AQUEOUS')
+        PRINT *, "Read how to deal with decay rates aqueous: ", word ! Edwin debugging    
+        SELECT CASE(trim(word))
+          CASE('CONSTANT')
+            CALL InputPushBlock(input,option)
+            DO
+              CALL InputReadPflotranString(input,option)
+              IF (InputError(input)) exit
+              IF (InputCheckExit(input,option)) exit
+              
+              CALL InputReadCard(input,option,word)
+              CALL InputErrorMsg(input,option,'LINE66', &
+                                 'CHEMISTRY,REACTION_SANDBOX,CLM-CN,REACTION')
+              CALL StringToUpper(word) 
 
-      ! Attachment rate   
-      case('RATE_ATTACHMENT')
-        ! Read the double precision rate constant
-        call InputReadDouble(input,option,this%rate_attachment)
-        call InputErrorMsg(input,option,'rate_attachment', &
-                           'CHEMISTRY,REACTION_SANDBOX,BIOPARTEMP,Katt')
-        PRINT *, "Read attachment rate: ", this%rate_attachment ! Edwin debugging    
-        PRINT "(ES12.4)",this%rate_attachment
+              SELECT CASE(trim(word))
+                CASE('VALUE')
+                ! Read the double precision rate constant
+                  CALL InputReadDouble(input,option,this%decay_aqueous)
+                  CALL InputErrorMsg(input,option,'decay_aqueous', &
+                               'CHEMISTRY,REACTION_SANDBOX,BIOPARTICLE,decayAq')
+                  PRINT *, "Read constant value decay aqueous phase rate" ! Edwin debugging    
+                  
+                  ! Read the units
+                  CALL InputReadWord(input,option,word,PETSC_TRUE)
+                  IF (InputError(input)) then
+                  ! If units do not exist, assume default units of 1/s which are the
+                  ! standard internal PFLOTRAN units for this rate constant.
+                    input%err_buf = 'REACTION_SANDBOX,BIOPARTICLE,RATE CONSTANT UNITS'
+                    CALL InputDefaultMsg(input,option)
+                  ELSE
+                    ! If units exist, convert to internal units of 1/s
+                    internal_units = 'unitless/sec'
+                    this%decay_aqueous = this%decay_aqueous * &
+                      UnitsConvertToInternal(word,internal_units,option)
+                  ENDIF
+                CASE DEFAULT
+                  CALL InputKeywordUnrecognized(input,word, &
+                          'CHEMISTRY,REACTION_SANDBOX,BIOPARTICLE',option)
+              END SELECT
+            END DO
+            CALL InputPopBlock(input,option)
 
-        ! Read the units
-        call InputReadWord(input,option,word,PETSC_TRUE)
-        if (InputError(input)) then
-          ! If units do not exist, assume default units of 1/s which are the
-          ! standard internal PFLOTRAN units for this rate constant.
-          input%err_buf = 'REACTION_SANDBOX,BIOPARTEMP,RATE CONSTANT UNITS'
-          call InputDefaultMsg(input,option)
-        else              
-          ! If units exist, convert to internal units of 1/s
-          internal_units = 'unitless/sec'
-          this%rate_attachment = this%rate_attachment * &
-            UnitsConvertToInternal(word,internal_units,option)
-        endif
+          CASE('TEMPERATURE_MODEL')
+            CALL InputPushBlock(input,option)
+            DO
+              CALL InputReadPflotranString(input,option)
+              IF (InputError(input)) exit
+              IF (InputCheckExit(input,option)) exit
+              
+              CALL InputReadCard(input,option,word)
+              CALL InputErrorMsg(input,option,'LINE105', &
+                                 'CHEMISTRY,REACTION_SANDBOX,CLM-CN,REACTION')
+              CALL StringToUpper(word) 
 
-      ! Detachment rate   
-      case('RATE_DETACHMENT')
-        ! Read the double precision rate constant
-        call InputReadDouble(input,option,this%rate_detachment)
-        call InputErrorMsg(input,option,'rate_detachment', &
-                           'CHEMISTRY,REACTION_SANDBOX,BIOPARTEMP,kdet')
-        PRINT *, "Read detachment rate: " ! Edwin debugging    
-        PRINT "(ES12.4)", this%rate_detachment
-
-        ! Read the units
-        call InputReadWord(input,option,word,PETSC_TRUE)
-        if (InputError(input)) then
-          ! If units do not exist, assume default units of 1/s which are the
-          ! standard internal PFLOTRAN units for this rate constant.
-          input%err_buf = 'REACTION_SANDBOX,BIOPARTEMP,RATE CONSTANT UNITS'
-          call InputDefaultMsg(input,option)
-        else              
-          ! If units exist, convert to internal units of 1/s
-          internal_units = 'unitless/sec'
-          this%rate_detachment = this%rate_detachment * &
-            UnitsConvertToInternal(word,internal_units,option)
-        endif      
-
-      ! Decay while in aqueous suspension rate  
-      !! **MODEL from Temp**
-      case('DECAY_AQ_MODEL')
-!!!!!!!!!!!!!!!!!!!!!!!!111111
-        call InputPushBlock(input,option)
-        do
-          call InputReadPflotranString(input,option)
-          if (InputError(input)) exit
-          if (InputCheckExit(input,option)) exit
-
-          call InputReadCard(input,option,word)
-          call InputErrorMsg(input,option,'keyword', &
-                       'CHEMISTRY,REACTION_SANDBOX,BIOPARTEMP,DECAY_AQ_MODEL')
-          call StringToUpper(word)
-
-          select case(trim(word))
-          ! Reference temperature (Probably 4°C)  
-          case('TREF')
-            call InputReadDouble(input,option,this%Tref_aqueous)
-            call InputErrorMsg(input,option,'TrefAq', &
-                        'CHEMISTRY,REACTION_SANDBOX,BIOPARTEMP,DECAY_AQ_MODEL,TREF')
-            PRINT *, "Read Tref for decay aqueous model: " 
-            PRINT "(ES12.4)", this%Tref_aqueous ! Edwin debugging 
+              SELECT CASE(trim(word))
+                CASE('TREF')
+                ! Reference temperature (Probably 4°C)
+                  CALL InputReadDouble(input,option,this%Tref_aqueous)
+                  CALL InputErrorMsg(input,option,'TrefAq', &
+                        'CHEMISTRY,REACTION_SANDBOX,BIOPARTICLE,DECAY_AQ_MODEL,TREF')
+                  PRINT *, "Tref for decay aqueous model: " 
+                  PRINT "(ES12.4)", this%Tref_aqueous ! Edwin debugging 
           
-          ! Model parameter zT  
-          case('ZT')
-            call InputReadDouble(input,option,this%zT_aqueous)
-            call InputErrorMsg(input,option,'decay_aqueous_zT', &
-                        'CHEMISTRY,REACTION_SANDBOX,BIOPARTEMP,DECAY_AQ_MODEL,ZT')
-            PRINT *, "zT parameter: "  ! Edwin debugging   
-            PRINT "(ES12.4)", this%zT_aqueous
+                CASE('ZT')
+                ! Model parameter zT  
+                  CALL InputReadDouble(input,option,this%zT_aqueous)
+                  CALL InputErrorMsg(input,option,'decay_aqueous_zT', &
+                              'CHEMISTRY,REACTION_SANDBOX,BIOPARTICLE,DECAY_AQ_MODEL,ZT')
+                  PRINT *, "zT parameter aqueous model: "  ! Edwin debugging   
+                  PRINT "(ES12.4)", this%zT_aqueous
 
-          ! Model parameter n (Probably 2.0)  
-          case('N')
-            call InputReadDouble(input,option,this%nAq_aqueous)
-            call InputErrorMsg(input,option,'decay_aqueous_nAq', &
-                        'CHEMISTRY,REACTION_SANDBOX,BIOPARTEMPDECAY_AQ_MODEL,N')
-            PRINT *, "n parameter: " ! Edwin debugging   
-            PRINT "(ES12.4)", this%nAq_aqueous
+                CASE('N')
+                  ! Model parameter n (Probably 2.0)  
+                  call InputReadDouble(input,option,this%nAq_aqueous)
+                  call InputErrorMsg(input,option,'decay_aqueous_nAq', &
+                                'CHEMISTRY,REACTION_SANDBOX,BIOPARTICLEDECAY_AQ_MODEL,N')
+                    PRINT *, "n parameter aqueous model: " ! Edwin debugging   
+                    PRINT "(ES12.4)", this%nAq_aqueous
 
-          ! D reference value (Probably 2.3)  
-          case('LOGDREF')
-            call InputReadDouble(input,option,this%logDref_aqueous)
-            call InputErrorMsg(input,option,'decay_aqueous_logDref', &
-                        'CHEMISTRY,REACTION_SANDBOX,BIOPARTEMPDECAY_AQ_MODEL,LOGDREF')
-            PRINT *, "log(D_ref) parameter: " ! Edwin debugging 
-            PRINT "(ES12.4)", this%logDref_aqueous
+                CASE('LOGDREF')
+                ! D reference value (Probably 2.3) 
+                  CALL InputReadDouble(input,option,this%logDref_aqueous)
+                  CALL InputErrorMsg(input,option,'decay_aqueous_logDref', &
+                              'CHEMISTRY,REACTION_SANDBOX,BIOPARTICLEDECAY_AQ_MODEL,LOGDREF')
+                  PRINT *, "log(D_ref) parameter aqueous model: " ! Edwin debugging 
+                  PRINT "(ES12.4)", this%logDref_aqueous
 
-          ! Something else
-          case default
-            call InputKeywordUnrecognized(input,word, &
-                   'CHEMISTRY,REACTION_SANDBOX,BIOPARTEMP,DECAY_AQ_MODEL',option)
-          end select
-        enddo
-      call InputPopBlock(input,option)
-      ! Decay while immobilized (adsorbed)   
-      case('DECAY_ADSORBED')
-        ! Read the double precision rate constant
-        call InputReadDouble(input,option,this%decay_adsorbed)
-        call InputErrorMsg(input,option,'decay_adsorbed', &
-                           'CHEMISTRY,REACTION_SANDBOX,BIOPARTEMP,DECAY_ADSORBED')
-        PRINT *, "Read decay while adsorbed rate: "   
-        PRINT "(ES12.4)", this%decay_adsorbed ! Edwin debugging 
-        ! Read the units
-        call InputReadWord(input,option,word,PETSC_TRUE)
-        if (InputError(input)) then
-          ! If units do not exist, assume default units of 1/s which are the
-          ! standard internal PFLOTRAN units for this rate constant.
-          input%err_buf = 'REACTION_SANDBOX,BIOPARTEMP,RATE CONSTANT UNITS'
-          call InputDefaultMsg(input,option)
-        else              
-          ! If units exist, convert to internal units of 1/s
-          internal_units = 'unitless/sec'
-          this%decay_adsorbed = this%decay_adsorbed * &
-            UnitsConvertToInternal(word,internal_units,option)
-        endif
+                ! Something else
+                CASE DEFAULT
+                  CALL InputKeywordUnrecognized(input,word, &
+                    'CHEMISTRY,REACTION_SANDBOX,BIOPARTICLE,DECAY_AQ_MODEL',option)
+              END SELECT
+            END DO
+            CALL InputPopBlock(input,option)
 
-        ! Zero concentration for log calculation
-        ! for instance, assume 1E-35 is a just 0.0 mol/L
-      case('ZERO_CONCENTRATION')
-        ! Read the double precision rate constant
-        call InputReadDouble(input,option,this%zero_concentration)
-        call InputErrorMsg(input,option,'zero_concentration', &
-                           'CHEMISTRY,REACTION_SANDBOX,BIOPARTEMP,zeroConcentration')
-        PRINT *, "Read zero concentration value: "
-        PRINT "(ES12.4)", this%zero_concentration ! Edwin debugging    
-        ! Default break if nothing found in sandbox
-      case default
-        call InputKeywordUnrecognized(input,word, &
-                     'CHEMISTRY,REACTION_SANDBOX,BIOPARTEMP',option)
-    end select
-  enddo
-  call InputPopBlock(input,option)
+          CASE DEFAULT
+            CALL InputKeywordUnrecognized(input,word, &
+                    'CHEMISTRY,REACTION_SANDBOX,BIOPARTICLE,CASEhere',option)
+        END SELECT
+      
+      CASE('DECAY_ADSORBED')
+        ! Decay rate while in the aqueous phase
+        CALL InputReadWord(input,option,word,PETSC_TRUE)
+        CALL InputErrorMsg(input,option,'Which Aqueous decay', &
+                           'CHEMISTRY,REACTION_SANDBOX,BIOPARTICLE,DECAY_AQUEOUS')
+        PRINT *, "Read how to deal with decay rates adsorbed: ", word ! Edwin debugging    
+        SELECT CASE(trim(word))
+          CASE('CONSTANT')
+            CALL InputPushBlock(input,option)
+            DO
+              CALL InputReadPflotranString(input,option)
+              IF (InputError(input)) exit
+              IF (InputCheckExit(input,option)) exit
+              
+              CALL InputReadCard(input,option,word)
+              CALL InputErrorMsg(input,option,'LINE173', &
+                                 'CHEMISTRY,REACTION_SANDBOX,CLM-CN,REACTION')
+              CALL StringToUpper(word) 
+
+              SELECT CASE(trim(word))
+                CASE('VALUE')
+                ! Read the double precision rate constant
+                  CALL InputReadDouble(input,option,this%decay_adsorbed)
+                  CALL InputErrorMsg(input,option,'decay_adsorbed', &
+                               'CHEMISTRY,REACTION_SANDBOX,BIOPARTICLE,decayAq')
+                  PRINT *, "Read constant value decay immobile phase rate" ! Edwin debugging    
+                  
+                  ! Read the units
+                  CALL InputReadWord(input,option,word,PETSC_TRUE)
+                  IF (InputError(input)) then
+                  ! If units do not exist, assume default units of 1/s which are the
+                  ! standard internal PFLOTRAN units for this rate constant.
+                    input%err_buf = 'REACTION_SANDBOX,BIOPARTICLE,RATE CONSTANT UNITS'
+                    CALL InputDefaultMsg(input,option)
+                  ELSE
+                    ! If units exist, convert to internal units of 1/s
+                    internal_units = 'unitless/sec'
+                    this%decay_adsorbed = this%decay_adsorbed * &
+                      UnitsConvertToInternal(word,internal_units,option)
+                  ENDIF
+                CASE DEFAULT
+                  CALL InputKeywordUnrecognized(input,word, &
+                          'CHEMISTRY,REACTION_SANDBOX,BIOPARTICLE',option)
+              END SELECT
+            END DO
+            CALL InputPopBlock(input,option)
+
+          CASE('TEMPERATURE_MODEL')
+            CALL InputPushBlock(input,option)
+            DO
+              CALL InputReadPflotranString(input,option)
+              IF (InputError(input)) exit
+              IF (InputCheckExit(input,option)) exit
+              
+              CALL InputReadCard(input,option,word)
+              CALL InputErrorMsg(input,option,'LINE105', &
+                                 'CHEMISTRY,REACTION_SANDBOX,CLM-CN,REACTION')
+              CALL StringToUpper(word) 
+
+              SELECT CASE(trim(word))
+                CASE('TREF')
+                ! Reference temperature (Probably 4°C)
+                  CALL InputReadDouble(input,option,this%Tref_adsorbed)
+                  CALL InputErrorMsg(input,option,'TrefAds', &
+                        'CHEMISTRY,REACTION_SANDBOX,BIOPARTICLE,DECAY_AQ_MODEL,TREF')
+                  PRINT *, "Read Tref for decay immobile model: " 
+                  PRINT "(ES12.4)", this%Tref_adsorbed ! Edwin debugging 
+          
+                CASE('ZT')
+                ! Model parameter zT  
+                  CALL InputReadDouble(input,option,this%zT_adsorbed)
+                  CALL InputErrorMsg(input,option,'decay_adsorb_zT', &
+                              'CHEMISTRY,REACTION_SANDBOX,BIOPARTICLE,DECAY_AQ_MODEL,ZT')
+                  PRINT *, "zT parameter decay immobile model: "  ! Edwin debugging   
+                  PRINT "(ES12.4)", this%zT_adsorbed
+
+                CASE('N')
+                  ! Model parameter n (Probably 2.0)  
+                  call InputReadDouble(input,option,this%nAq_adsorbed)
+                  call InputErrorMsg(input,option,'decay_ads_nAq', &
+                                'CHEMISTRY,REACTION_SANDBOX,BIOPARTICLEDECAY_AQ_MODEL,N')
+                    PRINT *, "n parameter decay immobile model: " ! Edwin debugging   
+                    PRINT "(ES12.4)", this%nAq_adsorbed
+
+                CASE('LOGDREF')
+                ! D reference value (Probably 2.3) 
+                  CALL InputReadDouble(input,option,this%logDref_adsorbed)
+                  CALL InputErrorMsg(input,option,'decay_ads_logDref', &
+                              'CHEMISTRY,REACTION_SANDBOX,BIOPARTICLEDECAY_AQ_MODEL,LOGDREF')
+                  PRINT *, "log(D_ref) parameter decay immobile model: " ! Edwin debugging 
+                  PRINT "(ES12.4)", this%logDref_adsorbed
+
+                ! Something else
+                CASE DEFAULT
+                  CALL InputKeywordUnrecognized(input,word, &
+                    'CHEMISTRY,REACTION_SANDBOX,BIOPARTICLE,DECAY_ADS_MODEL',option)
+              END SELECT
+            END DO
+            CALL InputPopBlock(input,option)
+            
+          CASE DEFAULT
+            CALL InputKeywordUnrecognized(input,word, &
+                    'CHEMISTRY,REACTION_SANDBOX,BIOPARTICLE,CASEhere2',option)
+        END SELECT
+
+      CASE('RATE_ATTACHMENT')
+        ! Decay rate while in the aqueous phase
+        CALL InputReadWord(input,option,word,PETSC_TRUE)
+        CALL InputErrorMsg(input,option,'RATE_ATTACHMENT?', &
+                           'CHEMISTRY,REACTION_SANDBOX,BIOPARTICLE&
+                           &,RATE_ATTACHMENT')
+        PRINT *, "Read how to deal with decay rates aqueous: ", word ! Edwin debugging    
+        SELECT CASE(trim(word))
+          CASE('CONSTANT')
+            CALL InputPushBlock(input,option)
+            DO
+              CALL InputReadPflotranString(input,option)
+              IF (InputError(input)) exit
+              IF (InputCheckExit(input,option)) exit
+              
+              CALL InputReadCard(input,option,word)
+              CALL InputErrorMsg(input,option,'CONSTANT?', &
+                           'CHEMISTRY,REACTION_SANDBOX,BIOPARTICLE&
+                           &,RATE_ATTACHMENT,CONSTANT')
+              CALL StringToUpper(word) 
+
+              SELECT CASE(trim(word))
+                CASE('VALUE')
+                ! Read the double precision rate constant
+                  CALL InputReadDouble(input,option,this%rate_attachment)
+                  CALL InputErrorMsg(input,option,'VALUE?', &
+                           'CHEMISTRY,REACTION_SANDBOX,BIOPARTICLE&
+                           &,RATE_ATTACHMENT,CONSTANT,VALUE')
+                  PRINT *, "Read constant value attachment rate" ! Edwin debugging    
+                  
+                  ! Read the units
+                  CALL InputReadWord(input,option,word,PETSC_TRUE)
+                  IF (InputError(input)) then
+                  ! If units do not exist, assume default units of 1/s which are the
+                  ! standard internal PFLOTRAN units for this rate constant.
+                    input%err_buf = 'RATE CONSTANT UNITS assumed as 1/s'
+                    CALL InputDefaultMsg(input,option)
+                  ELSE
+                    ! If units exist, convert to internal units of 1/s
+                    internal_units = 'unitless/sec'
+                    this%rate_attachment = this%rate_attachment * &
+                      UnitsConvertToInternal(word,internal_units,option)
+                  ENDIF
+                CASE DEFAULT
+                  CALL InputKeywordUnrecognized(input,word, &
+                          'CHEMISTRY,REACTION_SANDBOX,BIOPARTICLE',option)
+              END SELECT
+            END DO
+            CALL InputPopBlock(input,option)
+
+          CASE('FILTRATION_MODEL')
+            CALL InputPushBlock(input,option)
+            DO
+              CALL InputReadPflotranString(input,option)
+              IF (InputError(input)) exit
+              IF (InputCheckExit(input,option)) exit
+              
+              CALL InputReadCard(input,option,word)
+              CALL InputErrorMsg(input,option,'FILTRATION_MODEL?', &
+                           'CHEMISTRY,REACTION_SANDBOX,BIOPARTICLE&
+                           &,FILTRATION_MODEL')
+              CALL StringToUpper(word) 
+
+              SELECT CASE(trim(word))
+                CASE('DIAMETER_COLLECTOR')
+                ! Diameter of the collector, i.e., soil grain size [m]
+                  CALL InputReadDouble(input,option,this%diam_collector)
+                  CALL InputErrorMsg(input,option,'DIAMETER_COLLECTOR?', &
+                        'CHEMISTRY,REACTION_SANDBOX,BIOPARTICLE, &
+                         &FILTRATION_MODEL,DIAMETER_COLLECTOR')
+                  PRINT *, "Read diameter collector for CFT model: " 
+                  PRINT "(ES12.4)", this%diam_collector ! Edwin debugging 
+          
+                CASE('DIAMETER_PARTICLE')
+                ! Diameter of the bioparticle [m]
+                  CALL InputReadDouble(input,option,this%diam_particle)
+                  CALL InputErrorMsg(input,option,'DIAMETER_PARTICLE?', &
+                        'CHEMISTRY,REACTION_SANDBOX,BIOPARTICLE, &
+                         &FILTRATION_MODEL,DIAMETER_PARTICLE')
+                  PRINT *, "Read diameter particle for CFT model: " 
+                  PRINT "(ES12.4)", this%diam_particle ! Edwin debugging 
+                
+                CASE('HAMAKER_CONSTANT')
+                ! Hamaker constant particle-soil pair [Joules]
+                  CALL InputReadDouble(input,option,this%hamaker_constant)
+                  CALL InputErrorMsg(input,option,'HAMAKER_CONSTANT?', &
+                        'CHEMISTRY,REACTION_SANDBOX,BIOPARTICLE, &
+                         &FILTRATION_MODEL,HAMAKER_CONSTANT')
+                  PRINT *, "Read Hamaker constant for CFT model: " 
+                  PRINT "(ES12.4)", this%hamaker_constant ! Edwin debugging 
+
+                CASE('DENSITY_PARTICLE')
+                ! Density of the bioparticles [kg/m3]
+                  CALL InputReadDouble(input,option,this%density_particle)
+                  CALL InputErrorMsg(input,option,'DENSITY_PARTICLE?', &
+                        'CHEMISTRY,REACTION_SANDBOX,BIOPARTICLE, &
+                         &FILTRATION_MODEL,DENSITY_PARTICLE')
+                  PRINT *, "Read particle density for CFT model: " 
+                  PRINT "(ES12.4)", this%density_particle ! Edwin debugging 
+
+                CASE('ALPHA_EFFICIENCY')
+                ! Collision/attachment efficiency [-]
+                  CALL InputReadDouble(input,option,this%alpha_efficiency)
+                  CALL InputErrorMsg(input,option,'DENSITY_PARTICLE?', &
+                        'CHEMISTRY,REACTION_SANDBOX,BIOPARTICLE, &
+                         &FILTRATION_MODEL,ALPHA_EFFICIENCY')
+                  PRINT *, "Read alpha efficiency for CFT model: " 
+                  PRINT "(ES12.4)", this%alpha_efficiency ! Edwin debugging 
+
+                CASE('DEBUG')
+                ! Print stuff on screen
+                  PRINT *, "Will debug -> print CFT stuff: " 
+                  this%debug_option = .True. ! Edwin debugging 
+
+                ! Something else
+                CASE DEFAULT
+                  CALL InputKeywordUnrecognized(input,word, &
+                    'CHEMISTRY,REACTION_SANDBOX,BIOPARTICLE,DECAY_ADS_MODEL',option)
+              END SELECT
+            END DO
+            CALL InputPopBlock(input,option)
+            
+          CASE DEFAULT
+            CALL InputKeywordUnrecognized(input,word, &
+                    'CHEMISTRY,REACTION_SANDBOX,BIOPARTICLE,',option)
+        END SELECT
+
+      ! Detachment rate
+      CASE('RATE_DETACHMENT')
+        ! Decay rate while in the aqueous phase
+        CALL InputReadWord(input,option,word,PETSC_TRUE)
+        CALL InputErrorMsg(input,option,'RATE_DETACHMENT?', &
+                           'CHEMISTRY,REACTION_SANDBOX,BIOPARTICLE&
+                           &,RATE_DETACHMENT')
+        PRINT *, "Read how to deal with detachment rates: ", word ! Edwin debugging    
+        SELECT CASE(trim(word))
+          CASE('CONSTANT')
+            CALL InputPushBlock(input,option)
+            DO
+              CALL InputReadPflotranString(input,option)
+              IF (InputError(input)) exit
+              IF (InputCheckExit(input,option)) exit
+              
+              CALL InputReadCard(input,option,word)
+              CALL InputErrorMsg(input,option,'CONSTANT?', &
+                           'CHEMISTRY,REACTION_SANDBOX,BIOPARTICLE&
+                           &,RATE_ATTACHMENT,CONSTANT')
+              CALL StringToUpper(word) 
+
+              SELECT CASE(trim(word))
+                CASE('VALUE')
+                ! Read the double precision rate constant
+                  CALL InputReadDouble(input,option,this%rate_detachment)
+                  CALL InputErrorMsg(input,option,'VALUE?', &
+                           'CHEMISTRY,REACTION_SANDBOX,BIOPARTICLE&
+                           &,RATE_ATTACHMENT,CONSTANT,VALUE')
+                  PRINT *, "Read constant value detachment rate" ! Edwin debugging    
+                  
+                  ! Read the units
+                  CALL InputReadWord(input,option,word,PETSC_TRUE)
+                  IF (InputError(input)) then
+                  ! If units do not exist, assume default units of 1/s which are the
+                  ! standard internal PFLOTRAN units for this rate constant.
+                    input%err_buf = 'RATE CONSTANT UNITS assumed as 1/s'
+                    CALL InputDefaultMsg(input,option)
+                  ELSE
+                    ! If units exist, convert to internal units of 1/s
+                    internal_units = 'unitless/sec'
+                    this%rate_detachment = this%rate_detachment * &
+                      UnitsConvertToInternal(word,internal_units,option)
+                  ENDIF
+                CASE DEFAULT
+                  CALL InputKeywordUnrecognized(input,word, &
+                          'CHEMISTRY,REACTION_SANDBOX,BIOPARTICLE',option)
+              END SELECT
+            END DO
+            CALL InputPopBlock(input,option)
+
+          CASE DEFAULT
+            CALL InputKeywordUnrecognized(input,word, &
+                    'CHEMISTRY,REACTION_SANDBOX,BIOPARTICLE,DETACHMENT',option)
+        END SELECT     
+      CASE DEFAULT
+        CALL InputKeywordUnrecognized(input,word, &
+                     'CHEMISTRY,REACTION_SANDBOX,BIOPARTICLE',option)
+    END SELECT
+  END DO
   
+  CALL InputPopBlock(input,option)
   PRINT *, "Conf. file block ended" ! Edwin debugging    
-end subroutine bioTH_Read
+
+END SUBROUTINE bioTH_Read
+
+! ************************************************************************** !
 
 subroutine bioTH_Setup(this,reaction,option)
   ! 
@@ -349,6 +647,10 @@ subroutine bioTH_React(this,Residual,Jacobian,compute_derivative, &
   PetscReal :: porosity               ! m^3 pore space / m^3 bulk
   PetscReal :: liquid_saturation      ! m^3 water / m^3 pore space
   PetscReal :: L_water                ! L water
+  PetscReal :: temperature
+  PetscReal :: rho_f
+  PetscReal :: g
+  PetscReal :: viscosity
 
   PetscReal :: Vaq  ! mol/L
   PetscReal :: Vim  ! mol/m^3
@@ -357,29 +659,40 @@ subroutine bioTH_React(this,Residual,Jacobian,compute_derivative, &
   PetscReal :: RateDecayAq, RateDecayIm !Check units
   PetscReal :: stoichVaq
   PetscReal :: stoichVim
-  PetscReal :: katt, kdet
-  PetscReal :: decayAq, decayIm
-  PetscReal :: temperature
-  PetscReal :: ZeroConc
 
   ! Decay model parameters
-  PetscReal :: logDrefAq
-  PetscReal :: TrefAq
-  PetscReal :: zTAq
-  PetscReal :: nAq
+  PetscReal :: decayAq, decayIm
+  PetscReal :: logDrefAq, logDrefAd
+  PetscReal :: TrefAq, TrefAd
+  PetscReal :: zTAq, zTAd
+  PetscReal :: nAq, nAd
 
+  ! Filtration model parameters for attachment
+  PetscReal :: katt
+  PetscReal :: dc,dp,Hamaker,rho_p, alpha, qMag, diffusionCoeff, kB
+  PetscReal :: Gm, Gm5, Happel 
+  PetscReal :: NR, NPe, NvdW, Ngr
+  PetscReal :: Eta_D, Eta_I, Eta_G, Eta_0
+
+  ! Detachment rate
+  PetscReal :: kdet
+
+  ! Global stuff (Check global_aux.F90)
+  volume = material_auxvar%volume
   porosity = material_auxvar%porosity
   liquid_saturation = global_auxvar%sat(iphase)
-  volume = material_auxvar%volume
   L_water = porosity*liquid_saturation*volume*1.d3  ! 1.d3 converts m^3 water -> L water
-  temperature = global_auxvar%temp
+  
+  viscosity = 0.0008891 ! Ns/m2 (This should be a field... where is this in global_auxvar??)
 
-  ! Add a pseudo-zero to concentrations
-  ZeroConc = this%zero_concentration
+  temperature = global_auxvar%temp
+  rho_f = global_auxvar%den_kg(iphase)
+  g = EARTH_GRAVITY
+
 
 ! Assign concentrations of Vaq and Vim
-  Vaq = rt_auxvar%total(this%species_Vaq_id,iphase) - ZeroConc
-  Vim = rt_auxvar%immobile(this%species_Vim_id) - ZeroConc
+  Vaq = rt_auxvar%total(this%species_Vaq_id,iphase)
+  Vim = rt_auxvar%immobile(this%species_Vim_id)
 !  PRINT *, "Assigned Vaq/Vim concentrations" ! Edwin debugging    
 
   ! initialize all rates to zero
@@ -398,34 +711,176 @@ subroutine bioTH_React(this,Residual,Jacobian,compute_derivative, &
   ! kinetic rate constants
   katt = 0.d0
   kdet = 0.d0
-  katt = this%rate_attachment
-  kdet = this%rate_detachment  
+  kdet = this%rate_detachment
+  
   !  PRINT *, "Assigned attachment/detachment rates" ! Edwin debugging    
 
-  ! decay(temperature dependent) rates
-  ! Check Guillier et al. for model equation (2020)
+  !!!!!!!!!!!!!!!!!!!
+  ! Decay rate - Aqueous phase 
+  !
+  !  Check Guillier et al. for model equation (2020)
   !  decay = ln(10)/D
   !  logD = logDref - [(T-Tref)/zT]^n
-
+  !!!!!!!!!!!!!!!!!!!
   logDrefAq = 0.0
   TrefAq = 0.0
   zTAq = 0.0
   nAq = 0.0
 
-  logDrefAq = this%logDref_aqueous
-  TrefAq = this%Tref_aqueous
-  zTAq = this%zT_aqueous
-  nAq = this%nAq_aqueous
-
+  IF (this%decay_aqueous < 0.d0) THEN
+    logDrefAq = this%logDref_aqueous
+    TrefAq = this%Tref_aqueous
+    zTAq = this%zT_aqueous
+    nAq = this%nAq_aqueous
+    
+    decayAq = (2.302585/(10.0 ** (logDrefAq - (((temperature - TrefAq)/zTAq)**nAq))))/3600  ! 1/s
+    ! PRINT *, "I'm inside the IF in line 710:" !Edwin debugging
+  ELSE
+    ! PRINT *, "I'm NOT inside the IF in line 710:" !Edwin debugging
+    decayAq = this%decay_aqueous
+  END IF
   
-  decayAq = (2.302585/(10.0 ** (logDrefAq - (((temperature - TrefAq)/zTAq)**nAq))))/3600  ! 1/s
   ! PRINT *, "Temperature:"
   ! PRINT "(ES12.4)", temperature
   ! PRINT *, "Decay Rate 1/s:"
   ! PRINT "(ES12.4)", decayAq !(Should be 4.45E-6 for a 10°C)
 
-  decayIm = this%decay_adsorbed
-!  PRINT *, "Assigned decay rates" ! Edwin debugging    
+!!!!!!!!!!!!!!!!!!!
+! Decay rate - Immobile phase 
+!!!!!!!!!!!!!!!!!!!
+
+  logDrefAd = 0.0
+  TrefAd = 0.0
+  zTAd = 0.0
+  nAd = 0.0
+
+  IF (this%decay_adsorbed < 0.d0) THEN
+    logDrefAd = this%logDref_adsorbed
+    TrefAd = this%Tref_adsorbed
+    zTAd = this%zT_adsorbed
+    nAd = this%nAq_adsorbed
+    decayIm = (2.302585/(10.0 ** (logDrefAd - (((temperature - TrefAd)/zTAd)**nAd))))/3600  ! 1/s
+    
+    ! PRINT *, "I'm inside the IF in line 737:" !Edwin debugging
+  ELSE
+    ! PRINT *, "I'm inside NOT the IF in line 737:" !Edwin debugging
+    decayIm = this%decay_aqueous
+  END IF
+  
+!!!!!!!!!!!!!!!!!!!
+! Attachment rate 
+!!!!!!!!!!!!!!!!!!!
+  dc = 0.0
+  dp = 0.0
+  Hamaker = 0.0
+  rho_p = 0.0
+  alpha = 0.0
+
+  IF (this%rate_attachment < 0.d0) THEN
+    ! PRINT *, "I'm inside the IF in line 762, katt:" !Edwin debugging
+    dc = this%diam_collector
+    dp = this%diam_particle
+    Hamaker = this%hamaker_constant
+    rho_p = this%density_particle
+    alpha = this%alpha_efficiency
+    kB = this%BOLTZMANN_CONSTANT
+    
+    IF(global_auxvar%darcy_vel(iphase) < 0.0) THEN
+        PRINT *, "qMag negative ??" 
+    ENDIF
+
+    qMag = MAX(global_auxvar%darcy_vel(iphase),1.0d-20)
+
+    diffusionCoeff = this%BOLTZMANN_CONSTANT*(temperature+273.15) / &
+                   (3.0 * PI * viscosity * dp)
+
+    ! Non-dimensional parameters
+    !! Happel parameter As
+    Gm = (1.0 - porosity)**(1./3.)
+    Gm5 = Gm*Gm*Gm*Gm*Gm
+    Happel = (2.0 * (1.0 - Gm5)) / (2.0 - (3.0*Gm) + (3.0*Gm5) - (2.0*Gm*Gm5))
+
+    !! Aspect ratio
+    NR = dp/dc
+
+    !! Péclet number
+    NPe = (qMag * dc) / (diffusionCoeff)
+
+    !! van der Waals number
+    NvdW = Hamaker/(kB*(temperature + 273.15))
+
+    !! Gravitational number
+    NGr = PI/12.0 * (dp*dp*dp*dp) * (rho_p - rho_f) * g /&
+          (kB*(temperature + 273.15))
+
+    ! Collector efficiencies
+    !! Transport by diffusion
+    Eta_D = 2.4 &
+            * Happel**(1./3.) &
+            * NR**(-0.081) &
+            * NPe**(-0.715) &
+            * NvdW**(0.052)
+    
+    !! Transport by interception
+    Eta_I = 0.55 &
+            * Happel &
+            * NR**(1.55) &
+            * NPe**(-0.125) &
+            * NvdW**(0.125)
+
+    !! Transport due to gravity
+    Eta_G = 0.475 &
+            * NR**(-1.35) &
+            * NPe**(-1.11) &
+            * NvdW**(0.053) &
+            * NGr**(1.11)
+
+    !! Single collector efficiency
+    Eta_0 = Eta_D + Eta_I + Eta_G  
+
+    ! Rate of attachment according to CFT
+    katt = 1.5 * (1 - porosity) * qMag * alpha * Eta_0 &
+           / (dc * porosity)
+ 
+    ! Edwin debugging 
+    if(this%debug_option) then
+      print '(3x,"porosity = ", ES12.4)', porosity
+      print '(3x,"temp C   = ", ES12.4)', Temperature
+      print '(3x,"viscosit = ", ES12.4)', viscosity
+      print '(3x,"densityF = ", ES12.4)', rho_f
+      print '(3x,"densityP = ", ES12.4)', rho_p
+
+      print '(3x,"DarcyqMa = ", ES12.4)', qMag
+      print '(3x,"diffCoef = ", ES12.4)', diffusionCoeff
+      print '(3x,"Gm       = ", ES12.4)', Gm
+      print '(3x,"Gm5      = ", ES12.4)', Gm5
+      print '(3x,"Happel   = ", ES12.4)', Happel
+      print '(3x,"NR       = ", ES12.4)', NR
+      print '(3x,"NPe      = ", ES12.4)', NPe
+      print '(3x,"NvW      = ", ES12.4)', NvdW
+      print '(3x,"NGr      = ", ES12.4)', NGr
+      print '(3x,"EtaD     = ", ES12.4)', Eta_D
+      print '(3x,"EtaI     = ", ES12.4)', Eta_I
+      print '(3x,"EtaG     = ", ES12.4)', Eta_G
+      print '(3x,"Eta0     = ", ES12.4)', Eta_0
+      print '(3x,"katt     = ", ES12.4)', katt
+      print *, "--------------------"
+    endif
+
+  ELSE
+    ! A constant rate of attachment
+    katt = this%rate_attachment
+  END IF
+
+!!!!!!!!!!!!!!!!!!!
+! Detachment rate 
+!!!!!!!!!!!!!!!!!!!
+  IF (this%rate_detachment < 0.d0) THEN
+    kdet = 0.0
+  ELSE
+    ! A constant rate of attachment
+    kdet = this%rate_detachment
+  END IF
 
   RateAtt = 0.0
   RateDet = 0.0
@@ -459,7 +914,7 @@ subroutine bioTH_React(this,Residual,Jacobian,compute_derivative, &
 
     ELSE IF ( Vim <= 0.0 ) THEN
       !PRINT *, "AQ > 0 but IM < 0"
-      Vim = ZeroConc
+      Vim = 1.0d-50
       RateDet = 0.0
       RateDecayIm = 0.0
 
@@ -474,7 +929,7 @@ subroutine bioTH_React(this,Residual,Jacobian,compute_derivative, &
   ELSE IF ( Vaq <= 0.0 ) THEN
     IF ( Vim > 0.0 ) THEN
       !PRINT *, "AQ < 0 but IM > 0"
-      Vaq = ZeroConc
+      Vaq = 1.0d-50
       RateAtt = 0.0
       RateDecayAq = 0.0
   
@@ -487,8 +942,8 @@ subroutine bioTH_React(this,Residual,Jacobian,compute_derivative, &
   
     ELSE IF ( Vim <= 0.0 ) THEN
       !PRINT *, "AQ < 0 and IM < 0"
-      Vim = ZeroConc
-      Vaq = ZeroConc
+      Vim = 1.0d-50
+      Vaq = 1.0d-50
       RateAtt = 0.0
       RateDet = 0.0
       RateDecayAq = 0.0

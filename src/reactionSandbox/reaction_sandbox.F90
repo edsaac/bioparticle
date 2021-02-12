@@ -169,8 +169,6 @@ subroutine RSandboxRead2(local_sandbox_list,input,option)
       case('GAS')
         new_sandbox => GasCreate()
       case('BIOPARTICLE')
-        new_sandbox => escPTr_Create()
-      case('BIOPARTEMP')
         new_sandbox => bioTH_Create()
       case default
         call InputKeywordUnrecognized(input,word, &
