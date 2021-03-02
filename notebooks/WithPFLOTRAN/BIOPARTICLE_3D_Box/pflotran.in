@@ -1,0 +1,362 @@
+#==============================================================================
+#Description: 3D groundwater flow and conservative transport. 
+#Template: one layer, well 40 m away, not fully sat.
+#Flow: RICHARDS
+#==============================================================================
+
+SIMULATION
+  SIMULATION_TYPE SUBSURFACE
+  PROCESS_MODELS
+    SUBSURFACE_FLOW flow
+      MODE TH
+    /
+    SUBSURFACE_TRANSPORT transport
+      MODE GIRT
+    /
+  /
+END
+
+SUBSURFACE
+
+#=========================== numerical methods ================================
+
+NUMERICAL_METHODS FLOW
+  NEWTON_SOLVER
+    ITOL_UPDATE 1.d0     ! Convergences with max change in pressure is 1 Pa.
+  /
+END
+
+NUMERICAL_METHODS transport
+  TIMESTEPPER
+    CFL_GOVERNOR 1.0
+  /
+END
+
+#=========================== chemistry ========================================
+CHEMISTRY
+  PRIMARY_SPECIES
+    Vaq
+  /
+  
+  IMMOBILE_SPECIES
+    Vim
+  /
+
+  REACTION_SANDBOX
+    BIOPARTICLE
+      PARTICLE_NAME_AQ Vaq
+      PARTICLE_NAME_IM Vim
+      RATE_ATTACHMENT FILTRATION_MODEL
+        DIAMETER_COLLECTOR 2.000E-03
+        DIAMETER_PARTICLE 1.000E-07
+        HAMAKER_CONSTANT 5.000E-21
+        DENSITY_PARTICLE 1.050E+03
+        ALPHA_EFFICIENCY 1.000E-05
+      /
+      RATE_DETACHMENT CONSTANT
+        VALUE   2.600E-03 1/h
+      /
+      DECAY_AQUEOUS TEMPERATURE_MODEL
+        TREF    4.0
+        ZT      29.1
+        N       2.0
+        LOGDREF 2.3
+      /
+      DECAY_ADSORBED TEMPERATURE_MODEL
+        TREF    4.0
+        ZT      29.1
+        N       2.0
+        LOGDREF 2.3
+      /
+    /
+  /
+  LOG_FORMULATION
+  TRUNCATE_CONCENTRATION 1.0E-50
+  DATABASE ../MISCELLANEOUS/rxn_database.dat
+  OUTPUT
+    TOTAL
+    ALL
+  /
+END
+
+#=========================== discretization ===================================
+GRID
+TYPE STRUCTURED
+  NXYZ 6 4 8
+  
+  BOUNDS
+    0.d0 0.d0 0.d0
+    7.000E+01 3.000E+01 2.000E+01
+  /
+
+  SKIP
+  DXYZ 
+    <dX>
+    <dY>
+    <dZ>
+  /
+  NOSKIP
+END
+
+#=========================== fluid properties =================================
+FLUID_PROPERTY
+  DIFFUSION_COEFFICIENT 0.0d0
+END
+
+#=========================== material properties ==============================
+MATERIAL_PROPERTY soil1
+  ID 1
+  POROSITY 3.500E-01
+  TORTUOSITY 0.5d0
+  CHARACTERISTIC_CURVES cc1
+  PERMEABILITY
+    PERM_X 1.000E-08 ! gravel permeability 1E-8 m2
+    PERM_Y 1.000E-08
+    PERM_Z 1.000E-08
+  /
+  LONGITUDINAL_DISPERSIVITY 1.000E-12
+  SPECIFIC_HEAT 1.0E+3
+  THERMAL_CONDUCTIVITY_DRY 0.5
+  THERMAL_CONDUCTIVITY_WET 0.5
+END
+
+#=========================== saturation functions =============================
+CHARACTERISTIC_CURVES cc1
+  SATURATION_FUNCTION VAN_GENUCHTEN
+    ALPHA  1.d-4
+    M 0.5d0
+    LIQUID_RESIDUAL_SATURATION 0.1d0
+    MAX_CAPILLARY_PRESSURE 1.d8
+  /
+  PERMEABILITY_FUNCTION MUALEM_VG_LIQ
+    M 0.5d0
+    LIQUID_RESIDUAL_SATURATION 0.1d0
+  /
+END
+
+#=========================== output options ===================================
+OUTPUT
+  SKIP
+  SNAPSHOT_FILE
+    PERIODIC TIME 1. d between 0. d and 130. d
+    PRINT_COLUMN_IDS
+    FORMAT HDF5
+    VARIABLES
+      LIQUID_SATURATION
+    /
+  /
+  NOSKIP
+
+  MASS_BALANCE_FILE
+    PERIODIC TIME 0.25d0 d
+    TOTAL_MASS_REGIONS
+      all
+    /
+  /  
+
+  OBSERVATION_FILE
+    PERIODIC TIME 1.d0 d
+  /
+  
+  FORMAT HDF5
+  VELOCITY_AT_CENTER
+END
+
+#=========================== times ============================================
+TIME
+  FINAL_TIME 130.d0 d
+  INITIAL_TIMESTEP_SIZE 1.d-5 h
+  MAXIMUM_TIMESTEP_SIZE 0.1d0 d        ! produces CFL ~<= 1.
+END
+
+#=========================== regions ==========================================
+REGION all
+  COORDINATES
+    0.d0 0.d0 0.d0
+    7.000E+01 3.000E+01 2.000E+01
+  /
+END
+
+REGION west
+  COORDINATES
+    0.d0 0.d0 0.d0
+    0.d0 3.000E+01 2.000E+01
+  /
+  FACE WEST
+END
+
+REGION east
+  COORDINATES
+    7.000E+01 0.d0    0.d0
+    7.000E+01 3.000E+01 2.000E+01
+  /
+  FACE EAST
+END
+
+REGION top
+  COORDINATES
+    0.d0 0.d0 2.000E+01
+    7.000E+01 3.000E+01 2.000E+01
+  /
+  FACE TOP
+END
+
+REGION injection_well
+  COORDINATES 
+    1.000E+01 1.500E+01 1.900E+01
+    1.000E+01 1.500E+01 2.000E+01
+  /
+END
+
+REGION extraction_well
+  COORDINATES 
+    4.100E+01 1.500E+01 1.600E+01
+    4.100E+01 1.500E+01 1.900E+01
+/
+END
+
+REGION Obs_leakage
+  COORDINATE 1.000E+01 1.500E+01 2.000E+01
+END
+
+REGION Obs_extraction
+  COORDINATE 4.100E+01 1.500E+01 1.600E+01
+END
+
+#========================== observation points ===============================
+OBSERVATION
+  REGION Obs_leakage
+  AT_CELL_CENTER 
+END
+
+OBSERVATION
+  REGION Obs_extraction
+  AT_CELL_CENTER 
+END
+#=========================== flow conditions ==================================
+FLOW_CONDITION initial
+  TYPE
+    PRESSURE HYDROSTATIC
+    TEMPERATURE DIRICHLET
+  /
+  INTERPOLATION LINEAR
+  DATUM 0.d0 0.d0 2.000E+01
+  GRADIENT
+    PRESSURE -2.000E-03 0. 0.
+  /
+  PRESSURE 101325.d0
+  TEMPERATURE 1.000E+01
+END
+
+FLOW_CONDITION boundary
+  TYPE
+    PRESSURE HYDROSTATIC
+    TEMPERATURE ZERO_GRADIENT
+  /
+  INTERPOLATION LINEAR
+  DATUM 0.d0 0.d0 2.000E+01
+  GRADIENT
+    PRESSURE 2.000E-03 0. 0.
+  /
+  PRESSURE 101325.d0
+  TEMPERATURE 0.0
+END
+
+FLOW_CONDITION injection
+  TYPE
+    RATE SCALED_VOLUMETRIC_RATE NEIGHBOR_PERM
+    TEMPERATURE DIRICHLET
+  /
+   RATE 2.400E-01 m^3/day
+   TEMPERATURE 1.000E+01
+END
+
+
+FLOW_CONDITION extraction
+  TYPE
+    RATE SCALED_VOLUMETRIC_RATE NEIGHBOR_PERM
+    TEMPERATURE ZERO_GRADIENT
+  /
+  RATE -2.184E+01 m^3/day
+  TEMPERATURE 0.0
+END
+
+#============================transport conditions =============================
+TRANSPORT_CONDITION initial
+  TYPE DIRICHLET_ZERO_GRADIENT
+  CONSTRAINT initial
+    CONCENTRATIONS
+      Vaq  1.d-50 T
+    /
+    IMMOBILE
+      Vim   1.d-50
+    /
+  /
+END
+
+TRANSPORT_CONDITION boundary
+  TYPE DIRICHLET_ZERO_GRADIENT
+  CONSTRAINT boundary
+    CONCENTRATIONS
+     Vaq  1.d-50 T
+    /
+  /    
+END
+
+TRANSPORT_CONDITION injection
+  TYPE DIRICHLET_ZERO_GRADIENT
+  CONSTRAINT injection
+    CONCENTRATIONS
+      Vaq  1.000E-10 T 
+    /
+  /
+END
+
+ #=========================== condition couplers ===============================
+# initial condition
+INITIAL_CONDITION
+  FLOW_CONDITION initial
+  TRANSPORT_CONDITION initial
+  REGION all
+END
+
+# west boundary condition
+BOUNDARY_CONDITION west
+  FLOW_CONDITION boundary
+  TRANSPORT_CONDITION boundary
+  REGION west
+END
+
+# east boundary condition
+BOUNDARY_CONDITION east
+  FLOW_CONDITION boundary
+  TRANSPORT_CONDITION boundary
+  REGION east
+END
+
+# source 
+SOURCE_SINK injection_well
+ FLOW_CONDITION injection
+ TRANSPORT_CONDITION injection
+ REGION injection_well
+END
+
+# sink 
+SOURCE_SINK extraction_well
+  FLOW_CONDITION extraction
+  TRANSPORT_CONDITION initial
+  REGION extraction_well
+END
+
+#==================== stratigraphy couplers ============================
+STRATA
+  REGION all
+  MATERIAL soil1
+END
+
+############# REFERENCE VALUES ###############
+
+REFERENCE_PRESSURE 101325.0
+REFERENCE_TEMPERATURE 1.000E+01
+
+END_SUBSURFACE

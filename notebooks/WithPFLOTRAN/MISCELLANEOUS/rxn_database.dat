@@ -1,5 +1,6 @@
 'temperature points' 8 0. 25. 60. 100. 150. 200. 250. 300.0
 'Vaq' 1.0 0. 100.
+'V(aq)' 1.0 0. 100.
 'null'
 'null'
 'null'

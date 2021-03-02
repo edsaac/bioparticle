@@ -1,0 +1,409 @@
+#==============================================================================
+#Description: 3D groundwater flow and conservative transport. 
+#Template: one layer, well 40 m away, fully sat.
+#Flow: RICHARDS
+#==============================================================================
+
+SIMULATION
+  SIMULATION_TYPE SUBSURFACE
+  PROCESS_MODELS
+    SUBSURFACE_FLOW FLOW
+      MODE RICHARDS
+    /
+    SUBSURFACE_TRANSPORT TRANSPORT
+      MODE GIRT
+    /
+  /
+END
+
+############# FLOW CONFIGURATION ###############
+SUBSURFACE
+
+NUMERICAL_METHODS FLOW
+
+  NEWTON_SOLVER
+    ITOL_UPDATE 1.d0
+  /
+
+END
+
+NUMERICAL_METHODS TRANSPORT
+
+  TIMESTEPPER
+    CFL_GOVERNOR 1.0
+  /
+
+END
+############# GRID ###############
+
+GRID
+  TYPE STRUCTURED CARTESIAN
+  NXYZ <nX> <nY> <nZ> 
+  ORIGIN 0.d0 0.d0 0.d0
+  #SKIP
+  DXYZ 
+    <dX>
+    <dY>
+    <dZ>
+  /
+  #NOSKIP
+  SKIP
+  BOUNDS
+    0.d0 0.d0 0.d0
+    <LenX> <LenY> <LenZ>
+  /
+  NOSKIP
+END
+
+
+############# REGIONS ###############
+REGION Region__all
+  COORDINATES
+    0.d0 0.d0 0.d0
+    <LenX> <LenY> <LenZ>
+  /
+END
+
+REGION Face__BC0_Top
+  COORDINATES
+    0.d0 0.d0 <LenZ>
+    <LenX> <LenY> <LenZ>
+  /
+  FACE TOP
+END
+
+REGION Face__BC1_Right
+  COORDINATES
+    <LenX> 0.d0 <LenZ>
+    <LenX> <LenY> 0.d0
+  /
+  FACE EAST
+END
+
+REGION Face__BC1_Left
+  COORDINATES
+    0.d0 0.d0 <LenZ>
+    0.d0 <LenY> 0.d0
+  /
+  FACE WEST
+END
+
+REGION Face__BC1_North
+  COORDINATES
+    <LenX> 0.d0 <LenZ>
+    0.d0 0.d0 0.d0
+  /
+  FACE SOUTH
+END
+
+REGION Face__BC1_South
+  COORDINATES
+    <LenX> <LenY> <LenZ>
+    0.d0 <LenY> 0.d0
+  /
+  FACE NORTH
+END
+
+REGION Line__BC2_ExtractionWell
+  COORDINATES
+    <outX1> <outY1> <outZ1>
+    <outX2> <outY2> <outZ2>
+  /
+END
+
+REGION Line__BC3_InjectionWell
+  COORDINATES
+    <inX1> <inY1> <inZ1>
+    <inX2> <inY2> <inZ2>
+  /
+END
+
+REGION Obs__PointOutflow
+  COORDINATES
+    <outX1> <outY1> <outZ1>
+  /
+END
+
+REGION Obs__PointInflow
+  COORDINATES
+    <inX2> <inY2> <inZ2>
+  /
+END
+
+############# OBSERVATION ###############
+OBSERVATION
+  REGION Obs__PointOutflow
+  #AT_CELL_CENTER 
+END
+
+OBSERVATION
+  REGION Obs__PointInflow
+  #AT_CELL_CENTER 
+END
+
+############# FLUID ###############
+FLUID_PROPERTY
+  DIFFUSION_COEFFICIENT 1.d-9
+  PHASE LIQUID
+END
+
+############# SOILS ###############
+MATERIAL_PROPERTY soil__all
+  ID 1
+  POROSITY <porosity>
+  TORTUOSITY 0.25d0
+  PERMEABILITY
+    PERM_X <PermX>
+    PERM_Y <PermY>
+    PERM_Z <PermZ>
+  /
+  SATURATION_FUNCTION cc1
+  LONGITUDINAL_DISPERSIVITY <longDisp>
+END
+
+############# CURVES ###############
+CHARACTERISTIC_CURVES cc1
+  SATURATION_FUNCTION VAN_GENUCHTEN
+    ALPHA  1.d-4
+    M 0.5d0
+    LIQUID_RESIDUAL_SATURATION 0.1d0
+    MAX_CAPILLARY_PRESSURE 1.d8
+  /
+  PERMEABILITY_FUNCTION MUALEM_VG_LIQ
+    M 0.5d0
+    LIQUID_RESIDUAL_SATURATION 0.1d0
+  /
+END
+
+############# FLOW CONDITIONS ###############
+FLOW_CONDITION initial
+  TYPE
+    PRESSURE HYDROSTATIC
+  /
+  INTERPOLATION LINEAR
+  DATUM 0.d0 0.d0 <LenZ>
+  GRADIENT
+    PRESSURE <GradientX> 0. 0.
+  /
+  PRESSURE 101325.d0
+END
+
+FLOW_CONDITION boundary
+  TYPE
+    PRESSURE HYDROSTATIC
+  /
+  INTERPOLATION LINEAR
+  DATUM 0.d0 0.d0 <LenZ>
+  GRADIENT
+    PRESSURE <GradientX> 0. 0.
+  /
+  PRESSURE 101325.d0
+END
+
+FLOW_CONDITION topSoil
+ TYPE
+   FLUX NEUMANN
+ /
+  FLUX 0.0d0
+END
+
+FLOW_CONDITION injection
+  TYPE
+    RATE SCALED_VOLUMETRIC_RATE NEIGHBOR_PERM
+  /
+  RATE LIST
+    INTERPOLATION linear
+    TIME_UNITS d
+    DATA_UNITS m^3/day
+    0.00  0.00E+00
+    1.000E+00 <inRate>
+  /
+END
+
+FLOW_CONDITION extraction
+  TYPE
+    RATE SCALED_VOLUMETRIC_RATE NEIGHBOR_PERM
+  /
+  RATE LIST
+    INTERPOLATION linear
+    TIME_UNITS d
+    DATA_UNITS m^3/day
+    0.00  0.00E+00
+    1.000E+00 <outRate>
+  /
+END
+
+########### TRANSPORT CONDITIONS #############
+TRANSPORT_CONDITION initial_t
+  TYPE DIRICHLET_ZERO_GRADIENT
+  TIME_UNITS d
+  CONSTRAINT_LIST
+    0.d0 initial_constraint
+  /
+END
+
+TRANSPORT_CONDITION cleaninflow_t
+  TYPE DIRICHLET_ZERO_GRADIENT
+  TIME_UNITS d
+  CONSTRAINT_LIST
+    0.0d0 clean_inlet
+  /
+END
+
+TRANSPORT_CONDITION leaking_t
+  TYPE DIRICHLET_ZERO_GRADIENT
+  TIME_UNITS d
+  CONSTRAINT_LIST
+    0.0d0 clean_inlet
+    1.0d0 leaking_inlet
+  /
+END
+
+TRANSPORT_CONDITION extraction_t
+  TYPE ZERO_GRADIENT
+  TIME_UNITS d
+  CONSTRAINT_LIST
+    0.d0 zeroGrad_outflow
+  /
+END
+
+############## CONSTRAINTS #################
+CONSTRAINT initial_constraint
+  CONCENTRATIONS
+    Vaq   1.d-10      T
+  /
+END
+
+CONSTRAINT clean_inlet
+  CONCENTRATIONS
+    Vaq   1.d-10      T
+  /
+END
+
+CONSTRAINT leaking_inlet
+  CONCENTRATIONS
+    Vaq   <initialConcentration>      T
+  /
+END
+
+CONSTRAINT zeroGrad_outflow
+  CONCENTRATIONS
+    Vaq   1.d-10      T
+  /
+END
+
+
+############# COUPLERS ###############
+
+############# COUPLERS ###############
+# initial condition
+INITIAL_CONDITION InitialCondition
+  REGION Region__all
+  FLOW_CONDITION initial
+  TRANSPORT_CONDITION initial_t
+END
+
+BOUNDARY_CONDITION Top
+  REGION Face__BC0_Top
+  FLOW_CONDITION topSoil
+  TRANSPORT_CONDITION cleaninflow_t
+END
+
+BOUNDARY_CONDITION Right
+  REGION Face__BC1_Right
+  FLOW_CONDITION boundary
+  TRANSPORT_CONDITION cleaninflow_t
+END
+
+BOUNDARY_CONDITION Left
+  REGION Face__BC1_Left
+  FLOW_CONDITION topSoil
+  TRANSPORT_CONDITION cleaninflow_t
+END
+
+BOUNDARY_CONDITION North
+  REGION Face__BC1_North
+  FLOW_CONDITION topSoil
+  TRANSPORT_CONDITION cleaninflow_t
+END
+
+BOUNDARY_CONDITION South
+  REGION Face__BC1_South
+  FLOW_CONDITION topSoil
+  TRANSPORT_CONDITION cleaninflow_t
+END
+
+SOURCE_SINK ExtractWell
+  REGION Line__BC2_ExtractionWell
+  FLOW_CONDITION extraction
+  TRANSPORT_CONDITION extraction_t
+END
+
+SOURCE_SINK InjectWell
+  REGION Line__BC3_InjectionWell
+  FLOW_CONDITION injection
+  TRANSPORT_CONDITION leaking_t
+END
+
+############# STRATAS ###############
+STRATA
+  REGION Region__all
+  MATERIAL soil__all
+END
+
+############# OUTPUT ###############
+OUTPUT
+  SNAPSHOT_FILE
+    PERIODIC TIME 5.0 d
+  /
+  
+  MASS_BALANCE_FILE
+    PERIODIC TIME 1.d0 d
+    TOTAL_MASS_REGIONS
+      Region__all
+    /
+  /  
+  
+  OBSERVATION_FILE
+     PERIODIC TIME 1.d0 d
+  /
+  
+  FORMAT HDF5
+  VELOCITY_AT_CENTER
+/
+
+############# TIME ###############
+TIME
+  FINAL_TIME <endTime> d
+  INITIAL_TIMESTEP_SIZE 1.0d-3 d
+  MAXIMUM_TIMESTEP_SIZE 1.0d0 d
+/
+
+
+############# CHEMISTRY MAGIC ###############
+CHEMISTRY
+  PRIMARY_SPECIES
+    Vaq
+  /
+ 
+  TRUNCATE_CONCENTRATION 1.0E-50
+#LOG_FORMULATION
+  DATABASE ../miscellaneous/rxn_database.dat
+  OUTPUT
+    TOTAL
+    ALL
+  /
+END
+
+############# REFERENCE VALUES ###############
+
+REFERENCE_PRESSURE 101325.
+REFERENCE_TEMPERATURE <initialTemp>
+
+# EOS WATER
+#   DENSITY CONSTANT 999.65d0 kg/m^3 #10°C
+#   VISCOSITY CONSTANT 0.0013076 Pa-s #10°C
+# END
+
+
+END_SUBSURFACE

@@ -40,19 +40,19 @@ class Parameter:
     Parameter.__numberOf += 1
     Parameter.__listTags.append(tag)
     Parameter.__listObjs.append(self)
- 
-  def __del__(self):
-    Parameter.__numberOf -= 1
-    Parameter.__listTags.remove(self._tag)
-    Parameter.__listObjs.remove(self)
   
   def __str__(self):
-    return self.tag + " = " + self.strValue
+    if self.mathRep == "":
+      return self.tag + " = " + self.strValue
+    else:
+      return self.mathRep + " = " + self.strValue
   
   def __repr__(self):
-    return "jupypft.parameter.Parameter(\"" \
-      + self.tag + "\")"
+    return self.tag + " = " + self.strValue
   
+    # return "jupypft.parameter.Parameter(\"" \
+    #   + self.tag + "\")"
+
   # def __setattr__(self, key, value):
   #   raise TypeError( "%r won't accept new attributes" % self )
   '''
@@ -93,6 +93,14 @@ class Parameter:
   @classmethod
   def list_of_vars(cls) -> list: return cls.__listObjs
   
+  @classmethod
+  def rebuildListOfObjects(cls,d,clean=True):
+    if clean: cls.__listObjs = []
+    for _, v in d.items():
+      if isinstance(v, dict):
+        cls.rebuildListOfObjects(v,clean=False)
+      else:
+        cls.__listObjs.append(v)
 
 ####################
 
@@ -124,7 +132,7 @@ class Real(Parameter):
     '''
     super().__init__(tag,value,mathRep=mathRep)
     self._units = units 
-  
+
   '''
   Getters & Setters
   aka methods that return the value of the attribute
@@ -263,8 +271,8 @@ class WithSlider(Real):
     mathRep : str, optional
       The Latex representation of the parameter, e,g, $k_{att}$
     '''
-    super().__init__(tag,value,units,mathRep=mathRep)
     self._slider = slider
+    super().__init__(tag,self.slider.value,units,mathRep=mathRep)
     # self._floatBox = wd.FloatText()
     # self._link  wd.link((self._slider,'value'),(self._floatBox,'value'))
     self.buildui()
@@ -273,11 +281,22 @@ class WithSlider(Real):
   aka methods that return the value of the attribute
   and modify their values
   '''
+ 
+  @property
+  def value(self) -> float: 
+    self._value = self.slider.value
+    return self._value
+  @value.setter
+  def value(self,n) -> None: 
+    self.slider.value = n
+    self._value = n
+    self.buildui()
+ 
   @property
   def slider(self) -> str: return self._slider
   @slider.setter
-  def slider(self,slider) -> None: 
-    self._slider = slider
+  def slider(self,wdslider) -> None: 
+    self._slider = wdslider
     self.buildui()
   
   @property
@@ -292,9 +311,13 @@ class WithSlider(Real):
       wd.Label(value="["+ self._units + "]")])
   
   @property
-  def strValue(self) -> str: 
-    try: return "{:.3E}".format(self._value)
-    except TypeError: return str("<None>")
+  def strValue(self) -> str:
+    if "Int" in str(self.slider):      
+      try:  return "{:}".format(int(self._value))
+      except TypeError: return str("<None>")    
+    else:
+      try: return "{:.3E}".format(self._value)
+      except TypeError: return str("<None>")
 
 
 ###############################

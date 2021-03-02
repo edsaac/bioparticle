@@ -6,6 +6,9 @@ Module for PFLOTRAN model
 '''  
 
 from os import system
+import math
+
+from numpy.core import numeric
 
 class Model:
   '''
@@ -23,7 +26,8 @@ class Model:
     description="None provided",
     runFile="./pflotran.in",
     execPath="$PFLOTRAN_DIR/src/pflotran/pflotran",
-    folder="."
+    folder=".",
+    verbose=False
     ):
     '''
     Parameters
@@ -36,6 +40,8 @@ class Model:
     execPath: string
       The path to the PFLOTRAN executable. Default will
       look for the thing in 
+    verbose: bool
+      If true, PFLOTRAN std output is shown. 
 
     )
     '''
@@ -44,6 +50,7 @@ class Model:
     self._description = description
     self._folder = folder
     self._execPath = execPath
+    self._verboseAppend = (">& dev/null","") [verbose]
     
     Model.__numberOf += 1
     Model.__listObjs.append(self)
@@ -97,6 +104,9 @@ class Model:
   @classmethod
   def list_of_models(cls) -> list: return cls.__listObjs
   
+  @classmethod
+  def resetListOfModels(cls) -> None: cls.__listObjs = []
+  
   '''
   Instance methods
   '''
@@ -132,7 +142,8 @@ class Model:
       + " -pflotranin " \
 #      + self._folder \
 #      + "/" \
-      + self.runFile)
+      + self.runFile + " " 
+      + self._verboseAppend)
 
   def fixedToCSV(self,outputFile) -> None:
     '''
@@ -169,7 +180,6 @@ class Model:
   @classmethod
   def runAllModels(
     cls,
-    folderPrefix="CASE",
     nProcs=1,
     ) -> None:
     '''
@@ -177,9 +187,6 @@ class Model:
     with the given prefix. This function requires GNU Parallel
     instaled in the machine. 
     
-    folderPrefix: string
-      Prefix of cases to run in parallel 
-      e.g. "CASE"
     nProcs: int
       Number of cores to parallel run. Default 1
       
@@ -187,7 +194,7 @@ class Model:
     '''
     with open("taskForParallel.txt","w") as f:
       for ob in cls.__listObjs:
-        f.write("{0} -pflotranin {1}"\
+        f.write("{0} -pflotranin {1} \n"\
           .format(ob.execPath,ob.runFile))
              
     system('''
@@ -283,39 +290,76 @@ def buildDXYZ(
   '''
   
   import numpy as np
-  
+   
   # Avoid close to zero growRatios
   if abs(growRatio) < 1e-8: growRatio = 1
-
+  numberOfElements = int(numberOfElements)
+  
   if hasBump:
-    lenght = lenght/2.0
-    numberOfElements = int(numberOfElements/2.0)
+    N = math.floor(numberOfElements/2.0) 
+    K = np.abs(growRatio)**(1/(N-1))
+    listIntegers = list(range(N))
+    KPow = [K**i for i in listIntegers]
+    
+    # Array of distances
+    D = np.zeros(N)
+    if numberOfElements%2 == 1:
+      L = lenght/(2.0 + 1.0/np.sum(KPow))
+    else:
+      L = lenght/2.0
+    
+    #print("L",L)
+    
+    D[0] = L/(np.sum(KPow))
+    for i in range(1,N):
+      D[i] = D[0] * KPow[i]
+    
+    #print("D",D,np.sum(D))
+    
+    '''If the growRatio was negative, a short to long 
+    grid was expected'''
+    if growRatio < 0: D = np.flip(D)
+    
+    # Concatenate with an extra one in the middle
+    if numberOfElements%2 == 1:
+      D2 = np.concatenate((np.flip(D),[D[0]],D))
+    else:
+      D2 = np.concatenate((np.flip(D),D))
+    
+    #print("D2",D2,np.sum(D2))
+    
+    D3 = np.around(D2,decimals=2)
+    partialSum = np.sum(D3)
+    err = lenght - partialSum
+    D3[0] += err/2
+    D3[-1] += err/2
+    
+    #print("D3",D3,np.sum(D3))
+  
   else:
-    lenght = lenght/1.0
     numberOfElements = int(numberOfElements)
-
-  # Cell-to-cell ratio (K)
-  K = np.abs(growRatio)**(1/(numberOfElements-1))
-  listIntegers = list(range(numberOfElements))
-  KPow = [K**i for i in listIntegers]
-
-  # Array of distances
-  D = np.zeros(numberOfElements)
-  D[0] = lenght/(np.sum(KPow))
-  for i in range(1,numberOfElements):
-    D[i] = D[0] * KPow[i]
-
-  # Array of rounded distances
-  D2 = np.around(D,decimals=2)
-  partialSum = np.sum(D2[:-1])
-  D2[-1] = lenght - partialSum
   
-  '''If the growRatio was negative, a short to long 
-  grid was expected'''
-  if growRatio < 0: D2 = np.flip(D2)
+    # Cell-to-cell ratio (K)
+    K = np.abs(growRatio)**(1/(numberOfElements-1))
+    listIntegers = list(range(numberOfElements))
+    KPow = [K**i for i in listIntegers]
+
+    # Array of distances
+    D = np.zeros(numberOfElements)
+    D[0] = lenght/(np.sum(KPow))
+    for i in range(1,numberOfElements):
+      D[i] = D[0] * KPow[i]
+
+    # Array of rounded distances
+    D2 = np.around(D,decimals=2)
+    partialSum = np.sum(D2[:-1])
+    D2[-1] = lenght - partialSum
   
-  '''For hump, flip and double the array'''
-  D3 = np.concatenate((D2,np.flip(D2))) if hasBump else D2
+    '''If the growRatio was negative, a short to long 
+    grid was expected'''
+    if growRatio < 0: D2 = np.flip(D2)
+  
+    D3 = D2
   
   '''Format as a long string'''
   F1 = ""
