@@ -367,8 +367,25 @@ def attachmentRate(dp,dc,q,theta,visco,rho_f,rho_p,A,T,alpha=1.0,debug=False):
         print("eta0 collector:   {0:.4E}".format(eta0))
         print("---")
         print("Attach rate   :   {0:.4E}".format(kAtt))
-
-    return kAtt
+        
+    htmlOut = """
+      <b>Diffusion coeff:</b>  {0:.4E}</br>
+      <b>Darcy velocity</b>   {1:.4E}</mainbr>
+      <b>NR number</b>        {4:.4E}</br>
+      <b>NPe number</b>       {5:.4E}</br>
+      <b>NvW number</b>       {6:.4E}</br>
+      <b>NGr number</b>       {7:.4E}</br>
+      </br>
+      <b>etaD collector</b>   {8:.4E}</br>
+      <b>etaI collector</b>   {9:.4E}</br>
+      <b>etaG collector</b>   {10:.4E}</br>
+      <b>eta0 collector</b>   {11:.4E}</br>
+      </br>
+      <b>Attach rate   </b>   {12:.4E}
+      """.format(Dm,q,U,As,NR,NPe,NvW,NGr,etaD,etaI,etaG,eta0,kAtt)
+    
+    return kAtt,htmlOut
+    
 
 if __name__ == "__main__":
     main()

@@ -1,5 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
+from pandas import read_csv
+import os
 
 ## New functions 
 import jupypft.model as mo
@@ -31,10 +33,10 @@ def xyPlotLine(
     X = DATA[:,XIndex]/normalizeXWith
     Y = DATA[:,YIndex]/normalizeYWith
   
-    plt.figure(figsize=(9,4),facecolor="white")
+    plt.figure(figsize=(5,8),facecolor="white")
     
     ## Plot log-scale
-    ax1 = plt.subplot(1,2,1)
+    ax1 = plt.subplot(2,1,1)
     ax1.plot(X,Y,c="purple",lw=3)
     ax1.axvline(x=1.0,ls="dotted",c="gray",lw=1)
     ax1.axhline(y=1.0,ls="dashed",c="teal",lw=1)
@@ -44,11 +46,11 @@ def xyPlotLine(
       linthresh=1.0E-6,subs=[1,2,3,4,5,6,7,8,9])
     ax1.set_ylim([-1.0E-7,1.15])
 
-    ax1.set_xlabel("Time [$-$]",fontsize="large")
+    plt.setp(ax1.get_xticklabels(), visible=False)
     ax1.set_ylabel("C/C₀ [$-$]",fontsize="large")
             
     ## Plot linear-scale
-    ax2 = plt.subplot(1,2,2)
+    ax2 = plt.subplot(2,1,2, sharex=ax1)
     ax2.plot(X,Y,c="purple",lw=3)
     ax2.axhline(y=1.0,ls="dashed",c="teal",lw=1)
     ax2.axvline(x=1.0,ls="dotted",c="gray",lw=1)
@@ -63,6 +65,74 @@ def xyPlotLine(
           
     plt.tight_layout()  
     plt.show()
+
+def plotMassBalancesInFolder(
+        folderToPlot,
+        indices = {'t':0,'q':26,'m':28},
+        normalizeWith={'t':1.0,'q':1.0,'m':1.0},
+        legendTitle = ""
+               ):
+    '''
+    folderToPlot : str 
+        Path to folder where all the files to be plotted are found
+    indices : dict
+        Column index for the time 't', water mass rate 'q' and 
+        mass extraction rate 'm'.
+        e.g.: {'t':str,'q':str,'m':str}
+    normalizeWith : dict
+        Value to normalize variable in y axis
+        e.g.: {'t':float,'q':float,'m':float}
+    legendTitle : str
+        It receives TeX notation.
+    '''
+    listOfFiles = os.listdir(folderToPlot)
+    listOfFiles.sort()
     
+    def get_cmap(n, name='Set1'): ## Color map for plots 
+      return plt.cm.get_cmap(name, n)
+    
+    cmap = get_cmap(max(len(listOfFiles),9))
+    
+    plt.figure(figsize=(7,5))
+    ax1 = plt.subplot(1,1,1)
+    
+    for i,f in enumerate(listOfFiles):
+      DATA = read_csv(\
+        folderToPlot+"/"+f,\
+        delimiter=",")
+    
+      t = DATA[indices['t']]/normalizeWith['t']
+      q = DATA[indices['q']]/normalizeWith['q']
+      m = DATA[indices['m']]/normalizeWith['m']
+      
+      X = t
+      Y = np.divide(m,q)
+      
+      logRed = -np.log10(max(Y))
+      labelText = r"$\bf{" + f[:-8].replace("_","\ ") + r"}$" \
+                  + "\n  ·" + r'$-log[max(C)/C₀] =$ ' + "{:.1f}".format(logRed)
+        
+      ax1.plot(X,Y,c=cmap(i),lw=2.5,label=labelText)
+    
+    ## Plot log-scale
+    ax1.axhline(y=1.0,ls="dashed",c="teal",lw=1)
+    ax1.axhspan(ymin=-1.0E-7,ymax=1.0E-6,facecolor="pink",alpha=0.2)
+    
+    ax1.set_yscale("symlog",\
+      linthresh=1.0E-6,subs=[1,2,3,4,5,6,7,8,9])
+    ax1.set_ylim([-1.0E-7,1.15])
+
+    ax1.set_ylabel("C/C₀ [$-$]",fontsize="large")       
+    ax1.set_xlabel("Time [$d$]",fontsize="large")
+    
+    ncol = (1,1) [len(listOfFiles) > 3]
+    l = ax1.legend(title=legendTitle,ncol=ncol,\
+      bbox_to_anchor=(1,0), loc="lower left")
+    
+    plt.setp(l.get_title(), multialignment='center')
+    
+    plt.tight_layout()  
+    plt.show()
+
 if __name__ == "__main__":
     main()
