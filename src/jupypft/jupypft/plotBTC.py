@@ -1,5 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
+from numpy.core.fromnumeric import argmin
 from pandas import read_csv
 import os
 
@@ -128,6 +129,79 @@ def plotMassBalancesInFolder(
     ncol = (1,1) [len(listOfFiles) > 3]
     l = ax1.legend(title=legendTitle,ncol=ncol,\
       bbox_to_anchor=(1,0), loc="lower left")
+    
+    plt.setp(l.get_title(), multialignment='center')
+    
+    plt.tight_layout()  
+    plt.show()
+
+def plotEndConcentrations(
+        folderToPlot,
+        Xdata,
+        indices = {'t':0,'q':26,'m':28},
+        normalizeWith={'t':1.0,'q':1.0,'m':1.0},
+        legendTitle = ""
+               ):
+    '''
+    folderToPlot : str 
+        Path to folder where all the files to be plotted are found
+    indices : dict
+        Column index for the time 't', water mass rate 'q' and 
+        mass extraction rate 'm'.
+        e.g.: {'t':str,'q':str,'m':str}
+    normalizeWith : dict
+        Value to normalize variable in y axis
+        e.g.: {'t':float,'q':float,'m':float}
+    legendTitle : str
+        It receives TeX notation.
+    '''
+    listOfFiles = os.listdir(folderToPlot)
+    listOfFiles.sort()
+    
+    def get_cmap(n, name='Set1'): ## Color map for plots 
+      return plt.cm.get_cmap(name, n)
+    
+    cmap = get_cmap(max(len(listOfFiles),9))
+    
+    plt.figure(figsize=(6,8))
+    ax1 = plt.subplot(1,1,1)
+    
+    logC_arr = np.zeros_like(Xdata)
+    
+    for i,f in enumerate(listOfFiles):
+      DATA = read_csv(\
+        folderToPlot+"/"+f,\
+        delimiter=",")
+    
+      q = DATA[indices['q']]/normalizeWith['q']
+      m = DATA[indices['m']]/normalizeWith['m']
+      
+      Y = np.divide(m,q)
+      maxY = np.max(Y)
+      logC_val = -np.log10(maxY)
+      logC_arr[i] = logC_val
+      
+    print(logC_arr)  
+    
+    ax1.plot(Xdata,logC_arr,c=cmap(0),lw=3,marker='o')
+    
+    ## Plot log-scale
+    whereWorst = np.argmin(logC_arr - np.min(logC_arr))
+    worstC = np.min(logC_arr)
+    worstI = Xdata[whereWorst]
+    ax1.axhline(y=worstC,ls="dashed",c="teal",lw=1,\
+      label="log-reduction: {:.1f}".format(worstC))
+    
+    ax1.axvline(x=worstI,ls="dashed",c="teal",lw=1,\
+      label=r"$\bf{I} = $" + " {:.2E}".format(worstI))
+   
+    ax1.set(ylim=[0,10],xlim=[1.0E-4,1.0E-1])
+    ax1.set_xscale("log")
+    ax1.set_ylabel(r"$\bf{-log(C/C_0)}$ [-]",fontsize="large")       
+    ax1.set_xlabel(r"$\bf{I}$ [m/m]",fontsize="large")
+    
+    ncol = (1,1) [len(listOfFiles) > 3]
+    l = ax1.legend(title=legendTitle,ncol=ncol,loc="lower left")
     
     plt.setp(l.get_title(), multialignment='center')
     
