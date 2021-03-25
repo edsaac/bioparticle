@@ -764,7 +764,7 @@ subroutine bioTH_React(this,Residual,Jacobian,compute_derivative, &
     ! PRINT *, "I'm inside the IF in line 737:" !Edwin debugging
   ELSE
     ! PRINT *, "I'm inside NOT the IF in line 737:" !Edwin debugging
-    decayIm = this%decay_aqueous
+    decayIm = this%decay_adsorbed
   END IF
   
 !!!!!!!!!!!!!!!!!!!

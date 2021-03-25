@@ -50,7 +50,7 @@ class Model:
     self._description = description
     self._folder = folder
     self._execPath = execPath
-    self._verboseAppend = (">& dev/null","") [verbose]
+    self._verboseAppend = ("2>&1 dev/null","") [verbose]
     
     Model.__numberOf += 1
     Model.__listObjs.append(self)
@@ -152,13 +152,13 @@ class Model:
     '''
     system('''
       file={0}
+      # Delete leading spaces
+      sed -i 's/^  //g' $file
+      sed -i '1s/^ //g' $file
       # Keep headers in other file
       head -1 $file > header.hidden
       # Delete header from file
       sed -i '1d' $file
-      # Delete leading spaces
-      sed -i 's/^  //g' $file
-      sed -i '1s/^ //g' $file
       # Delete strings
       sed -i '1s/"//g' $file
       # Replace spaces for commas

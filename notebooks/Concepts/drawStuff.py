@@ -179,3 +179,7 @@ def threeHeatplots(data,xlabel,ylabel,myLabels):
                              bbox= dict(facecolor='w', alpha=0,edgecolor='w'))
 
     return fig
+
+
+if __name__ == '__main__':
+  main()

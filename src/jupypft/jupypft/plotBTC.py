@@ -8,6 +8,107 @@ import os
 import jupypft.model as mo
 import jupypft.parameter as pm
 
+def get_observationData(
+        inputFile = "./pflotran-obs-0.tec",
+        indices=(0,3),
+        normalizeWith=(1.0,1.0)
+               ):  
+  '''
+  inputFile : str 
+      PFLOTRAN .tec output file
+  Indices : tuple()
+      Pair 
+  normalizeXWith : float
+      Value to normalize variable in x axis
+  normalizeYWith : float
+      Value to normalize variable in y axis
+
+  ''' 
+  i,j = indices
+  if type(i) == type(j):
+    if type(i) is int:
+      DATA = np.loadtxt(inputFile,delimiter=",",skiprows=1)
+      X = DATA[:,i]/normalizeWith[0]
+      Y = DATA[:,j]/normalizeWith[1]
+    elif type(i) is str:
+      DATA = read_csv(inputFile,delimiter=",")
+      X = (DATA[i].to_numpy())/normalizeWith[0]
+      Y = (DATA[j].to_numpy())/normalizeWith[1]
+    else:
+      raise TypeError("Only integers or str tuples are allowed")
+  else:
+    raise TypeError("Tuple elements should be both str or int")
+    
+  return (X,Y)
+
+def get_massbalanceData(
+        inputFile,
+        indices=(0,3,4),
+        normalizeWith=(1,1,1),
+               ):  
+
+  i,j,k = indices
+  if (type(i) == type(j)) and (type(i) == type(k)):
+    if type(i) is int:
+      DATA = np.loadtxt(inputFile,delimiter=",",skiprows=1)
+      t = DATA[:,i]/normalizeWith[0]
+      q = DATA[:,j]/normalizeWith[1]
+      m = DATA[:,k]/normalizeWith[2]
+           
+    elif type(i) is str:
+      DATA = read_csv(inputFile,delimiter=",")
+      t = DATA[i]/normalizeWith[0]
+      q = DATA[j]/normalizeWith[1]
+      m = DATA[k]/normalizeWith[2]
+     
+    else:
+      raise TypeError("Only integers or str tuples are allowed")
+  else:
+    raise TypeError("Tuple elements should be all str or int")
+  
+  X = t
+  Y = np.divide(m,q)
+
+  return (X,Y)
+
+def get_endConcentrations(
+        folderToPlot,
+        indices = {'t':0,'q':26,'m':28},
+        normalizeWith={'t':1.0,'q':1.0,'m':1.0}
+               ):
+    '''
+    folderToPlot : str 
+        Path to folder where all the files to be plotted are found
+    indices : dict
+        Column index for the time 't', water mass rate 'q' and 
+        mass extraction rate 'm'.
+        e.g.: {'t':str,'q':str,'m':str}
+    normalizeWith : dict
+        Value to normalize variable in y axis
+        e.g.: {'t':float,'q':float,'m':float}
+    legendTitle : str
+        It receives TeX notation.
+    '''
+    listOfFiles = os.listdir(folderToPlot)
+    listOfFiles.sort()
+       
+    C_arr = []
+    
+    for i,f in enumerate(listOfFiles):
+      DATA = read_csv(\
+        folderToPlot+"/"+f,\
+        delimiter=",")
+    
+      q = DATA[indices['q']]/normalizeWith['q']
+      m = DATA[indices['m']]/normalizeWith['m']
+      
+      Y = np.divide(m,q)
+      maxY = np.max(Y)
+      C = maxY
+      C_arr.append(C)
+      
+    return C_arr
+    
 def xyPlotLine(
         inputFile = "./pflotran-obs-0.tec",
         XIndex=0,
@@ -125,8 +226,8 @@ def plotMassBalancesInFolder(
 
     ax1.set_ylabel("C/C₀ [$-$]",fontsize="large")       
     ax1.set_xlabel("Time [$d$]",fontsize="large")
-    
-    ncol = (1,1) [len(listOfFiles) > 3]
+    from math import ceil
+    ncol = ceil(len(listOfFiles) / 4)
     l = ax1.legend(title=legendTitle,ncol=ncol,\
       bbox_to_anchor=(1,0), loc="lower left")
     
@@ -207,6 +308,28 @@ def plotEndConcentrations(
     
     plt.tight_layout()  
     plt.show()
+
+def sci_notation(num, decimal_digits=1, precision=None, exponent=None):
+    """
+    Returns a string representation of the scientific
+    notation of the given number formatted for use with
+    LaTeX or Mathtext, with specified number of significant
+    decimal digits and precision (number of decimal digits
+    to show). The exponent to be used can also be specified
+    explicitly.
+    """
+    from math import floor, log10
+  
+    if exponent is None:
+        exponent = int(floor(log10(abs(num))))
+    coeff = round(num / float(10**exponent), decimal_digits)
+    if precision is None:
+        precision = decimal_digits
+
+    return r"${0:.{1}f}\times$".format(coeff,precision)\
+          + "10" + r"$^{{{0:d}}}$".format(exponent)
+
+
 
 if __name__ == "__main__":
     main()

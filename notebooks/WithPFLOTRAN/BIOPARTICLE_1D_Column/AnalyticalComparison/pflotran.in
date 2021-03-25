@@ -1,0 +1,303 @@
+#==============================================================================
+#Description: Toy problem for richards equation
+#Flow: RICHARDS
+#==============================================================================
+
+############# General Configuration ###############
+
+SIMULATION
+  SIMULATION_TYPE SUBSURFACE
+  PROCESS_MODELS
+    # SUBSURFACE_FLOW flow
+    #   MODE RICHARDS
+    # /
+    SUBSURFACE_TRANSPORT transport
+      MODE GIRT
+    /
+  /
+END
+
+############# FLOW CONFIGURATION ###############
+SUBSURFACE
+NUMERICAL_METHODS transport
+  TIMESTEPPER
+   CFL_GOVERNOR 1.0
+  /
+  
+  NEWTON_SOLVER TRANSPORT
+    ATOL 1D-12
+    RTOL 1D-12
+    STOL 1D-30
+  # MAX_NORM 1D10
+    ITOL 1D-12
+  # ITOL_SEC 1d-9
+  # INF_TOL_SEC 1d-9
+  # ITOL_RES_SEC 1d-9
+    MAXIMUM_NUMBER_OF_ITERATIONS 25
+  # MAXF 100
+  /
+
+END
+
+
+############# GRID ###############
+GRID
+  TYPE STRUCTURED CARTESIAN
+  NXYZ 1 1 100
+  BOUNDS
+    0.d0   0.d0   0.d0
+    0.05d0 0.05d0 1.000E+00
+  /
+END
+
+############# REGIONS ###############
+REGION Region__all
+  COORDINATES
+    0.d0   0.d0   0.d0
+    0.05d0 0.05d0 1.000E+00
+  /
+END
+
+REGION Face__Top
+  COORDINATES
+    0.05d0 0.05d0 1.000E+00
+    0.d0 0.d0 1.000E+00
+  /
+  FACE TOP
+END
+
+REGION Face__Bottom
+  COORDINATES
+    0.d0 0.d0 0.d0
+    0.05d0 0.05d0 0.d0
+  /
+  FACE BOTTOM
+END
+
+REGION Obs__PointOutflow
+  COORDINATES
+    0.025d0 0.025d0 1.000E+00
+  /
+END
+
+############# OBSERVATION ###############
+OBSERVATION
+  REGION Obs__PointOutflow
+END
+
+############# FLUID ###############
+FLUID_PROPERTY
+  DIFFUSION_COEFFICIENT 0.0
+END
+
+############# SOILS ###############
+MATERIAL_PROPERTY soil1
+  ID 1
+  POROSITY 3.500E-01
+  # TORTUOSITY 0.0
+  # PERMEABILITY
+  #   PERM_X 1.d-10
+  #   PERM_Y 1.d-10
+  #   PERM_Z 1.d-10
+  # /
+  # SATURATION_FUNCTION vanGenuchtenMualem1
+  LONGITUDINAL_DISPERSIVITY 1.000E-02
+END
+
+# ############# CURVES ###############
+# CHARACTERISTIC_CURVES vanGenuchtenMualem1
+#   SATURATION_FUNCTION VAN_GENUCHTEN
+#     LIQUID_RESIDUAL_SATURATION 0.115
+#     ALPHA  1.9401d-4
+#     M 0.286d0 
+#   /
+
+#   PERMEABILITY_FUNCTION MUALEM_VG_LIQ
+#     LIQUID_RESIDUAL_SATURATION 0.115
+#     M 0.286d0
+#   /
+# END
+
+# ############# FLOW CONDITIONS ###############
+# FLOW_CONDITION bc__inflow
+#  TYPE
+#    FLUX NEUMANN
+#  END
+#  FLUX 3.500E-04 m/s
+# END
+
+# FLOW_CONDITION bc__outflow
+#  TYPE
+#    PRESSURE DIRICHLET
+#  END
+#   PRESSURE 101325.d0
+# END
+
+# FLOW_CONDITION bc__noFlow
+#   TYPE
+#     FLUX neumann
+#   END
+#   FLUX 0.d0
+# END
+
+# FLOW_CONDITION ic__initial
+#   TYPE
+#     FLUX HYDROSTATIC
+#   END
+#   INTERPOLATION LINEAR
+#   DATUM 0.d0 0.d0 0.5d0
+#   PRESSURE 101325.d0
+# END
+
+SPECIFIED_VELOCITY
+  UNIFORM? YES
+  DATASET LIST
+    TIME_UNITS h
+    DATA_UNITS m/s
+    INTERPOLATION STEP
+    0.d0 0.d0 0.d0 3.500E-04 
+  /
+END
+
+########### TRANSPORT CONDITIONS #############
+TRANSPORT_CONDITION ic__initial_t
+  TYPE DIRICHLET_ZERO_GRADIENT
+  CONSTRAINT_LIST
+    0.d0 initial_constraint
+  /
+END
+
+TRANSPORT_CONDITION bc__inflow_t
+  TYPE DIRICHLET_ZERO_GRADIENT
+  CONSTRAINT_LIST
+# Pulse injection
+    0.0d0 inlet_constraint
+    2.000E+03 clean_inlet
+  /
+END
+
+TRANSPORT_CONDITION bc__outflow_t
+  TYPE ZERO_GRADIENT
+  CONSTRAINT_LIST
+    0.d0 initial_constraint
+  /
+END
+
+############## CONSTRAINTS #################
+CONSTRAINT initial_constraint
+  CONCENTRATIONS
+    Vaq   1.d-10      T
+  /
+  IMMOBILE
+    Vim   1.d-10
+  /
+END
+
+CONSTRAINT inlet_constraint
+  CONCENTRATIONS
+    Vaq   1.000E+00   T
+  /
+END
+
+CONSTRAINT clean_inlet
+  CONCENTRATIONS
+    Vaq   1.d-10      T
+  /
+END
+
+############# COUPLERS ###############
+# initial condition
+INITIAL_CONDITION InitialCondition
+  REGION Region__all
+# FLOW_CONDITION ic__initial
+  TRANSPORT_CONDITION ic__initial_t
+END
+
+# boundary conditions
+BOUNDARY_CONDITION Bottom
+  REGION Face__Bottom
+  # FLOW_CONDITION bc__inflow
+  TRANSPORT_CONDITION bc__inflow_t
+END
+
+BOUNDARY_CONDITION Top
+  REGION Face__Top
+  # FLOW_CONDITION bc__outflow
+  TRANSPORT_CONDITION bc__outflow_t
+END
+
+############# STRATAS ###############
+STRATA
+  REGION Region__all
+  MATERIAL soil1
+END
+
+############# OUTPUT ###############
+OUTPUT
+  SNAPSHOT_FILE
+    PERIODIC TIME 1.667E+00 h
+  /
+  
+  OBSERVATION_FILE
+    PERIODIC TIME 4.000E+01 s
+  /
+
+  MASS_BALANCE_FILE
+    PERIODIC TIME 4.000E+01 s
+  /
+
+  FORMAT HDF5
+  VELOCITY_AT_CENTER
+/
+
+############# TIME ###############
+TIME
+  FINAL_TIME 1.667E+00 h
+  INITIAL_TIMESTEP_SIZE 1.000E+01 s
+  MAXIMUM_TIMESTEP_SIZE 1.000E+01 s
+/
+
+############# CHEMISTRY MAGIC ###############
+CHEMISTRY
+  PRIMARY_SPECIES
+    Vaq
+  /
+  
+  IMMOBILE_SPECIES
+    Vim
+  /
+
+  REACTION_SANDBOX
+    BIOPARTICLE
+      PARTICLE_NAME_AQ Vaq
+      PARTICLE_NAME_IM Vim
+      RATE_ATTACHMENT CONSTANT
+        VALUE   1.000E-04 1/s
+      /
+      RATE_DETACHMENT CONSTANT
+        VALUE   1.000E-04 1/s
+      /
+      DECAY_AQUEOUS CONSTANT
+        VALUE 1.000E-05 1/s
+      /
+      DECAY_ADSORBED CONSTANT
+        VALUE 1.000E-03 1/s
+      /
+    /
+  /
+  
+  LOG_FORMULATION
+  TRUNCATE_CONCENTRATION 1.0E-15
+  DATABASE ../../MISCELLANEOUS/rxn_database.dat
+  OUTPUT
+    TOTAL
+    ALL
+  /
+END
+
+############# REFERENCE VALUES ###############
+
+REFERENCE_PRESSURE 101325.0
+REFERENCE_TEMPERATURE 10.0
+
+END_SUBSURFACE
