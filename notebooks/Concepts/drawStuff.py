@@ -180,6 +180,56 @@ def threeHeatplots(data,xlabel,ylabel,myLabels):
 
     return fig
 
+######################################################################
+
+def twoHeatplots(data,xlabel,ylabel,myLabels):
+
+    # create objects 
+    fig, axs = plt.subplots(1,2,sharex=True, sharey=True,figsize=(10,8),\
+                            gridspec_kw={"width_ratios":[1.2,1],"hspace":0.50,"wspace":0.15}) 
+
+    ###################################
+    ### Water table gradient (2)
+
+    Ii = data["I"]
+    Ci = data["C"]
+    FLi = data["FL"]
+    
+    Iianot = Ii*100
+
+    ax = axs[0]
+    im, cbar = heatmap(Ci, xlabel, ylabel, myLabels, whichTitle=0, ax=ax,
+                       cmap="autumn", cbar_kw=dict(orientation='horizontal',shrink=0.8),
+                       vmin = 0.0, vmax = 4.0)
+
+#    texts = annotate_heatmap(im, valfmt="{x:.2f}", data=Iianot,\
+#                             threshold=100.,fontweight="bold",\
+#                             bbox= dict(facecolor='w', alpha=0,edgecolor='w'))
+
+    ###################################
+    ### Flow number
+
+    ax = axs[1]
+    im, cbar = heatmap(np.log10(FLi), xlabel, ylabel, myLabels,whichTitle=1, ax=ax,
+                       cmap="Purples",cbar_kw=dict(orientation='vertical'),
+                       vmin = 0.0, vmax = 5.0, aspect='auto')
+
+#    texts = annotate_heatmap(im, valfmt="{x:.1f}",\
+#                             threshold=10.,fontweight="bold",\
+#                             bbox= dict(facecolor='w', alpha=0,edgecolor='w'))
+
+    ###################################
+    ### log-reductions 
+
+
+
+
+#    texts = annotate_heatmap(im, valfmt="{x:.2f}",\
+#                             threshold=10.,fontweight="bold",\
+#                             bbox= dict(facecolor='w', alpha=0,edgecolor='w'))
+
+    return fig
+
 
 if __name__ == '__main__':
   main()

@@ -123,7 +123,7 @@ END
 #  TYPE
 #    FLUX NEUMANN
 #  END
-#  FLUX 3.500E-04 m/s
+#  FLUX 3.500E-05 m/s
 # END
 
 # FLOW_CONDITION bc__outflow
@@ -155,7 +155,7 @@ SPECIFIED_VELOCITY
     TIME_UNITS h
     DATA_UNITS m/s
     INTERPOLATION STEP
-    0.d0 0.d0 0.d0 3.500E-04 
+    0.d0 0.d0 0.d0 3.500E-05 
   /
 END
 
@@ -172,7 +172,7 @@ TRANSPORT_CONDITION bc__inflow_t
   CONSTRAINT_LIST
 # Pulse injection
     0.0d0 inlet_constraint
-    2.000E+03 clean_inlet
+    2.000E+04 clean_inlet
   /
 END
 
@@ -235,15 +235,15 @@ END
 ############# OUTPUT ###############
 OUTPUT
   SNAPSHOT_FILE
-    PERIODIC TIME 1.667E+00 h
+    PERIODIC TIME 1.667E+01 h
   /
   
   OBSERVATION_FILE
-    PERIODIC TIME 4.000E+01 s
+    PERIODIC TIME 4.000E+02 s
   /
 
   MASS_BALANCE_FILE
-    PERIODIC TIME 4.000E+01 s
+    PERIODIC TIME 4.000E+02 s
   /
 
   FORMAT HDF5
@@ -252,9 +252,9 @@ OUTPUT
 
 ############# TIME ###############
 TIME
-  FINAL_TIME 1.667E+00 h
-  INITIAL_TIMESTEP_SIZE 1.000E+01 s
-  MAXIMUM_TIMESTEP_SIZE 1.000E+01 s
+  FINAL_TIME 1.667E+01 h
+  INITIAL_TIMESTEP_SIZE 1.000E+02 s
+  MAXIMUM_TIMESTEP_SIZE 1.000E+02 s
 /
 
 ############# CHEMISTRY MAGIC ###############
@@ -275,13 +275,13 @@ CHEMISTRY
         VALUE   1.000E-04 1/s
       /
       RATE_DETACHMENT CONSTANT
-        VALUE   1.000E-04 1/s
+        VALUE   1.000E-05 1/s
       /
       DECAY_AQUEOUS CONSTANT
-        VALUE 1.000E-05 1/s
+        VALUE 2.000E-05 1/s
       /
       DECAY_ADSORBED CONSTANT
-        VALUE 1.000E-03 1/s
+        VALUE 1.000E-05 1/s
       /
     /
   /
