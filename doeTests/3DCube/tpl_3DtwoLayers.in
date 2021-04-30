@@ -20,6 +20,12 @@ END
 ############# FLOW CONFIGURATION ###############
 SUBSURFACE
 
+# For comparison to TH models
+EOS WATER
+  DENSITY CONSTANT 999.65d0 kg/m^3 #10°C
+  VISCOSITY CONSTANT 0.0013076 Pa-s #10°C
+END
+
 # NUMERICAL_METHODS flow
 #   # NEWTON_SOLVER
 #   #   USE_INFINITY_NORM_CONVERGENCE
@@ -447,11 +453,14 @@ CHEMISTRY
     BIOPARTICLE
       PARTICLE_NAME_AQ Vaq
       PARTICLE_NAME_IM Vim
+      # Attachment << Constant
       RATE_ATTACHMENT <katt> 1/s
+      # Detachment << Constant
       RATE_DETACHMENT <kdet> 1/s
+      # Decay Aqueous << Temp-Model
       DECAY_AQUEOUS <decayAq> 1/s
+      # Decay Adsorbed << Constant
       DECAY_ADSORBED <decayIm> 1/s
-      ZERO_CONCENTRATION 0.0d0
     /
   /
   TRUNCATE_CONCENTRATION 1.0E-35
@@ -466,5 +475,6 @@ END
 ############# REFERENCE VALUES ###############
 
 REFERENCE_PRESSURE 101325.
+REFERENCE_TEMPERATURE 10.d0
 
 END_SUBSURFACE

@@ -14,4 +14,9 @@
 **/*.ss
 **/*.ugi
 **/*.msh
+<<<<<<< HEAD
 *.code-workspace
+=======
+# Exception for ostrich stuff
+!**/ost*.txt
+>>>>>>> b2a0eacbe74a43747b6c94d61a8799d82ebc4130

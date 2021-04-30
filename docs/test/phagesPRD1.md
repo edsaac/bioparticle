@@ -62,6 +62,7 @@ An injection of an infective virus (PRD1) at a given concentration is set at the
 |---|---|--:|:--|
 |Size | *d<sub>p</sub>*| 62 | nm |
 |Initial concentration| *C<sub>0</sub>*| 1.66 × 10<sup>-16</sup>|mol/L|
+|Long. dispersion| *α<sub>L</sub>*| 0.2 |cm|
 
 <p>&nbsp;</p>
 
@@ -182,6 +183,51 @@ An injection of an infective virus (PRD1) at a given concentration is set at the
 </tbody>
 </table>
 
+<p>
+Other cases with no reaction terms are run to ilustrate the effect of a high longitudinal dispersion coefficient in the tail of these plots and the soon arrival of the peak of the curves.
+</p>
+
+<table>
+<tbody>
+<tr style="text-align: right;">
+<td>Case</td>
+<td>Long. Disp</td>
+<td>Folder</td>
+<td>k<sub>att</sub></td>
+<td>k<sub>det</sub></td>
+<td>λ<sub>aq</sub></td>
+<td>λ<sub>im</sub></td>
+</tr>
+<tr>
+<td>Low Péclet</td>
+<td><i>α<sub>L</sub>=</i> 0.2 cm</td>
+<td><code>./CASE_013</code></td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr>
+<td>"Reasonable" Péclet</td>
+<td><i>α<sub>L</sub>=</i> 0.002 cm</td>
+<td><code>./CASE_014</code></td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr>
+<td>Péclet → ∞</td>
+<td><i>α<sub>L</sub>=</i> 1 × 10<sup>-30</sup></td>
+<td><code>./CASE_015</code></td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+</tr>
+</tbody>
+</table>
+
 <p align="right">k and λ units in [h<sup>-1</sup>] </p>
 
 <p>&nbsp;</p>
@@ -196,10 +242,13 @@ Low Péclet number:
 
 <img src="./phagesPRD1_media/plot/CASE_013.png" alt="Column flow" width=600>
 
-High Péclet number:
+"Reasonable" Péclet number:
 
 <img src="./phagesPRD1_media/plot/CASE_014.png" alt="Column flow" width=600>
 
+Péclet → ∞ :
+
+<img src="./phagesPRD1_media/plot/CASE_015.png" alt="Column flow" width=600>
 
 ### **With the attachment/detachment and decay rates**
 
