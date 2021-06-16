@@ -1,6 +1,8 @@
 #==============================================================================
-#Description: Toy problem for richards equation
-#Flow: RICHARDS
+#Description: Regression test for BIOPARTICLE
+#             using colloid filtration theory (CFT) 
+#             for filtration and a temperature - 
+#             inactivation rate model.
 #==============================================================================
 
 ############# General Configuration ###############
@@ -8,9 +10,9 @@
 SIMULATION
   SIMULATION_TYPE SUBSURFACE
   PROCESS_MODELS
-    # SUBSURFACE_FLOW flow
-    #   MODE RICHARDS
-    # /
+    SUBSURFACE_FLOW flow
+      MODE RICHARDS
+    /
     SUBSURFACE_TRANSPORT transport
       MODE GIRT
     /
@@ -19,26 +21,18 @@ END
 
 ############# FLOW CONFIGURATION ###############
 SUBSURFACE
-NUMERICAL_METHODS transport
-  TIMESTEPPER
-   CFL_GOVERNOR 1.0
-  /
-  
-  NEWTON_SOLVER TRANSPORT
-    ATOL 1D-12
-    RTOL 1D-12
-    STOL 1D-30
-  # MAX_NORM 1D10
-    ITOL 1D-12
-  # ITOL_SEC 1d-9
-  # INF_TOL_SEC 1d-9
-  # ITOL_RES_SEC 1d-9
-    MAXIMUM_NUMBER_OF_ITERATIONS 25
-  # MAXF 100
-  /
 
+REGRESSION
+  CELL_IDS
+    100
+  /
 END
 
+NUMERICAL_METHODS transport
+  TIMESTEPPER
+    CFL_GOVERNOR 1.0
+  /
+END
 
 ############# GRID ###############
 GRID
@@ -94,69 +88,59 @@ END
 MATERIAL_PROPERTY soil1
   ID 1
   POROSITY 3.500E-01
-  # TORTUOSITY 0.0
-  # PERMEABILITY
-  #   PERM_X 1.d-10
-  #   PERM_Y 1.d-10
-  #   PERM_Z 1.d-10
-  # /
-  # SATURATION_FUNCTION vanGenuchtenMualem1
-  LONGITUDINAL_DISPERSIVITY 1.000E-02
+  TORTUOSITY 0.0
+  PERMEABILITY
+    PERM_X 1.d-10
+    PERM_Y 1.d-10
+    PERM_Z 1.d-10
+  /
+  SATURATION_FUNCTION vanGenuchtenMualem1
+  LONGITUDINAL_DISPERSIVITY 1.000E-04
 END
 
-# ############# CURVES ###############
-# CHARACTERISTIC_CURVES vanGenuchtenMualem1
-#   SATURATION_FUNCTION VAN_GENUCHTEN
-#     LIQUID_RESIDUAL_SATURATION 0.115
-#     ALPHA  1.9401d-4
-#     M 0.286d0 
-#   /
-
-#   PERMEABILITY_FUNCTION MUALEM_VG_LIQ
-#     LIQUID_RESIDUAL_SATURATION 0.115
-#     M 0.286d0
-#   /
-# END
-
-# ############# FLOW CONDITIONS ###############
-# FLOW_CONDITION bc__inflow
-#  TYPE
-#    FLUX NEUMANN
-#  END
-#  FLUX 3.500E-04 m/s
-# END
-
-# FLOW_CONDITION bc__outflow
-#  TYPE
-#    PRESSURE DIRICHLET
-#  END
-#   PRESSURE 101325.d0
-# END
-
-# FLOW_CONDITION bc__noFlow
-#   TYPE
-#     FLUX neumann
-#   END
-#   FLUX 0.d0
-# END
-
-# FLOW_CONDITION ic__initial
-#   TYPE
-#     FLUX HYDROSTATIC
-#   END
-#   INTERPOLATION LINEAR
-#   DATUM 0.d0 0.d0 0.5d0
-#   PRESSURE 101325.d0
-# END
-
-SPECIFIED_VELOCITY
-  UNIFORM? YES
-  DATASET LIST
-    TIME_UNITS h
-    DATA_UNITS m/s
-    INTERPOLATION STEP
-    0.d0 0.d0 0.d0 3.500E-04 
+############# CURVES ###############
+CHARACTERISTIC_CURVES vanGenuchtenMualem1
+  SATURATION_FUNCTION VAN_GENUCHTEN
+    LIQUID_RESIDUAL_SATURATION 0.115
+    ALPHA  1.9401d-4
+    M 0.286d0 
   /
+
+  PERMEABILITY_FUNCTION MUALEM_VG_LIQ
+    LIQUID_RESIDUAL_SATURATION 0.115
+    M 0.286d0
+  /
+END
+
+############# FLOW CONDITIONS ###############
+FLOW_CONDITION bc__inflow
+ TYPE
+   FLUX NEUMANN
+ END
+ FLUX 3.500E-04 m/s
+END
+
+FLOW_CONDITION bc__outflow
+ TYPE
+   PRESSURE DIRICHLET
+ END
+  PRESSURE 101325.d0
+END
+
+FLOW_CONDITION bc__noFlow
+  TYPE
+    FLUX neumann
+  END
+  FLUX 0.d0
+END
+
+FLOW_CONDITION ic__initial
+  TYPE
+    FLUX HYDROSTATIC
+  END
+  INTERPOLATION LINEAR
+  DATUM 0.d0 0.d0 0.5d0
+  PRESSURE 101325.d0
 END
 
 ########### TRANSPORT CONDITIONS #############
@@ -170,7 +154,6 @@ END
 TRANSPORT_CONDITION bc__inflow_t
   TYPE DIRICHLET_ZERO_GRADIENT
   CONSTRAINT_LIST
-# Pulse injection
     0.0d0 inlet_constraint
     2.000E+03 clean_inlet
   /
@@ -209,20 +192,20 @@ END
 # initial condition
 INITIAL_CONDITION InitialCondition
   REGION Region__all
-# FLOW_CONDITION ic__initial
+  FLOW_CONDITION ic__initial
   TRANSPORT_CONDITION ic__initial_t
 END
 
 # boundary conditions
 BOUNDARY_CONDITION Bottom
   REGION Face__Bottom
-  # FLOW_CONDITION bc__inflow
+  FLOW_CONDITION bc__inflow
   TRANSPORT_CONDITION bc__inflow_t
 END
 
 BOUNDARY_CONDITION Top
   REGION Face__Top
-  # FLOW_CONDITION bc__outflow
+  FLOW_CONDITION bc__outflow
   TRANSPORT_CONDITION bc__outflow_t
 END
 
@@ -234,25 +217,18 @@ END
 
 ############# OUTPUT ###############
 OUTPUT
-  SNAPSHOT_FILE
-    PERIODIC TIME 1.667E+00 h
-  /
-  
+
   OBSERVATION_FILE
     PERIODIC TIME 4.000E+01 s
   /
 
-  MASS_BALANCE_FILE
-    PERIODIC TIME 4.000E+01 s
-  /
-
-  FORMAT HDF5
+  FORMAT TECPLOT POINT
   VELOCITY_AT_CENTER
 /
 
 ############# TIME ###############
 TIME
-  FINAL_TIME 1.667E+00 h
+  FINAL_TIME 5.556E-01 h
   INITIAL_TIMESTEP_SIZE 1.000E+01 s
   MAXIMUM_TIMESTEP_SIZE 1.000E+01 s
 /
@@ -271,24 +247,34 @@ CHEMISTRY
     BIOPARTICLE
       PARTICLE_NAME_AQ Vaq
       PARTICLE_NAME_IM Vim
-      RATE_ATTACHMENT CONSTANT
-        VALUE   1.000E-04 1/s
+      RATE_ATTACHMENT FILTRATION_MODEL
+        DIAMETER_COLLECTOR 2.0E-3
+        DIAMETER_PARTICLE  1.0E-7
+        HAMAKER_CONSTANT   5.0E-21
+        DENSITY_PARTICLE   1050.0
+        ALPHA_EFFICIENCY   0.2
       /
       RATE_DETACHMENT CONSTANT
-        VALUE   1.000E-04 1/s
+        VALUE   1.000E-04 1/h
       /
-      DECAY_AQUEOUS CONSTANT
-        VALUE 1.000E-05 1/s
+      DECAY_AQUEOUS TEMPERATURE_MODEL
+        TREF    4.0
+        ZT      29.1
+        N       2.0
+        LOGDREF 2.3
       /
-      DECAY_ADSORBED CONSTANT
-        VALUE 1.000E-03 1/s
+      DECAY_ADSORBED TEMPERATURE_MODEL
+        TREF    4.0
+        ZT      29.1
+        N       2.0
+        LOGDREF 2.3
       /
     /
   /
   
   LOG_FORMULATION
   TRUNCATE_CONCENTRATION 1.0E-15
-  DATABASE ../../MISCELLANEOUS/rxn_database.dat
+  DATABASE ../../../database/simple_rxn_database.dat
   OUTPUT
     TOTAL
     ALL

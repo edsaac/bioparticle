@@ -14,6 +14,7 @@
 | |Link|
 |---|--:|
 |**Theory**|[&#128211;](https://edsaac.github.io/bioparticle/theory.html)|
+|**Source code**|[&#128190;](https://bitbucket.org/edsaac/pflotran/src/bioparticle/)|
 |**Compilation instructions**|[&#128296;](https://edsaac.github.io/bioparticle/instructions.html)|
 |**List of tests**|[&#128300;](https://edsaac.github.io/bioparticle/listTests.html)|
 
@@ -24,15 +25,8 @@
 ```
 .
 ├── docs
-│   ├── images
-│   └── test
 ├── src
 └── test
-    ├── breakthroughCurves
-    ├── curvesBabakhani2017
-    ├── phagesExperiment
-    ├── regionalDoublet
-    └── setbackDistanceWell
 ```
 
 ***

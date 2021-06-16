@@ -110,7 +110,7 @@ def get_endConcentrations(
     return C_arr
     
 def xyPlotLine(
-        inputFile = "./pflotran-obs-0.tec",
+        inputFile = "./pflotran-obs-0.pft",
         XIndex=0,
         YIndex=3,
         normalizeXWith=1.0,

@@ -2,7 +2,7 @@
 
 # Instructions
 
-### Available reaction sandboxes
+### Available options in the reaction sandbox
 
 - BIOPARTICLE
   - Decay rates:
@@ -14,29 +14,19 @@
   - Detachment rate:
     - CONSTANT
 
-## To Compile
+## **How to compile?**
 
-1. Add this reaction sandbox to PFLOTRAN's source folder.
+Currently, the BIOPARTICLE sandbox is located on [a fork](https://bitbucket.org/edsaac/pflotran/src/bioparticle/) of the PFLOTRAN project. 
+
+To use it, you can follow steps 1-3 in the [installation instructions](https://documentation.pflotran.org/user_guide/how_to/installation/linux.html#linux-install). For the fourth step, you will need to clone [this fork](https://bitbucket.org/edsaac/pflotran/src/bioparticle/), checkout the ```bioparticle``` branch and compile:
+
 ```
-$ cp src/reactionSandbox/reaction_sandbox_*.F90 $PFLOTRAN_DIR/src/pflotran/
-```
-2. Replace the main reaction sandbox fortran file to include these sandboxes as one of the options.
-```
-$ cp src/reactionSandbox/reaction_sandbox.F90 $PFLOTRAN_DIR/src/pflotran/reaction_sandbox.F90
-```
-3. Add this reaction sandbox to the list of objects to compile
-```
-$ cp src/reactionSandbox/pflotran_object_files.txt $PFLOTRAN_DIR/src/pflotran/pflotran_object_files.txt
-```
-4. Update dependencies.
-```
-$ cd $PFLOTRAN_DIR/src/pflotran/
-$ python3 ../python/pflotran_depedencies.py
-```
-5. Compile PFLOTRAN code.
-```
-$ cd $PFLOTRAN_DIR/src/pflotran/
-$ make pflotran
+$ git clone https://edsaac@bitbucket.org/edsaac/pflotran.git 
+$ cd $PFLOTRAN_DIR
+$ git checkout bioparticle
+$ mkdir bin
+$ cd bin
+$ make -j 8 -f ../src/pflotran/makefile SRC_DIR=../src/pflotran pflotran
 ```
 
 ## **How to use?**

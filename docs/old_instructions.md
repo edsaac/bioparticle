@@ -5,14 +5,18 @@
 ### Available reaction sandboxes
 
 - BIOPARTICLE
-  - All rates are set as a constant
-- BIOPARTEMP
-  - Decay rate as a temperature function
-
+  - Decay rates:
+    - CONSTANT
+    - TEMPERATURE_MODEL
+  - Attachment rate:
+    - CONSTANT
+    - FILTRATION_MODEL
+  - Detachment rate:
+    - CONSTANT
 
 ## To Compile
 
-1. Add these reaction sandbox to PFLOTRAN's source folder.
+1. Add this reaction sandbox to PFLOTRAN's source folder.
 ```
 $ cp src/reactionSandbox/reaction_sandbox_*.F90 $PFLOTRAN_DIR/src/pflotran/
 ```
@@ -20,7 +24,7 @@ $ cp src/reactionSandbox/reaction_sandbox_*.F90 $PFLOTRAN_DIR/src/pflotran/
 ```
 $ cp src/reactionSandbox/reaction_sandbox.F90 $PFLOTRAN_DIR/src/pflotran/reaction_sandbox.F90
 ```
-3. Add these reaction sandbox to the list of objects to compile
+3. Add this reaction sandbox to the list of objects to compile
 ```
 $ cp src/reactionSandbox/pflotran_object_files.txt $PFLOTRAN_DIR/src/pflotran/pflotran_object_files.txt
 ```
@@ -35,39 +39,11 @@ $ cd $PFLOTRAN_DIR/src/pflotran/
 $ make pflotran
 ```
 
+## **How to use?**
+
 ### *BIOPARTICLE*
 
-[![CARD](./images/bioparticle_struc.png)](https://www.pflotran.org/)
-
-1. Add this reaction sandbox to PFLOTRAN's source folder.
-```
-$ cp src/reactionSandbox/reaction_sandbox_escPTr.F90  $PFLOTRAN_DIR/src/pflotran/reaction_sandbox_escPTr.F90
-```
-2. Replace the main reaction sandbox fortran file to include this sandbox as one of the options.
-```
-$ sed '/Add new reaction sandbox classes here./a \ \ use Reaction_Sandbox_escPTr_class' reaction_sandbox_template.F90 > reaction_sandbox.F90
-$ sed -i '/Add new cases statements for new reaction sandbox classes here./a \      case('BIOPARTICLE')\n\        new_sandbox => escPTr_Create()' reaction_sandbox.F90
-$ cp src/reactionSandbox/reaction_sandbox.F90  $PFLOTRAN_DIR/src/pflotran/reaction_sandbox.F90
-```
-3. Add the reaction sandbox to the list of objects to compile
-```
-$ cd $PFLOTRAN_DIR/src/pflotran/
-$ sed -i '/reaction_sandbox_simple.o/a \ \ \ \ \${common_src}reaction_sandbox_escPTr.o \\' pflotran_object_files.txt
-```
-4. Update dependencies.
-```
-$ cd $PFLOTRAN_DIR/src/pflotran/
-$ python3 ../python/pflotran_depedencies.py
-```
-5. Compile PFLOTRAN code.
-```
-$ cd $PFLOTRAN_DIR/src/pflotran/
-$ make pflotran
-```
-
-#### **How to use?**
-
-The CHEMISTRY card should look something like this:
+If all rates are set as CONSTANTS, the `CHEMISTRY` card should look something like this:
 
 ```
 CHEMISTRY
@@ -83,56 +59,30 @@ CHEMISTRY
     BIOPARTICLE
       PARTICLE_NAME_AQ Vaq
       PARTICLE_NAME_IM Vim
-      RATE_ATTACHMENT <katt> 1/s
-      RATE_DETACHMENT <kdet> 1/s
-      DECAY_AQUEOUS <decayAq> 1/s
-      DECAY_ADSORBED <decayIm> 1/s
+      RATE_ATTACHMENT CONSTANT
+        VALUE <katt> 1/h
+      /
+      RATE_DETACHMENT CONSTANT
+        VALUE <kdet> 1/h
+      /
+      DECAY_AQUEOUS CONSTANT
+        VALUE <decayAq> 1/h
+      /
+      DECAY_ADSORBED CONSTANT
+        VALUE <decayIm> 1/h
+      /
     /
   /
-  TRUNCATE_CONCENTRATION 1.0E-35
   LOG_FORMULATION
-  DATABASE database.dat
+  TRUNCATE_CONCENTRATION 1.0E-35
+  DATABASE rxn_database.dat
   OUTPUT
     TOTAL
     ALL
   /
 END
 ```
-___________
-
-### *BIOPARTEMP*
-
-[![CARD](./images/biopartemp_struc.png)](https://www.pflotran.org/)
-
-1. Add this reaction sandbox to PFLOTRAN's source folder.
-```
-$ cp src/reactionSandbox/reaction_sandbox_bioTH.F90  $PFLOTRAN_DIR/src/pflotran/reaction_sandbox_bioTH.F90
-```
-2. Replace the main reaction sandbox fortran file to include this sandbox as one of the options.
-```
-$ sed '/Add new reaction sandbox classes here./a \ \ use Reaction_Sandbox_bioTH_class' reaction_sandbox_template.F90 > reaction_sandbox.F90
-$ sed -i '/Add new cases statements for new reaction sandbox classes here./a \      case('BIOPARTEMP')\n\        new_sandbox => bioTH_Create()' reaction_sandbox.F90
-$ cp src/reactionSandbox/reaction_sandbox.F90  $PFLOTRAN_DIR/src/pflotran/reaction_sandbox.F90
-```
-3. Add the reaction sandbox to the list of objects to compile
-```
-$ cd $PFLOTRAN_DIR/src/pflotran/
-$ sed -i '/reaction_sandbox_simple.o/a \ \ \ \ \${common_src}reaction_sandbox_bioTH.o \\' pflotran_object_files.txt
-```
-4. Update dependencies.
-```
-$ cd $PFLOTRAN_DIR/src/pflotran/
-$ python3 ../python/pflotran_depedencies.py
-```
-5. Compile PFLOTRAN code.
-```
-$ cd $PFLOTRAN_DIR/src/pflotran/
-$ make pflotran
-```
-
-#### **How to use?**
-
-The CHEMISTRY card should look something like this:
+If using temperature-based models for decay rates and colloid filtration theory for the attachment rate, the `CHEMISTRY` card should look something like this:
 
 ```
 CHEMISTRY
@@ -145,13 +95,25 @@ CHEMISTRY
   /
 
   REACTION_SANDBOX
-    BIOPARTEMP
+    BIOPARTICLE
       PARTICLE_NAME_AQ Vaq
       PARTICLE_NAME_IM Vim
-      RATE_ATTACHMENT <katt> 1/s
-      RATE_DETACHMENT <kdet> 1/s
-      DECAY_ADSORBED <decayIm> 1/s
-      DECAY_AQ_MODEL
+      RATE_ATTACHMENT FILTRATION_MODEL
+        DIAMETER_COLLECTOR <diamCollector>
+        DIAMETER_PARTICLE <diamParticle>
+        HAMAKER_CONSTANT <hamakerConstant>
+        DENSITY_PARTICLE <rhoParticle>
+      /
+      RATE_DETACHMENT CONSTANT
+        VALUE <kdet> 1/s
+      /
+      DECAY_AQUEOUS TEMPERATURE_MODEL
+        TREF    4.0
+        ZT      29.1
+        N       2.0
+        LOGDREF 2.3
+      /
+      DECAY_ADSORBED TEMPERATURE_MODEL
         TREF    4.0
         ZT      29.1
         N       2.0
@@ -159,16 +121,16 @@ CHEMISTRY
       /
     /
   /
-  TRUNCATE_CONCENTRATION 1.0E-35
   LOG_FORMULATION
-  DATABASE database.dat
+  TRUNCATE_CONCENTRATION 1.0E-50
+  DATABASE ../MISCELLANEOUS/rxn_database.dat
   OUTPUT
     TOTAL
     ALL
   /
 END
 ```
-
+_____
 ## Installing the python API*
 
 1. Add the package to your python installation using `pip`.
@@ -176,7 +138,6 @@ END
 $ cd ./src/jupypft/
 $ pip install -e .
 ```
-
 
 ***
 
@@ -188,7 +149,7 @@ $ pip install -e .
 |`PETSc`|`v3.13`|[![PETSc](https://img.shields.io/badge/&#129518;-PETSc-blue?style=flat)](https://www.mcs.anl.gov/petsc/)|
 |`gfortran`|`7.5.0`|[![gfortran](https://img.shields.io/badge/-GNU%20Fortran-A42E2B?style=flat&logo=GNU)](https://gcc.gnu.org/fortran/)|
 |`make`|`4.1`|[![make](https://img.shields.io/badge/-GNU%20Make-A42E2B?style=flat&logo=GNU)](https://www.gnu.org/software/make/)|
-|`Ubuntu`|`v18.04`|[![ubuntu](https://img.shields.io/badge/-Ubuntu-black?style=flat&logo=ubuntu)](https://ubuntu.com/)|
+|`Ubuntu`|`v20.04`|[![ubuntu](https://img.shields.io/badge/-Ubuntu-black?style=flat&logo=ubuntu)](https://ubuntu.com/)|
 
 ***
 
