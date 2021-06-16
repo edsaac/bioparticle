@@ -8,10 +8,14 @@
 ```
 ## **a PFLOTRAN Reaction Sandbox for virus transport**
 
-<img src="./docs/images/virusBlob.gif" alt="gifBiopartcile" width="600"/>
+<img src="./docs/images/virusBlob.gif" alt="gifBiopartcile" width="400"/>
 
 ***
 
-## Documentation
+**&#128019; Important &#128019;**
 
+This github repository only stores the website and the jupypft API code (under development). BIOPARTICLE's source code can be found at [this PFLOTRAN fork](https://bitbucket.org/edsaac/pflotran/src/bioparticle/) at BitBucket.
+
+## Documentation
  [&#128213;](https://edsaac.github.io/bioparticle/) >> https://edsaac.github.io/bioparticle/
+ 
