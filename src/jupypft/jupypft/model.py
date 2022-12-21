@@ -194,7 +194,7 @@ class Model:
     '''
     with open("taskForParallel.txt","w") as f:
       for ob in cls.__listObjs:
-        f.write("{0} -pflotranin {1} \n"\
+        f.write("{0} -pflotranin {1} > /dev/null \n"\
           .format(ob.execPath,ob.runFile))
              
     system('''

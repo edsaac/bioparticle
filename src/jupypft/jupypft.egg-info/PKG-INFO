@@ -1,4 +1,4 @@
-Metadata-Version: 1.1
+Metadata-Version: 2.1
 Name: jupypft
 Version: 0.1.0
 Summary: Handle PFLOTRAN from python
@@ -6,6 +6,4 @@ Home-page: https://github.com/edsaac/bioparticle
 Author: Edwin Saavedra C.
 Author-email: esaavedrac@u.northwestern.edu
 License: MIT License
-Description: UNKNOWN
-Platform: UNKNOWN
 Classifier: None
