@@ -79,7 +79,7 @@ def generateDY():
     return Dx
 
 ## Setback distance
-setbackDist = 40.
+setbackDist = 15.
 
 ## Temperatures
 Ref,Atm,Tin = pm.Real(tag="<initialTemp>",value=10.,units="C",mathRep="$$T_{0}$$"),\

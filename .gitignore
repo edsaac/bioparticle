@@ -181,3 +181,4 @@ cython_debug/
 #.idea/
 notebooks/Concepts/Dec2022Review/contour_4logrs.pkl
 notebooks/Concepts/Dec2022Review/contours_montecarlo.pkl
+notebooks/Concepts/Dec2022Review/contours_montecarlo_highK.pkl
